@@ -1,0 +1,106 @@
+{
+  "plan": {
+    "suite": "q04Release",
+    "policy": "AUTO",
+    "rounds": "50",
+    "serial": "10.67.116.12:5555"
+  },
+  "expectedRounds": 50,
+  "device": [
+    "test-apk SHA256 04a6adb828342eb3d60a834e65e2a3411ecb0077bbfc8e6b185379aa154d8427",
+    "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261112.0435:userdebug/release-keys",
+    "API 32",
+    "ABI arm64-v8a",
+    "page size 4096"
+  ],
+  "fixtures": [
+    "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30  V01.mp4"
+  ],
+  "rounds": {
+    "normalStop": {
+      "commandMs": {
+        "count": 50,
+        "median": 13.666,
+        "p95": 16.998,
+        "max": 21.766
+      },
+      "missingCount": 0,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0,
+      "lastIdleCount": 10,
+      "pssMedianDeltaMiB": 3.4560546875,
+      "heapMedianDeltaMiB": -7.5952301025390625
+    },
+    "normalRelease": {
+      "commandMs": {
+        "count": 50,
+        "median": 12.599499999999999,
+        "p95": 19.668,
+        "max": 20.78
+      },
+      "missingCount": 0,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0,
+      "lastIdleCount": 10,
+      "pssMedianDeltaMiB": 3.62841796875,
+      "heapMedianDeltaMiB": -15.273521423339844
+    },
+    "stalledStop": {
+      "commandMs": {
+        "count": 50,
+        "median": 0.4925,
+        "p95": 0.676,
+        "max": 2.624
+      },
+      "missingCount": 0,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0,
+      "lastIdleCount": 10,
+      "pssMedianDeltaMiB": 1.28076171875,
+      "heapMedianDeltaMiB": -15.98785400390625
+    },
+    "stalledRelease": {
+      "commandMs": {
+        "count": 50,
+        "median": 0.45,
+        "p95": 0.626,
+        "max": 1.371
+      },
+      "missingCount": 0,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0,
+      "lastIdleCount": 10,
+      "pssMedianDeltaMiB": -11.3916015625,
+      "heapMedianDeltaMiB": -16.226051330566406
+    }
+  },
+  "pending": [],
+  "failures": [],
+  "samplingGapMs": {
+    "count": 1053,
+    "median": 1000,
+    "p95": 1001,
+    "max": 1060
+  },
+  "baseline": {
+    "fixtureOrPipeFd": 0.0,
+    "nativeInputFd": 0.0,
+    "sdkNamedThreads": 0.0,
+    "liveCodecs": 0.0,
+    "pssKiB": 52164.0,
+    "nativeBytes": 20348064.0,
+    "processFd": 98.0,
+    "processThreads": 28.0
+  },
+  "status": "measured",
+  "sha256": {
+    "samples.csv": "762adeda9c970dd1ccd86491cbc22f5d0cbf9267c2bbe3f521210c45c452b291",
+    "events.csv": "8212a5263d27dbcda46d0e2fc897c57ba946d43b84e89f7d867fce50f63a45d7",
+    "rendered.csv": "a4cc932eb17a184500c64b07b2872db70c0e0e7dfa7c0ddc128204d121c8d380",
+    "inventory.tsv": "71e62e4ab0c32c9f63a1b05e6a274d1fcd8d375a3effe36f5a7e839fd340d568",
+    "fixtures.sha256": "38a0ca571a5a30ae5717c0ff8f8b46602f4cbb9780b935a722ce3b7cbe9f8ad9",
+    "device.txt": "9484bda9b436ada66ec1665f3c97eadd3c9fb94cb1d2709568247a084024d0c2",
+    "plan.txt": "c88766362d5d04d4af140539e660adfd167684ca1a6a6cfd9d2279ad013e247e",
+    "instrumentation.txt": "088fe13c256e89ea3bb886d1eb96441e765645b187a94dac27060def84242a62"
+  }
+}

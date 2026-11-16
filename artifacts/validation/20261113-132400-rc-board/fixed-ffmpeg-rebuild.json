@@ -1,0 +1,22 @@
+{
+  "aar": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+  "correspondingSource": "c1ccf9c61e4903650989de52668c1f488aa7d5e2f73653626306621625d8eb23",
+  "rebuiltAar": "9592faf85811c9c4259961ca563b010e957fe58f9594bf4c68e42ad7e7a2ad51",
+  "aarEntriesChanged": [
+    "jni/arm64-v8a/libplayback.so"
+  ],
+  "allClassesAndResourcesIdentical": true,
+  "classCount": 48,
+  "jniSectionsChanged": [
+    ".note.gnu.build-id"
+  ],
+  "lintIssues": [],
+  "ffmpegLibraries": {
+    "jni/arm64-v8a/libavcodec.so": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+    "jni/arm64-v8a/libavformat.so": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+    "jni/arm64-v8a/libavutil.so": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+    "jni/arm64-v8a/libswresample.so": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+    "jni/arm64-v8a/libswscale.so": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308"
+  },
+  "outcome": "PASS"
+}

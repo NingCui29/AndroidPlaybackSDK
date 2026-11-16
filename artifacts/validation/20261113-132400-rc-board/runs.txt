@@ -1,0 +1,4 @@
+surface PASS
+degrade PASS
+q04Realtime PASS
+q01 FAIL Failed device test. See artifacts/validation/20261113-132400-rc-board/q01

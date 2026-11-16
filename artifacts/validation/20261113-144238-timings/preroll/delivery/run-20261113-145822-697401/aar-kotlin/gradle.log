@@ -1,0 +1,90 @@
+
+Welcome to Gradle 8.13!
+
+Here are the highlights of this release:
+ - Daemon JVM auto-provisioning
+ - Enhancements for Scala plugin and JUnit testing
+ - Improvements for build authors and plugin developers
+
+For more details see https://docs.gradle.org/8.13/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Shared read-only dependency cache is an incubating feature.
+
+> Task :recordResolution
+MODE aar LANGUAGE kotlin METADATA module
+SOURCE C:\Users\Work\.gradle\ap-pperorhy\direct\android-playback-sdk-1.0.0-rc.1.aar
+ARTIFACT android-playback-sdk-1.0.0-rc.1.aar [local file] android-playback-sdk-1.0.0-rc.1.aar e3a45109770d94c5c626defcca53c6ab8a8391433fa0b62cbb8ca57ea0f4aa01
+ARTIFACT org.jetbrains.kotlin:kotlin-stdlib:2.1.20 [org.jetbrains.kotlin:kotlin-stdlib:2.1.20 variant jvmRuntimeElements] kotlin-stdlib-2.1.20.jar 1bcc74e8ce84e2c25eaafde10f1248349cce3062b6e36978cbeec610db1e930a
+ARTIFACT org.jetbrains:annotations:13.0 [org.jetbrains:annotations:13.0 configuration runtime] annotations-13.0.jar ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478
+EDGE root project : -> org.jetbrains.kotlin:kotlin-stdlib:2.1.20
+EDGE org.jetbrains.kotlin:kotlin-stdlib:2.1.20 -> org.jetbrains:annotations:13.0
+
+> Task :preBuild UP-TO-DATE
+> Task :preReleaseBuild UP-TO-DATE
+> Task :mergeReleaseJniLibFolders
+> Task :buildKotlinToolingMetadata
+> Task :mergeReleaseNativeLibs
+> Task :checkReleaseDuplicateClasses
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :processReleaseNavigationResources
+> Task :checkReleaseAarMetadata
+> Task :generateReleaseResValues
+> Task :compileReleaseNavigationResources
+> Task :mapReleaseSourceSetPaths
+> Task :stripReleaseDebugSymbols
+> Task :generateReleaseResources
+> Task :extractReleaseNativeSymbolTables
+> Task :mergeReleaseResources
+> Task :mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :packageReleaseResources
+> Task :createReleaseCompatibleScreenManifests
+> Task :extractDeepLinksRelease
+> Task :parseReleaseLocalResources
+> Task :processReleaseMainManifest
+> Task :processReleaseManifest
+> Task :javaPreCompileRelease
+> Task :mergeReleaseArtProfile
+> Task :extractProguardFiles
+> Task :mergeReleaseStartupProfile
+> Task :mergeReleaseShaders
+> Task :compileReleaseShaders NO-SOURCE
+> Task :generateReleaseAssets UP-TO-DATE
+> Task :mergeReleaseAssets
+> Task :compressReleaseAssets
+> Task :extractReleaseVersionControlInfo
+> Task :collectReleaseDependencies
+> Task :sdkReleaseDependencyData
+> Task :validateSigningRelease
+> Task :processReleaseManifestForPackage
+> Task :writeReleaseAppMetadata
+> Task :writeReleaseSigningConfigVersions
+> Task :processReleaseResources
+> Task :optimizeReleaseResources
+> Task :compileReleaseKotlin
+> Task :compileReleaseJavaWithJavac
+> Task :expandReleaseArtProfileWildcards
+> Task :mergeReleaseGeneratedProguardFiles
+> Task :processReleaseJavaRes
+> Task :mergeReleaseJavaResource
+> Task :generateReleaseLintVitalReportModel
+> Task :minifyReleaseWithR8
+> Task :compileReleaseArtProfile
+> Task :lintVitalAnalyzeRelease
+> Task :lintVitalReportRelease
+> Task :lintVitalRelease
+> Task :packageRelease
+> Task :createReleaseApkListingFileRedirect
+> Task :assembleRelease
+
+[Incubating] Problems report is available at: file:///C:/Users/Work/.gradle/ap-pperorhy/aar-kotlin/built/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 45s
+50 actionable tasks: 50 executed

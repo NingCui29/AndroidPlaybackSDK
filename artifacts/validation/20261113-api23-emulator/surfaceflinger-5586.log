@@ -1,0 +1,198 @@
+01-01 00:00:07.549   875   875 F libc    : Fatal signal 11 (SIGSEGV), code 1, fault addr 0xffffe5b9dc1171c0 in tid 875 (surfaceflinger)
+01-01 00:00:08.089   881   881 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-01 00:00:08.089   881   881 F DEBUG   : Build fingerprint: 'Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys'
+01-01 00:00:08.090   881   881 F DEBUG   : Revision: '0'
+01-01 00:00:08.090   881   881 F DEBUG   : ABI: 'arm64'
+01-01 00:00:08.130   881   881 F DEBUG   : pid: 875, tid: 875, name: surfaceflinger  >>> /system/bin/surfaceflinger <<<
+01-01 00:00:08.131   881   881 F DEBUG   : signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xffffe5b9dc1171c0
+01-01 00:00:08.643   881   881 F DEBUG   :     x0   0000000000000000  x1   0000000000000000  x2   0000000000000000  x3   0000000000000000
+01-01 00:00:08.643   881   881 F DEBUG   :     x4   0000000000000000  x5   0000000000000000  x6   0000000000000000  x7   0000000000000000
+01-01 00:00:08.643   881   881 F DEBUG   :     x8   ffffff85b3b8d005  x9   0000007a8ba3f060  x10  0000000000000038  x11  0000007a8ba3fd90
+01-01 00:00:08.644   881   881 F DEBUG   :     x12  0000000000000000  x13  ffffe5b9dc1171c0  x14  0000000000000008  x15  00000000000000b5
+01-01 00:00:08.644   881   881 F DEBUG   :     x16  0000007a8c214838  x17  0000007a8c413cf8  x18  0000007a8bec20c0  x19  0000007a8ba3f010
+01-01 00:00:08.644   881   881 F DEBUG   :     x20  0000007a8bee2370  x21  0000007ff7168a50  x22  0000007a8b228000  x23  0000000000000000
+01-01 00:00:08.644   881   881 F DEBUG   :     x24  0000000000000000  x25  0000007a8c64e030  x26  3523847dec5f7213  x27  0000007a8c64e0b0
+01-01 00:00:08.645   881   881 F DEBUG   :     x28  0000007a8c64e030  x29  0000007ff71689f0  x30  0000007a8c1b8ec4
+01-01 00:00:08.645   881   881 F DEBUG   :     sp   0000007ff7168560  pc   0000007a8c1b8f10  pstate 00000000a0000000
+01-01 00:00:09.295   881   881 F DEBUG   : 
+01-01 00:00:09.295   881   881 F DEBUG   : backtrace:
+01-01 00:00:09.295   881   881 F DEBUG   :     #00 pc 0000000000051f10  /system/lib64/libgui.so (android::BufferQueueConsumer::acquireBuffer(android::BufferItem*, long, unsigned long)+196)
+01-01 00:00:09.295   881   881 F DEBUG   :     #01 pc 000000000005c060  /system/lib64/libgui.so (android::ConsumerBase::acquireBufferLocked(android::BufferItem*, long, unsigned long)+40)
+01-01 00:00:09.296   881   881 F DEBUG   :     #02 pc 00000000000373f0  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.296   881   881 F DEBUG   :     #03 pc 00000000000375c4  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.296   881   881 F DEBUG   :     #04 pc 0000000000051768  /system/lib64/libgui.so (android::BufferQueue::ProxyConsumerListener::onFrameAvailable(android::BufferItem const&)+84)
+01-01 00:00:09.296   881   881 F DEBUG   :     #05 pc 00000000000590bc  /system/lib64/libgui.so (android::BufferQueueProducer::queueBuffer(int, android::IGraphicBufferProducer::QueueBufferInput const&, android::IGraphicBufferProducer::QueueBufferOutput*)+2544)
+01-01 00:00:09.296   881   881 F DEBUG   :     #06 pc 0000000000071794  /system/lib64/libgui.so (android::Surface::queueBuffer(ANativeWindowBuffer*, int)+964)
+01-01 00:00:09.296   881   881 F DEBUG   :     #07 pc 0000000000012148  /system/lib64/egl/libEGL_emulation.so (egl_window_surface_t::swapBuffers()+108)
+01-01 00:00:09.297   881   881 F DEBUG   :     #08 pc 000000000000ff1c  /system/lib64/egl/libEGL_emulation.so (eglSwapBuffers+496)
+01-01 00:00:09.297   881   881 F DEBUG   :     #09 pc 000000000002ad58  /system/lib64/libEGL.so (eglSwapBuffersWithDamageKHR+548)
+01-01 00:00:09.297   881   881 F DEBUG   :     #10 pc 000000000001c850  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.297   881   881 F DEBUG   :     #11 pc 000000000002d684  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.297   881   881 F DEBUG   :     #12 pc 000000000002bebc  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.297   881   881 F DEBUG   :     #13 pc 000000000002af2c  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.298   881   881 F DEBUG   :     #14 pc 000000000002ad08  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.298   881   881 F DEBUG   :     #15 pc 000000000001ae1c  /system/lib64/libutils.so (android::Looper::pollInner(int)+312)
+01-01 00:00:09.298   881   881 F DEBUG   :     #16 pc 000000000001b154  /system/lib64/libutils.so (android::Looper::pollOnce(int, int*, int*, void**)+80)
+01-01 00:00:09.298   881   881 F DEBUG   :     #17 pc 0000000000027260  /system/lib64/libsurfaceflinger.so
+01-01 00:00:09.298   881   881 F DEBUG   :     #18 pc 000000000002a80c  /system/lib64/libsurfaceflinger.so (android::SurfaceFlinger::run()+20)
+01-01 00:00:09.299   881   881 F DEBUG   :     #19 pc 0000000000001164  /system/bin/surfaceflinger
+01-01 00:00:09.299   881   881 F DEBUG   :     #20 pc 000000000001bc98  /system/lib64/libc.so (__libc_init+100)
+01-01 00:00:09.299   881   881 F DEBUG   :     #21 pc 0000000000000f9c  /system/bin/surfaceflinger
+01-01 00:00:14.425   881   881 F DEBUG   : 
+01-01 00:00:14.425   881   881 F DEBUG   : Tombstone written to: /data/tombstones/tombstone_00
+01-01 00:00:16.498   972   972 F libc    : Fatal signal 11 (SIGSEGV), code 1, fault addr 0xffffe7b3c6a5f1c0 in tid 972 (surfaceflinger)
+01-01 00:00:16.555   881   881 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-01 00:00:16.556   881   881 F DEBUG   : Build fingerprint: 'Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys'
+01-01 00:00:16.556   881   881 F DEBUG   : Revision: '0'
+01-01 00:00:16.556   881   881 F DEBUG   : ABI: 'arm64'
+01-01 00:00:16.557   881   881 F DEBUG   : pid: 972, tid: 972, name: surfaceflinger  >>> /system/bin/surfaceflinger <<<
+01-01 00:00:16.557   881   881 F DEBUG   : signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xffffe7b3c6a5f1c0
+01-01 00:00:16.656   881   881 F DEBUG   :     x0   0000000000000000  x1   0000000000000000  x2   0000000000000000  x3   0000000000000000
+01-01 00:00:16.656   881   881 F DEBUG   :     x4   0000000000000000  x5   0000000000000000  x6   0000000000000000  x7   0000000000000000
+01-01 00:00:16.656   881   881 F DEBUG   :     x8   ffffff8ee6094005  x9   00000071749ff060  x10  0000000000000038  x11  00000071749ff930
+01-01 00:00:16.657   881   881 F DEBUG   :     x12  0000000000000000  x13  ffffe7b3c6a5f1c0  x14  0000000000000008  x15  00000000000000b5
+01-01 00:00:16.657   881   881 F DEBUG   :     x16  00000071751d1838  x17  00000071753d0cf8  x18  0000007174e820c0  x19  00000071749ff010
+01-01 00:00:16.657   881   881 F DEBUG   :     x20  0000007174ea2370  x21  0000007fd1e893b0  x22  00000071741e8000  x23  0000000000000000
+01-01 00:00:16.657   881   881 F DEBUG   :     x24  0000000000000000  x25  000000717560b030  x26  a713ff297c94bd24  x27  000000717560b0b0
+01-01 00:00:16.657   881   881 F DEBUG   :     x28  000000717560b030  x29  0000007fd1e89350  x30  0000007175175ec4
+01-01 00:00:16.657   881   881 F DEBUG   :     sp   0000007fd1e88ec0  pc   0000007175175f10  pstate 00000000a0000000
+01-01 00:00:16.911   881   881 F DEBUG   : 
+01-01 00:00:16.911   881   881 F DEBUG   : backtrace:
+01-01 00:00:16.912   881   881 F DEBUG   :     #00 pc 0000000000051f10  /system/lib64/libgui.so (android::BufferQueueConsumer::acquireBuffer(android::BufferItem*, long, unsigned long)+196)
+01-01 00:00:16.912   881   881 F DEBUG   :     #01 pc 000000000005c060  /system/lib64/libgui.so (android::ConsumerBase::acquireBufferLocked(android::BufferItem*, long, unsigned long)+40)
+01-01 00:00:16.913   881   881 F DEBUG   :     #02 pc 00000000000373f0  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.913   881   881 F DEBUG   :     #03 pc 00000000000375c4  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.913   881   881 F DEBUG   :     #04 pc 0000000000051768  /system/lib64/libgui.so (android::BufferQueue::ProxyConsumerListener::onFrameAvailable(android::BufferItem const&)+84)
+01-01 00:00:16.914   881   881 F DEBUG   :     #05 pc 00000000000590bc  /system/lib64/libgui.so (android::BufferQueueProducer::queueBuffer(int, android::IGraphicBufferProducer::QueueBufferInput const&, android::IGraphicBufferProducer::QueueBufferOutput*)+2544)
+01-01 00:00:16.914   881   881 F DEBUG   :     #06 pc 0000000000071794  /system/lib64/libgui.so (android::Surface::queueBuffer(ANativeWindowBuffer*, int)+964)
+01-01 00:00:16.914   881   881 F DEBUG   :     #07 pc 0000000000012148  /system/lib64/egl/libEGL_emulation.so (egl_window_surface_t::swapBuffers()+108)
+01-01 00:00:16.915   881   881 F DEBUG   :     #08 pc 000000000000ff1c  /system/lib64/egl/libEGL_emulation.so (eglSwapBuffers+496)
+01-01 00:00:16.915   881   881 F DEBUG   :     #09 pc 000000000002ad58  /system/lib64/libEGL.so (eglSwapBuffersWithDamageKHR+548)
+01-01 00:00:16.915   881   881 F DEBUG   :     #10 pc 000000000001c850  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.916   881   881 F DEBUG   :     #11 pc 000000000002d684  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.916   881   881 F DEBUG   :     #12 pc 000000000002bebc  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.916   881   881 F DEBUG   :     #13 pc 000000000002af2c  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.916   881   881 F DEBUG   :     #14 pc 000000000002ad08  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.917   881   881 F DEBUG   :     #15 pc 000000000001ae1c  /system/lib64/libutils.so (android::Looper::pollInner(int)+312)
+01-01 00:00:16.917   881   881 F DEBUG   :     #16 pc 000000000001b154  /system/lib64/libutils.so (android::Looper::pollOnce(int, int*, int*, void**)+80)
+01-01 00:00:16.917   881   881 F DEBUG   :     #17 pc 0000000000027260  /system/lib64/libsurfaceflinger.so
+01-01 00:00:16.918   881   881 F DEBUG   :     #18 pc 000000000002a80c  /system/lib64/libsurfaceflinger.so (android::SurfaceFlinger::run()+20)
+01-01 00:00:16.918   881   881 F DEBUG   :     #19 pc 0000000000001164  /system/bin/surfaceflinger
+01-01 00:00:16.918   881   881 F DEBUG   :     #20 pc 000000000001bc98  /system/lib64/libc.so (__libc_init+100)
+01-01 00:00:16.918   881   881 F DEBUG   :     #21 pc 0000000000000f9c  /system/bin/surfaceflinger
+01-01 00:00:22.761   881   881 F DEBUG   : 
+01-01 00:00:22.761   881   881 F DEBUG   : Tombstone written to: /data/tombstones/tombstone_01
+01-01 00:02:02.261  1031  1031 F libc    : Fatal signal 11 (SIGSEGV), code 1, fault addr 0xffffe6d8901aa1c0 in tid 1031 (surfaceflinger)
+01-01 00:02:02.326   881   881 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-01 00:02:02.327   881   881 F DEBUG   : Build fingerprint: 'Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys'
+01-01 00:02:02.327   881   881 F DEBUG   : Revision: '0'
+01-01 00:02:02.327   881   881 F DEBUG   : ABI: 'arm64'
+01-01 00:02:02.328   881   881 F DEBUG   : pid: 1031, tid: 1031, name: surfaceflinger  >>> /system/bin/surfaceflinger <<<
+01-01 00:02:02.329   881   881 F DEBUG   : signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xffffe6d8901aa1c0
+01-01 00:02:02.389   881   881 F DEBUG   :     x0   0000000000000000  x1   0000000000000000  x2   0000000000000000  x3   0000000000000000
+01-01 00:02:02.389   881   881 F DEBUG   :     x4   0000000000000000  x5   0000000000000000  x6   0000000000000000  x7   0000000000000000
+01-01 00:02:02.389   881   881 F DEBUG   :     x8   ffffff8ae9f3f005  x9   0000007562be2060  x10  0000000000000038  x11  0000007562be25b0
+01-01 00:02:02.389   881   881 F DEBUG   :     x12  0000000000000000  x13  ffffe6d8901aa1c0  x14  0007735940000000  x15  0000413d90000000
+01-01 00:02:02.389   881   881 F DEBUG   :     x16  0000007563bec838  x17  0000007563debcf8  x18  00000075638820c0  x19  0000007562be2010
+01-01 00:02:02.389   881   881 F DEBUG   :     x20  00000075638a3400  x21  0000007ffe76c9d8  x22  0000007ffe76cb28  x23  0000001c7830bf03
+01-01 00:02:02.390   881   881 F DEBUG   :     x24  0000000000000001  x25  00000075640260b0  x26  9f75e645c91a494f  x27  00000075640260b0
+01-01 00:02:02.390   881   881 F DEBUG   :     x28  0000007564026030  x29  0000007ffe76c910  x30  0000007563b90ec4
+01-01 00:02:02.390   881   881 F DEBUG   :     sp   0000007ffe76c480  pc   0000007563b90f10  pstate 00000000a0000000
+01-01 00:02:02.478   881   881 F DEBUG   : 
+01-01 00:02:02.478   881   881 F DEBUG   : backtrace:
+01-01 00:02:02.479   881   881 F DEBUG   :     #00 pc 0000000000051f10  /system/lib64/libgui.so (android::BufferQueueConsumer::acquireBuffer(android::BufferItem*, long, unsigned long)+196)
+01-01 00:02:02.480   881   881 F DEBUG   :     #01 pc 000000000005c060  /system/lib64/libgui.so (android::ConsumerBase::acquireBufferLocked(android::BufferItem*, long, unsigned long)+40)
+01-01 00:02:02.480   881   881 F DEBUG   :     #02 pc 000000000005ec20  /system/lib64/libgui.so (android::GLConsumer::acquireBufferLocked(android::BufferItem*, long, unsigned long)+28)
+01-01 00:02:02.480   881   881 F DEBUG   :     #03 pc 0000000000036298  /system/lib64/libsurfaceflinger.so
+01-01 00:02:02.480   881   881 F DEBUG   :     #04 pc 0000000000036014  /system/lib64/libsurfaceflinger.so
+01-01 00:02:02.481   881   881 F DEBUG   :     #05 pc 0000000000025478  /system/lib64/libsurfaceflinger.so
+01-01 00:02:02.481   881   881 F DEBUG   :     #06 pc 000000000002b2b8  /system/lib64/libsurfaceflinger.so
+01-01 00:02:02.481   881   881 F DEBUG   :     #07 pc 000000000002ae20  /system/lib64/libsurfaceflinger.so
+01-01 00:02:02.481   881   881 F DEBUG   :     #08 pc 000000000002ad54  /system/lib64/libsurfaceflinger.so
+01-01 00:02:02.491   881   881 F DEBUG   :     #09 pc 000000000001ae1c  /system/lib64/libutils.so (android::Looper::pollInner(int)+312)
+01-01 00:02:02.491   881   881 F DEBUG   :     #10 pc 000000000001b154  /system/lib64/libutils.so (android::Looper::pollOnce(int, int*, int*, void**)+80)
+01-01 00:02:02.491   881   881 F DEBUG   :     #11 pc 0000000000027260  /system/lib64/libsurfaceflinger.so
+01-01 00:02:02.492   881   881 F DEBUG   :     #12 pc 000000000002a80c  /system/lib64/libsurfaceflinger.so (android::SurfaceFlinger::run()+20)
+01-01 00:02:02.492   881   881 F DEBUG   :     #13 pc 0000000000001164  /system/bin/surfaceflinger
+01-01 00:02:02.492   881   881 F DEBUG   :     #14 pc 000000000001bc98  /system/lib64/libc.so (__libc_init+100)
+01-01 00:02:02.492   881   881 F DEBUG   :     #15 pc 0000000000000f9c  /system/bin/surfaceflinger
+01-01 00:02:03.434   881   881 F DEBUG   : 
+01-01 00:02:03.434   881   881 F DEBUG   : Tombstone written to: /data/tombstones/tombstone_02
+01-01 00:02:43.438  1469  1469 F libc    : Fatal signal 11 (SIGSEGV), code 1, fault addr 0xffffe6c5932b21c0 in tid 1469 (surfaceflinger)
+01-01 00:02:43.470   881   881 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-01 00:02:43.488   881   881 F DEBUG   : Build fingerprint: 'Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys'
+01-01 00:02:43.488   881   881 F DEBUG   : Revision: '0'
+01-01 00:02:43.488   881   881 F DEBUG   : ABI: 'arm64'
+01-01 00:02:43.490   881   881 F DEBUG   : pid: 1469, tid: 1469, name: surfaceflinger  >>> /system/bin/surfaceflinger <<<
+01-01 00:02:43.490   881   881 F DEBUG   : signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xffffe6c5932b21c0
+01-01 00:02:43.606   881   881 F DEBUG   :     x0   0000000000000000  x1   0000000000000000  x2   0000000000000000  x3   0000000000000000
+01-01 00:02:43.607   881   881 F DEBUG   :     x4   0000000000000000  x5   0000000000000000  x6   0000000000000000  x7   0000000000000000
+01-01 00:02:43.607   881   881 F DEBUG   :     x8   ffffff8a91976005  x9   00000075ba0e2060  x10  0000000000000038  x11  00000075ba0e25b0
+01-01 00:02:43.607   881   881 F DEBUG   :     x12  0000000000000000  x13  ffffe6c5932b21c0  x14  000cd0a3c0000000  x15  00002dfa50000000
+01-01 00:02:43.608   881   881 F DEBUG   :     x16  00000075bb1d5838  x17  00000075bb3d4cf8  x18  00000075bae820c0  x19  00000075ba0e2010
+01-01 00:02:43.608   881   881 F DEBUG   :     x20  00000075baea32c0  x21  0000007ff5cf2048  x22  0000007ff5cf2198  x23  000000260e8d0df0
+01-01 00:02:43.608   881   881 F DEBUG   :     x24  0000000000000001  x25  00000075bb60f0b0  x26  ba362f1c968837f9  x27  00000075bb60f0b0
+01-01 00:02:43.608   881   881 F DEBUG   :     x28  00000075bb60f030  x29  0000007ff5cf1f80  x30  00000075bb179ec4
+01-01 00:02:43.608   881   881 F DEBUG   :     sp   0000007ff5cf1af0  pc   00000075bb179f10  pstate 00000000a0000000
+01-01 00:02:43.815   881   881 F DEBUG   : 
+01-01 00:02:43.815   881   881 F DEBUG   : backtrace:
+01-01 00:02:43.816   881   881 F DEBUG   :     #00 pc 0000000000051f10  /system/lib64/libgui.so (android::BufferQueueConsumer::acquireBuffer(android::BufferItem*, long, unsigned long)+196)
+01-01 00:02:43.830   881   881 F DEBUG   :     #01 pc 000000000005c060  /system/lib64/libgui.so (android::ConsumerBase::acquireBufferLocked(android::BufferItem*, long, unsigned long)+40)
+01-01 00:02:43.830   881   881 F DEBUG   :     #02 pc 000000000005ec20  /system/lib64/libgui.so (android::GLConsumer::acquireBufferLocked(android::BufferItem*, long, unsigned long)+28)
+01-01 00:02:43.831   881   881 F DEBUG   :     #03 pc 0000000000036298  /system/lib64/libsurfaceflinger.so
+01-01 00:02:43.842   881   881 F DEBUG   :     #04 pc 0000000000036014  /system/lib64/libsurfaceflinger.so
+01-01 00:02:43.842   881   881 F DEBUG   :     #05 pc 0000000000025478  /system/lib64/libsurfaceflinger.so
+01-01 00:02:43.843   881   881 F DEBUG   :     #06 pc 000000000002b2b8  /system/lib64/libsurfaceflinger.so
+01-01 00:02:43.843   881   881 F DEBUG   :     #07 pc 000000000002ae20  /system/lib64/libsurfaceflinger.so
+01-01 00:02:43.843   881   881 F DEBUG   :     #08 pc 000000000002ad54  /system/lib64/libsurfaceflinger.so
+01-01 00:02:43.844   881   881 F DEBUG   :     #09 pc 000000000001ae1c  /system/lib64/libutils.so (android::Looper::pollInner(int)+312)
+01-01 00:02:43.844   881   881 F DEBUG   :     #10 pc 000000000001b154  /system/lib64/libutils.so (android::Looper::pollOnce(int, int*, int*, void**)+80)
+01-01 00:02:43.844   881   881 F DEBUG   :     #11 pc 0000000000027260  /system/lib64/libsurfaceflinger.so
+01-01 00:02:43.844   881   881 F DEBUG   :     #12 pc 000000000002a80c  /system/lib64/libsurfaceflinger.so (android::SurfaceFlinger::run()+20)
+01-01 00:02:43.845   881   881 F DEBUG   :     #13 pc 0000000000001164  /system/bin/surfaceflinger
+01-01 00:02:43.845   881   881 F DEBUG   :     #14 pc 000000000001bc98  /system/lib64/libc.so (__libc_init+100)
+01-01 00:02:43.845   881   881 F DEBUG   :     #15 pc 0000000000000f9c  /system/bin/surfaceflinger
+01-01 00:02:45.137   881   881 F DEBUG   : 
+01-01 00:02:45.137   881   881 F DEBUG   : Tombstone written to: /data/tombstones/tombstone_03
+01-01 00:02:46.538  1863  1863 F libc    : Fatal signal 11 (SIGSEGV), code 1, fault addr 0xffffe6f84f9f71c0 in tid 1863 (surfaceflinger)
+01-01 00:02:46.640   881   881 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+01-01 00:02:46.681   881   881 F DEBUG   : Build fingerprint: 'Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys'
+01-01 00:02:46.681   881   881 F DEBUG   : Revision: '0'
+01-01 00:02:46.681   881   881 F DEBUG   : ABI: 'arm64'
+01-01 00:02:46.683   881   881 F DEBUG   : pid: 1863, tid: 1863, name: surfaceflinger  >>> /system/bin/surfaceflinger <<<
+01-01 00:02:46.684   881   881 F DEBUG   : signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xffffe6f84f9f71c0
+01-01 00:02:46.856   881   881 F DEBUG   :     x0   0000000000000000  x1   0000000000000000  x2   0000000000000000  x3   0000000000000000
+01-01 00:02:46.856   881   881 F DEBUG   :     x4   0000000000000000  x5   0000000000000000  x6   0000000000000000  x7   0000000000000000
+01-01 00:02:46.857   881   881 F DEBUG   :     x8   ffffff8b7df89005  x9   00000074c13ff060  x10  0000000000000038  x11  00000074c13ff5b0
+01-01 00:02:46.857   881   881 F DEBUG   :     x12  0000000000000000  x13  ffffe6f84f9f71c0  x14  0000000000000008  x15  00000000000000b5
+01-01 00:02:46.857   881   881 F DEBUG   :     x16  00000074c1cf3838  x17  00000074c1ef2cf8  x18  00000074c19820c0  x19  00000074c13ff010
+01-01 00:02:46.857   881   881 F DEBUG   :     x20  00000074c19a2370  x21  0000007fde8fd550  x22  00000074c0ce8000  x23  0000000000000000
+01-01 00:02:46.857   881   881 F DEBUG   :     x24  0000000000000000  x25  00000074c212d030  x26  2416baaaf3b23fa6  x27  00000074c212d0b0
+01-01 00:02:46.858   881   881 F DEBUG   :     x28  00000074c212d030  x29  0000007fde8fd4f0  x30  00000074c1c97ec4
+01-01 00:02:46.858   881   881 F DEBUG   :     sp   0000007fde8fd060  pc   00000074c1c97f10  pstate 00000000a0000000
+01-01 00:02:47.216   881   881 F DEBUG   : 
+01-01 00:02:47.216   881   881 F DEBUG   : backtrace:
+01-01 00:02:47.217   881   881 F DEBUG   :     #00 pc 0000000000051f10  /system/lib64/libgui.so (android::BufferQueueConsumer::acquireBuffer(android::BufferItem*, long, unsigned long)+196)
+01-01 00:02:47.217   881   881 F DEBUG   :     #01 pc 000000000005c060  /system/lib64/libgui.so (android::ConsumerBase::acquireBufferLocked(android::BufferItem*, long, unsigned long)+40)
+01-01 00:02:47.217   881   881 F DEBUG   :     #02 pc 00000000000373f0  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.217   881   881 F DEBUG   :     #03 pc 00000000000375c4  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.217   881   881 F DEBUG   :     #04 pc 0000000000051768  /system/lib64/libgui.so (android::BufferQueue::ProxyConsumerListener::onFrameAvailable(android::BufferItem const&)+84)
+01-01 00:02:47.218   881   881 F DEBUG   :     #05 pc 00000000000590bc  /system/lib64/libgui.so (android::BufferQueueProducer::queueBuffer(int, android::IGraphicBufferProducer::QueueBufferInput const&, android::IGraphicBufferProducer::QueueBufferOutput*)+2544)
+01-01 00:02:47.218   881   881 F DEBUG   :     #06 pc 0000000000071794  /system/lib64/libgui.so (android::Surface::queueBuffer(ANativeWindowBuffer*, int)+964)
+01-01 00:02:47.219   881   881 F DEBUG   :     #07 pc 0000000000012148  /system/lib64/egl/libEGL_emulation.so (egl_window_surface_t::swapBuffers()+108)
+01-01 00:02:47.219   881   881 F DEBUG   :     #08 pc 000000000000ff1c  /system/lib64/egl/libEGL_emulation.so (eglSwapBuffers+496)
+01-01 00:02:47.219   881   881 F DEBUG   :     #09 pc 000000000002ad58  /system/lib64/libEGL.so (eglSwapBuffersWithDamageKHR+548)
+01-01 00:02:47.219   881   881 F DEBUG   :     #10 pc 000000000001c850  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.220   881   881 F DEBUG   :     #11 pc 000000000002d684  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.220   881   881 F DEBUG   :     #12 pc 000000000002bebc  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.220   881   881 F DEBUG   :     #13 pc 000000000002af2c  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.260   881   881 F DEBUG   :     #14 pc 000000000002ad08  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.261   881   881 F DEBUG   :     #15 pc 000000000001ae1c  /system/lib64/libutils.so (android::Looper::pollInner(int)+312)
+01-01 00:02:47.261   881   881 F DEBUG   :     #16 pc 000000000001b154  /system/lib64/libutils.so (android::Looper::pollOnce(int, int*, int*, void**)+80)
+01-01 00:02:47.262   881   881 F DEBUG   :     #17 pc 0000000000027260  /system/lib64/libsurfaceflinger.so
+01-01 00:02:47.262   881   881 F DEBUG   :     #18 pc 000000000002a80c  /system/lib64/libsurfaceflinger.so (android::SurfaceFlinger::run()+20)
+01-01 00:02:47.262   881   881 F DEBUG   :     #19 pc 0000000000001164  /system/bin/surfaceflinger
+01-01 00:02:47.262   881   881 F DEBUG   :     #20 pc 000000000001bc98  /system/lib64/libc.so (__libc_init+100)
+01-01 00:02:47.262   881   881 F DEBUG   :     #21 pc 0000000000000f9c  /system/bin/surfaceflinger
+01-01 00:02:52.538   881   881 F DEBUG   : 
+01-01 00:02:52.538   881   881 F DEBUG   : Tombstone written to: /data/tombstones/tombstone_04

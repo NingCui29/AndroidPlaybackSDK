@@ -1,0 +1,2 @@
+PASS h264 3 changing SPS dimensions, lengths 1/2/4, configuration + AU, malformed/truncated
+PASS hevc 3 changing SPS dimensions, lengths 1/2/4, configuration + AU, malformed/truncated

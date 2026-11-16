@@ -1,0 +1,1 @@
+Waiting for PCM and geometry runner 16388, started 2026-11-13T16:37:25.2506681+08:00; then surface 10 rounds and current-candidate format matrix.

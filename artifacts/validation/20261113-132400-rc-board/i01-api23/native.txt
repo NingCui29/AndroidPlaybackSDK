@@ -1,0 +1,6 @@
+WARNING: linker: /data/local/tmp/apsdk-range-262c264b/sparse_range: unsupported flags DT_FLAGS_1=0x8000001
+
+PASS start=2147483624 end=2147483672 bytes=48 hostCursor=17
+
+PASS start=4294967272 end=4294967320 bytes=48 hostCursor=17
+

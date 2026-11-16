@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.22)
+project(companion LANGUAGES C)
+add_library(companion SHARED companion.c)
+if(DUPLICATE_NAME)
+    set_target_properties(companion PROPERTIES OUTPUT_NAME avcodec)
+else()
+    set_target_properties(companion PROPERTIES OUTPUT_NAME playback_companion)
+endif()

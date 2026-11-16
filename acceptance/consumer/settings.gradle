@@ -1,0 +1,34 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        if (providers.gradleProperty('sdkMode').getOrElse('aar') == 'maven') {
+            exclusiveContent {
+                forRepository {
+                    maven {
+                        name = 'PlaybackCandidate'
+                        url = uri(providers.gradleProperty('sdkRepository').get())
+                        allowInsecureProtocol = url.scheme == 'http' && url.host in ['127.0.0.1', 'localhost']
+                        if (providers.gradleProperty('readonlyIdentity').isPresent()) {
+                            credentials {
+                                username = providers.environmentVariable('PLAYBACK_MAVEN_USER').get()
+                                password = providers.environmentVariable('PLAYBACK_MAVEN_PASSWORD').get()
+                            }
+                        }
+                        metadataSources {
+                            if (providers.gradleProperty('sdkMetadata').getOrElse('module') == 'pom') {
+                                mavenPom()
+                                ignoreGradleMetadataRedirection()
+                            } else {
+                                gradleMetadata()
+                            }
+                        }
+                    }
+                }
+                filter { includeGroup 'com.cn.media' }
+            }
+        }
+        google { content { excludeGroup 'com.cn.media' } }
+        mavenCentral { content { excludeGroup 'com.cn.media' } }
+    }
+}
+rootProject.name = 'PlaybackAcceptanceHost'

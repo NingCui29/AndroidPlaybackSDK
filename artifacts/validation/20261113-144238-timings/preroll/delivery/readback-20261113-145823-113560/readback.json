@@ -1,0 +1,52 @@
+{
+  "channel": "loopback",
+  "coordinate": "com.cn.media:android-playback-sdk:1.0.0-rc.1",
+  "repository": "http://127.0.0.1:31044",
+  "approvalRecordedInCandidate": "pending",
+  "publishedByThisTool": false,
+  "expectedSha256": {
+    "android-playback-sdk-1.0.0-rc.1-javadoc.jar": "d5e6cb6829aacaf0e728f322ecfc52e052c50d3f855c99cb4e01d3de135097cf",
+    "android-playback-sdk-1.0.0-rc.1-sources.jar": "6ad5867d1d55d520fd19d94957966635cb6f1ca20333002f8df2c1964d5bdf49",
+    "android-playback-sdk-1.0.0-rc.1.aar": "e3a45109770d94c5c626defcca53c6ab8a8391433fa0b62cbb8ca57ea0f4aa01",
+    "android-playback-sdk-1.0.0-rc.1.module": "6aaae84f23e9e87fd3eed389e91bd70f414412f5284a540fa61be9f58bf4207c",
+    "android-playback-sdk-1.0.0-rc.1.pom": "d59697e00e189ab9f3cfc2ac3abd94069fc88f938ca80a3c1aa1c1d556a7474d"
+  },
+  "startedUTC": "2026-11-13T06:58:23.391967+00:00",
+  "polls": [
+    {
+      "elapsedSeconds": 0.0,
+      "files": {
+        "android-playback-sdk-1.0.0-rc.1-javadoc.jar": {
+          "httpStatus": 200,
+          "sha256": "d5e6cb6829aacaf0e728f322ecfc52e052c50d3f855c99cb4e01d3de135097cf",
+          "bytes": 144160,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1-sources.jar": {
+          "httpStatus": 200,
+          "sha256": "6ad5867d1d55d520fd19d94957966635cb6f1ca20333002f8df2c1964d5bdf49",
+          "bytes": 139544,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.aar": {
+          "httpStatus": 404
+        },
+        "android-playback-sdk-1.0.0-rc.1.module": {
+          "httpStatus": 200,
+          "sha256": "6aaae84f23e9e87fd3eed389e91bd70f414412f5284a540fa61be9f58bf4207c",
+          "bytes": 2779,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.pom": {
+          "httpStatus": 200,
+          "sha256": "d59697e00e189ab9f3cfc2ac3abd94069fc88f938ca80a3c1aa1c1d556a7474d",
+          "bytes": 1144,
+          "matched": true
+        }
+      }
+    }
+  ],
+  "outcome": "PENDING_VISIBILITY",
+  "rehearsalFault": "missing",
+  "expectationMatched": true
+}

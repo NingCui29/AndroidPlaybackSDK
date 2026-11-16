@@ -1,0 +1,13 @@
+INSTRUMENTATION_STATUS: trace=q04-1794388859274
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_RESULT: failure=java.lang.AssertionError: Unexpected interruption: Unexpected player error OUTPUT_LOST
+	at com.cn.media.playback.Q04Checks.require(Q04Checks.java:32)
+	at com.cn.media.playback.Q04Checks.access$300(Q04Checks.java:16)
+	at com.cn.media.playback.Q04Checks$Session.awaitEnd(Q04Checks.java:139)
+	at com.cn.media.playback.Q04Checks.playRound(Q04Checks.java:175)
+	at com.cn.media.playback.Q04Checks.run(Q04Checks.java:62)
+	at com.cn.media.playback.InputChecks.onStart(InputChecks.java:36)
+	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2278)
+
+INSTRUMENTATION_RESULT: trace=q04-1794388859274
+INSTRUMENTATION_CODE: 0

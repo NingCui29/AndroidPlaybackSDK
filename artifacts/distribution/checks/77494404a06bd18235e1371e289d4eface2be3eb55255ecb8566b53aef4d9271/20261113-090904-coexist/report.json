@@ -1,0 +1,17 @@
+{
+  "aar": "android-playback-sdk-1.0.0-rc.1.aar",
+  "aarSha256": "77494404a06bd18235e1371e289d4eface2be3eb55255ecb8566b53aef4d9271",
+  "distinctLibraries": [
+    "lib/arm64-v8a/libavcodec.so",
+    "lib/arm64-v8a/libavformat.so",
+    "lib/arm64-v8a/libavutil.so",
+    "lib/arm64-v8a/libplayback.so",
+    "lib/arm64-v8a/libplayback_companion.so",
+    "lib/arm64-v8a/libswresample.so",
+    "lib/arm64-v8a/libswscale.so"
+  ],
+  "apkSha256": "c068d6c3b33a53b2d7ed8963ac35fb9ed0e53904179fae8a30a8fc897e3d8f2a",
+  "duplicateRejected": true,
+  "duplicate": "lib/arm64-v8a/libavcodec.so",
+  "deviceExecution": "separate check"
+}

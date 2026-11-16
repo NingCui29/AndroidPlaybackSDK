@@ -1,0 +1,9 @@
+{
+  "candidate": "77494404a06bd18235e1371e289d4eface2be3eb55255ecb8566b53aef4d9271",
+  "filesCompared": 58,
+  "difference": [
+    "sdk/src/main/cpp/session_output.c",
+    "sdk/src/main/java/com/cn/media/playback/PlaybackOutput.java"
+  ],
+  "sourceBootstrapFromCheckout": []
+}

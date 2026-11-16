@@ -1,0 +1,25 @@
+{
+  "source": "V02.mov",
+  "sourceSHA256": "cc01b2b2272ff80b6bebc33332813217dc2de278c909246f72e91fe54d760fd6",
+  "files": {
+    "bad-audio.mov": {
+      "failedTrackIndices": [
+        1
+      ],
+      "sha256": "bfd1abf34afa85b34fb420e5002cea946c64e645352b4ac519e3bb8915f40c1e"
+    },
+    "bad-video.mov": {
+      "failedTrackIndices": [
+        0
+      ],
+      "sha256": "c0bed9348aa32c0b6e2860e1d86791ef7adaa390adcc1d8f2c62986bdc28cf06"
+    },
+    "bad-both.mov": {
+      "failedTrackIndices": [
+        0,
+        1
+      ],
+      "sha256": "2ab887772c9524824bba512474b1720c9e5342ba4c16e1dfe074499b4df75a41"
+    }
+  }
+}

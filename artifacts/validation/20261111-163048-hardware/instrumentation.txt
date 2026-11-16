@@ -1,0 +1,14 @@
+INSTRUMENTATION_RESULT: V01.mp4=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V03.mp4=c2.rk.hevc.decoder
+INSTRUMENTATION_RESULT: V10.ts=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: diagnostic0=hardwareMissingConfiguration/DECODER_INIT//0
+INSTRUMENTATION_RESULT: diagnostic1=render/DECODER_INIT//-1313429320
+INSTRUMENTATION_RESULT: failure=java.lang.AssertionError: Request 25 status=FAILED error=DECODER_INIT/-1313429320
+	at com.cn.media.playback.PlayerChecks.check(PlayerChecks.java:53)
+	at com.cn.media.playback.PlayerChecks.await(PlayerChecks.java:65)
+	at com.cn.media.playback.PlayerChecks.ok(PlayerChecks.java:69)
+	at com.cn.media.playback.PlayerChecks.hardware(PlayerChecks.java:246)
+	at com.cn.media.playback.InputChecks.onStart(InputChecks.java:40)
+	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2278)
+
+INSTRUMENTATION_CODE: 0

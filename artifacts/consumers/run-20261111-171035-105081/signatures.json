@@ -1,0 +1,98 @@
+{
+  "aar-java": {
+    "sdkSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+    "packages": {
+      "host.apk": {
+        "sha256": "e5e5b0e0ef67020396a533b31b91fcfc144df2d8356d15e9f0a5c081134ebd38",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      }
+    },
+    "minSdk": 23,
+    "requestedPermissions": [],
+    "r8PlayerName": "com.cn.media.playback.e0"
+  },
+  "aar-kotlin": {
+    "sdkSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+    "packages": {
+      "host.apk": {
+        "sha256": "9b19de0cc71926f093b77d5e718b465643624d9db7f2f4eb1879c06e1aa1041c",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      }
+    },
+    "minSdk": 23,
+    "requestedPermissions": [],
+    "r8PlayerName": "com.cn.media.playback.e0"
+  },
+  "offline-java": {
+    "sdkSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+    "packages": {
+      "host.apk": {
+        "sha256": "fc8b34d6c3e6862b58b46e438ab454fe45b84ebf4ec19dda3906fbeea0e41ffb",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      }
+    },
+    "minSdk": 23,
+    "requestedPermissions": [],
+    "r8PlayerName": "com.cn.media.playback.e0"
+  },
+  "offline-kotlin": {
+    "sdkSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+    "packages": {
+      "host.apk": {
+        "sha256": "a6813c7b921c8255d26114b375248a51654c04e87b39b7534d489981feb939bd",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      }
+    },
+    "minSdk": 23,
+    "requestedPermissions": [],
+    "r8PlayerName": "com.cn.media.playback.e0"
+  },
+  "http-module-java": {
+    "sdkSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+    "packages": {
+      "host.apk": {
+        "sha256": "b0a77993be40d7174950447fa12f6133b2615466d857706ec5a6798e6c13b835",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      },
+      "base-arm64_v8a.apk": {
+        "sha256": "f0985dddeac0b1be22033fd2b973dcb05c8071f77c1eff971598a139969d3e2d",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      },
+      "base-master.apk": {
+        "sha256": "cbc87f47d478037740423c64edf17c7b3c07a7f32d69369a611804740ede90cc",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      },
+      "base-master_2.apk": {
+        "sha256": "f8a6167a6eea389e906eedb122435a1400e49a2c735d6de154f7aded4e5b540b",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      }
+    },
+    "minSdk": 23,
+    "requestedPermissions": [],
+    "r8PlayerName": "com.cn.media.playback.e0"
+  },
+  "http-pom-kotlin": {
+    "sdkSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+    "packages": {
+      "host.apk": {
+        "sha256": "a9f926fd7d27e5c29744411c86f4a7d0bf0e4633bd44e2c7d18aa92354d957f4",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      },
+      "base-arm64_v8a.apk": {
+        "sha256": "4da8f1a866199d466c26845bdc0ead5ad14b1f642a5a80836c78356feb8a0817",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      },
+      "base-master.apk": {
+        "sha256": "ec89be80083deeaf0d821ffe5d15d0b5ed9fcff216e7c57f70c315704452c9d1",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      },
+      "base-master_2.apk": {
+        "sha256": "8b03029dea1a5526d1eeac0249953731fa128cddff630e5d49e1688949db838d",
+        "signerSHA256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c"
+      }
+    },
+    "minSdk": 23,
+    "requestedPermissions": [],
+    "r8PlayerName": "com.cn.media.playback.e0"
+  }
+}

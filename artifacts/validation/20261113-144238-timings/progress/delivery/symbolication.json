@@ -1,0 +1,38 @@
+{
+  "libavcodec.so": {
+    "buildId": "ce87cd43135383158ab73f60609f8463ebfc78b4",
+    "address": "00000000002f2474",
+    "function": "MPV_motion_lowres",
+    "source": "C:/Users/Work/AppData/Local/Temp/apsdk-config-839a9f62a2b149ec82d4ee1d1356fb08/ffmpeg-8.1.3/libavcodec/mpegvideo_dec.c:731"
+  },
+  "libavformat.so": {
+    "buildId": "4692de87f440996a3b31b2790480855599f0280b",
+    "address": "000000000004cb08",
+    "function": "aac_decoder_config",
+    "source": "C:/Users/Work/AppData/Local/Temp/apsdk-config-839a9f62a2b149ec82d4ee1d1356fb08/ffmpeg-8.1.3/libavformat/iamf_parse.c:62"
+  },
+  "libavutil.so": {
+    "buildId": "a18e1d921a0b5822d4980065424e12d569e6a69b",
+    "address": "000000000004b558",
+    "function": "AV_CRC_16_ANSI_LE_init_table_once",
+    "source": "C:/Users/Work/AppData/Local/Temp/apsdk-config-839a9f62a2b149ec82d4ee1d1356fb08/ffmpeg-8.1.3/libavutil/crc.c:343"
+  },
+  "libplayback.so": {
+    "buildId": "5b3595fe85d0088503ccc32fa775baedf03364e6",
+    "address": "000000000000c18c",
+    "function": "Java_com_cn_media_playback_AudioTrackProbe_create",
+    "source": "D:/Developer/WorkSpace/AndroidPlaybackSDK/sdk/src/main/cpp/audio_track_probe.c:153"
+  },
+  "libswresample.so": {
+    "buildId": "b3b4f856113561700a9062c65da380a002031069",
+    "address": "000000000000f098",
+    "function": "auto_matrix",
+    "source": "C:/Users/Work/AppData/Local/Temp/apsdk-config-839a9f62a2b149ec82d4ee1d1356fb08/ffmpeg-8.1.3/libswresample/rematrix.c:439"
+  },
+  "libswscale.so": {
+    "buildId": "04d04c964205511d841208b711108c2a4748f48b",
+    "address": "00000000000dc418",
+    "function": "Rgb16ToPlanarRgb16Wrapper",
+    "source": "C:/Users/Work/AppData/Local/Temp/apsdk-config-839a9f62a2b149ec82d4ee1d1356fb08/ffmpeg-8.1.3/libswscale/swscale_unscaled.c:893"
+  }
+}

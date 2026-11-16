@@ -1,0 +1,89 @@
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-0=detachMs=21.956086 firstSubmitMs=21.938586 version=3 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-1=detachMs=11.90321 firstSubmitMs=15.852376 version=5 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-2=detachMs=12.238043 firstSubmitMs=10.848834 version=7 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-3=detachMs=14.15021 firstSubmitMs=41.164087 version=9 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-4=detachMs=8.323 firstSubmitMs=7.399293 version=11 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-5=detachMs=14.769419 firstSubmitMs=11.220709 version=13 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-6=detachMs=13.629293 firstSubmitMs=42.369254 version=15 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-7=detachMs=11.261835 firstSubmitMs=15.407876 version=17 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-8=detachMs=14.300709 firstSubmitMs=8.019959 version=19 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-9=detachMs=8.250959 firstSubmitMs=9.123042 version=21 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-bind-summary=detachP95=21.956086 submitP95=42.369254
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-0=detachMs=15.896419 firstSubmitMs=370.631663 version=3 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-1=detachMs=7.254917 firstSubmitMs=307.319864 version=5 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-2=detachMs=10.163418 firstSubmitMs=242.882524 version=7 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-3=detachMs=6.848625 firstSubmitMs=212.341521 version=9 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-4=detachMs=11.106376 firstSubmitMs=82.058967 version=11 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-5=detachMs=7.771459 firstSubmitMs=2.994834 version=13 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-6=detachMs=14.796252 firstSubmitMs=166.431433 version=15 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-7=detachMs=12.66446 firstSubmitMs=336.758659 version=17 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-8=detachMs=13.238459 firstSubmitMs=184.370685 version=19 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-9=detachMs=12.091627 firstSubmitMs=388.871914 version=21 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V01.mp4-HARDWARE_ONLY-resume-summary=detachP95=15.896419 submitP95=388.871914
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-0=detachMs=41.881879 firstSubmitMs=51.858047 version=3 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-1=detachMs=19.15871 firstSubmitMs=58.862131 version=5 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-2=detachMs=34.726712 firstSubmitMs=63.459965 version=7 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-3=detachMs=12.379793 firstSubmitMs=56.764172 version=9 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-4=detachMs=16.267127 firstSubmitMs=58.445047 version=11 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-5=detachMs=16.354335 firstSubmitMs=49.38938 version=13 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-6=detachMs=22.09521 firstSubmitMs=80.058717 version=15 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-7=detachMs=10.052585 firstSubmitMs=82.790466 version=17 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-8=detachMs=0.922541 firstSubmitMs=69.483466 version=19 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-9=detachMs=19.237752 firstSubmitMs=67.246965 version=21 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-bind-summary=detachP95=41.881879 submitP95=82.790466
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-0=detachMs=43.161129 firstSubmitMs=134.971972 version=3 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-1=detachMs=13.843668 firstSubmitMs=222.968397 version=5 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-2=detachMs=11.576543 firstSubmitMs=175.326393 version=7 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-3=detachMs=21.026835 firstSubmitMs=391.961248 version=9 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-4=detachMs=37.71542 firstSubmitMs=260.978401 version=11 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-5=detachMs=46.166754 firstSubmitMs=260.556651 version=13 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-6=detachMs=9.40596 firstSubmitMs=313.183823 version=15 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-7=detachMs=34.370295 firstSubmitMs=243.744692 version=17 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-8=detachMs=20.590502 firstSubmitMs=298.211405 version=19 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-9=detachMs=31.870128 firstSubmitMs=307.208448 version=21 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-resume-summary=detachP95=46.166754 submitP95=391.961248
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-0=detachMs=14.183752 firstSubmitMs=37.72417 version=3 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-1=detachMs=8.392709 firstSubmitMs=31.662753 version=5 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-2=detachMs=12.817876 firstSubmitMs=30.434253 version=7 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-3=detachMs=13.509418 firstSubmitMs=20.681794 version=9 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-4=detachMs=10.185584 firstSubmitMs=15.869876 version=11 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-5=detachMs=7.697084 firstSubmitMs=36.970796 version=13 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-6=detachMs=10.945084 firstSubmitMs=29.155587 version=15 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-7=detachMs=8.450459 firstSubmitMs=24.628628 version=17 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-8=detachMs=10.812084 firstSubmitMs=22.796669 version=19 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-9=detachMs=7.359626 firstSubmitMs=21.428753 version=21 from=bind backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-bind-summary=detachP95=14.183752 submitP95=37.72417
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-0=detachMs=13.311377 firstSubmitMs=32.989545 version=3 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-1=detachMs=9.527876 firstSubmitMs=30.910836 version=5 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-2=detachMs=17.688419 firstSubmitMs=27.025253 version=7 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-3=detachMs=9.527292 firstSubmitMs=25.224502 version=9 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-4=detachMs=10.282709 firstSubmitMs=22.268169 version=11 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-5=detachMs=12.392626 firstSubmitMs=19.838586 version=13 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-6=detachMs=9.334209 firstSubmitMs=14.974168 version=15 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-7=detachMs=7.446834 firstSubmitMs=13.00396 version=17 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-8=detachMs=15.029877 firstSubmitMs=11.126501 version=19 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-9=detachMs=10.785542 firstSubmitMs=9.966251 version=21 from=resume backend=c2.rk.avc.decoder
+INSTRUMENTATION_RESULT: V11.mp4-HARDWARE_ONLY-resume-summary=detachP95=17.688419 submitP95=32.989545
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-0=detachMs=39.680962 firstSubmitMs=66.232548 version=3 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-1=detachMs=29.830211 firstSubmitMs=37.174671 version=5 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-2=detachMs=14.785169 firstSubmitMs=41.25567 version=7 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-3=detachMs=14.250251 firstSubmitMs=38.735379 version=9 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-4=detachMs=11.733751 firstSubmitMs=42.253171 version=11 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-5=detachMs=32.854211 firstSubmitMs=37.150754 version=13 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-6=detachMs=10.629502 firstSubmitMs=38.939254 version=15 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-7=detachMs=22.573252 firstSubmitMs=38.779712 version=17 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-8=detachMs=17.275418 firstSubmitMs=38.329671 version=19 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-9=detachMs=24.440794 firstSubmitMs=37.434254 version=21 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-bind-summary=detachP95=39.680962 submitP95=66.232548
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-0=detachMs=0.919042 firstSubmitMs=37.726504 version=3 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-1=detachMs=21.42671 firstSubmitMs=36.375504 version=5 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-2=detachMs=42.380921 firstSubmitMs=50.954172 version=7 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-3=detachMs=25.261544 firstSubmitMs=37.501629 version=9 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-4=detachMs=20.790002 firstSubmitMs=41.06492 version=11 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-5=detachMs=14.228959 firstSubmitMs=38.597129 version=13 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-6=detachMs=12.279751 firstSubmitMs=38.792254 version=15 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-7=detachMs=9.26421 firstSubmitMs=35.966295 version=17 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-8=detachMs=37.661462 firstSubmitMs=38.529753 version=19 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-9=detachMs=13.761418 firstSubmitMs=39.119796 version=21 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V11.mp4-SOFTWARE_ONLY-resume-summary=detachP95=42.380921 submitP95=50.954172
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,4 @@
+INFO         | Android emulator version 36.6.11.0 (build_id 15507667) (CL:N/A)
+INFO         | Graphics backend: gfxstream
+INFO         | Found systemPath C:\Users\Work\AppData\Local\Android\Sdk\system-images\android-23\default\arm64-v8a\
+FATAL        | QEMU2 emulator does not support arm64 CPU architecture

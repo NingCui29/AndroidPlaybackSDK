@@ -1,0 +1,3 @@
+group,round,cycle,phase,monoMs,event,number,value,detail
+q04Realtime,1,1,playing,8902241,cycleStart,600000,28800000,V01.mp4
+q04Realtime,1,1,playing,9192473,failure,0,0,java.lang.AssertionError: Unexpected interruption: Unexpected player error OUTPUT_LOST

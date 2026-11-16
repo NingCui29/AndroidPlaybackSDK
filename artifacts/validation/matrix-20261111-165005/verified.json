@@ -1,0 +1,21 @@
+{
+  "passed": 141,
+  "groups": {
+    "file/AUTO": 19,
+    "file/SOFTWARE_ONLY": 19,
+    "file/HARDWARE_ONLY": 9,
+    "uri/AUTO": 19,
+    "uri/SOFTWARE_ONLY": 19,
+    "uri/HARDWARE_ONLY": 9,
+    "fd/AUTO": 19,
+    "fd/SOFTWARE_ONLY": 19,
+    "fd/HARDWARE_ONLY": 9
+  },
+  "testApkSHA256": "943aad5c12d64916a7d0759cd6ff0eee408073e7fc35a951ccae8008ce05c58a",
+  "device": [
+    "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261111.0441:userdebug/release-keys",
+    "API 32",
+    "ABI arm64-v8a",
+    "page size 4096"
+  ]
+}

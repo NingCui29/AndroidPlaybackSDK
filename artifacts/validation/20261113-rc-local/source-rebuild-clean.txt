@@ -1,0 +1,78 @@
+Configuration on demand is an incubating feature.
+
+> Configure project :sdk
+WARNING: The option 'android.enableBuildCache' is deprecated.
+The current default is 'false'.
+It was removed in version 7.0 of the Android Gradle plugin.
+The Android-specific build caches were superseded by the Gradle build cache (https://docs.gradle.org/current/userguide/build_cache.html).
+
+> Task :sdk:externalNativeBuildCleanDebug
+
+> Task :sdk:externalNativeBuildCleanRelease
+Clean playback-arm64-v8a
+
+> Task :sdk:clean
+> Task :sdk:preBuild UP-TO-DATE
+> Task :sdk:preReleaseBuild UP-TO-DATE
+> Task :sdk:checkReleaseAarMetadata
+> Task :sdk:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :sdk:buildCMakeRelWithDebInfo[arm64-v8a]
+> Task :sdk:mergeReleaseJniLibFolders
+> Task :sdk:generateReleaseResValues
+> Task :sdk:extractDeepLinksForAarRelease UP-TO-DATE
+> Task :sdk:generateReleaseResources
+> Task :sdk:mergeReleaseNativeLibs
+> Task :sdk:packageReleaseResources
+> Task :sdk:processReleaseNavigationResources
+> Task :sdk:mergeReleaseShaders
+> Task :sdk:compileReleaseShaders NO-SOURCE
+> Task :sdk:generateReleaseAssets UP-TO-DATE
+> Task :sdk:mergeReleaseAssets
+> Task :sdk:prepareLintJarForPublish UP-TO-DATE
+> Task :sdk:javaPreCompileRelease
+> Task :sdk:prepareReleaseArtProfile UP-TO-DATE
+> Task :sdk:processReleaseJavaRes
+> Task :sdk:mapReleaseSourceSetPaths
+> Task :sdk:writeReleaseAarMetadata
+> Task :sdk:mergeReleaseJavaResource
+> Task :sdk:parseReleaseLocalResources
+> Task :sdk:mergeReleaseResources
+> Task :sdk:extractProguardFiles
+> Task :sdk:preReleaseUnitTestBuild UP-TO-DATE
+> Task :sdk:processReleaseManifest
+> Task :sdk:writeReleaseLintModelMetadata
+> Task :sdk:stripReleaseDebugSymbols
+> Task :sdk:generateReleaseRFile
+> Task :sdk:copyReleaseJniLibsProjectAndLocalJars
+> Task :sdk:extractReleaseAnnotations
+> Task :sdk:verifyReleaseResources
+
+> Task :sdk:compileReleaseJavaWithJavac
+ע: C:\Users\Work\AppData\Local\Temp\apsdk-20261113-03b29191-source\sdk\src\main\java\com\cn\media\playback\HardwareVideo.javaʹ�û򸲸����ѹ�ʱ�� API��
+ע: �й���ϸ��Ϣ, ��ʹ�� -Xlint:deprecation ���±��롣
+
+> Task :sdk:mergeReleaseGeneratedProguardFiles UP-TO-DATE
+> Task :sdk:mergeReleaseConsumerProguardFiles
+> Task :sdk:syncReleaseLibJars
+> Task :sdk:bundleReleaseAar
+> Task :sdk:assembleRelease
+> Task :sdk:generateReleaseLintReportModel
+> Task :sdk:bundleReleaseLocalLintAar
+> Task :sdk:bundleLibRuntimeToJarRelease
+> Task :sdk:createFullJarRelease
+> Task :sdk:generateReleaseUnitTestLintModel
+> Task :sdk:lintAnalyzeReleaseUnitTest
+> Task :sdk:lintAnalyzeRelease
+> Task :sdk:lintReportRelease
+> Task :sdk:lintRelease
+
+[Incubating] Problems report is available at: file:///C:/Users/Work/AppData/Local/Temp/apsdk-20261113-03b29191-source/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 17s
+46 actionable tasks: 42 executed, 4 up-to-date

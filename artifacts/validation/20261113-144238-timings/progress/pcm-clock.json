@@ -1,0 +1,9 @@
+{
+  "aarSha256": "e271c519539854850993c5de5e927b34cfb1ab516a544d5dc1d264b05e4674b8",
+  "testSha256": "e9350376e7e6020a069211a47fac7bf76e15b2e57bac47dc454fe47cbf2c07d3",
+  "checks": [
+    "PASS extended frame count across 2^32, replaced boundary and old pending segment cleared",
+    "PASS forward/backward PCM boundaries, queued jumps, 48/44.1 kHz track handoff"
+  ],
+  "scope": "Host JVM, extended frame counts; platform head not exercised"
+}

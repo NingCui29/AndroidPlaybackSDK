@@ -1,0 +1,352 @@
+{
+  "cases": {
+    "aar-java": {
+      "outcome": "PASS",
+      "language": "java",
+      "sdkSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+      "source": "C:\\Users\\Work\\.gradle\\ap-mg8j581s\\direct\\android-playback-sdk-1.0.0-rc.1.aar",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "3c5609ced0556d94797a7a9fbb96e7a7433cca2d41d00765e9cb2fb039f7da7c",
+        "mapping.txt": "b6767d962e2b7923ff428c49447584bff37d8766b542a4b73fe08a6d37c6b268",
+        "merged-manifest.xml": "098fa4b48667d112a26f25ac5582f39e3386f38cc92de6b2b767fad160ac9ee2"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": []
+    },
+    "aar-kotlin": {
+      "outcome": "PASS",
+      "language": "kotlin",
+      "sdkSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+      "source": "C:\\Users\\Work\\.gradle\\ap-mg8j581s\\direct\\android-playback-sdk-1.0.0-rc.1.aar",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "d29d5a82591685a2b85c7d9ddd8f24aac0812ceb5b64be841adbdbd65b8361a8",
+        "mapping.txt": "eac851aba691b1a1ed5202a4ee399ef215679feae2c2eb20bf41c1742e735025",
+        "merged-manifest.xml": "676faa357aa17abe90bf4702991d85cf8cf5f767f44645b070155dc5319579f9"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": []
+    },
+    "offline-java": {
+      "outcome": "PASS",
+      "language": "java",
+      "sdkSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+      "source": "file:///C:/Users/Work/.gradle/ap-mg8j581s/offline",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "06ef81f56a1d11da3a93c8f3801b6814062b5649acc874c3e92857d1e992698a",
+        "mapping.txt": "b6767d962e2b7923ff428c49447584bff37d8766b542a4b73fe08a6d37c6b268",
+        "merged-manifest.xml": "098fa4b48667d112a26f25ac5582f39e3386f38cc92de6b2b767fad160ac9ee2"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": []
+    },
+    "offline-kotlin": {
+      "outcome": "PASS",
+      "language": "kotlin",
+      "sdkSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+      "source": "file:///C:/Users/Work/.gradle/ap-mg8j581s/offline",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "dc2b0a2fc31c585c559b08bc8e67cb238524128a20a5f130a2790788f6c0deb4",
+        "mapping.txt": "eac851aba691b1a1ed5202a4ee399ef215679feae2c2eb20bf41c1742e735025",
+        "merged-manifest.xml": "676faa357aa17abe90bf4702991d85cf8cf5f767f44645b070155dc5319579f9"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": []
+    },
+    "http-module-java": {
+      "outcome": "PASS",
+      "language": "java",
+      "sdkSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+      "source": "http://127.0.0.1:18449/module",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "df55d7f3841dd470f9c8da2f08ff80c0c099466a366c8043c5e6d206f38b6b82",
+        "mapping.txt": "b6767d962e2b7923ff428c49447584bff37d8766b542a4b73fe08a6d37c6b268",
+        "merged-manifest.xml": "098fa4b48667d112a26f25ac5582f39e3386f38cc92de6b2b767fad160ac9ee2",
+        "host.aab": "09bd7517ad7225a0191216ba0b59b22f8059dc093aa29fb718504d9a4267a31d",
+        "host.apks": "44832f6bde8248d9ed106c4b1e73964b96f20d563525f75fe3aa775907a31bc5"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": [
+        "splits/base-arm64_v8a.apk",
+        "splits/base-master.apk",
+        "splits/base-master_2.apk"
+      ],
+      "aabSplitNative": {
+        "splits/base-arm64_v8a.apk": {
+          "arm64-v8a/libavcodec.so": {
+            "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+            "zipDataOffset": 16384
+          },
+          "arm64-v8a/libavformat.so": {
+            "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+            "zipDataOffset": 4440064
+          },
+          "arm64-v8a/libavutil.so": {
+            "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+            "zipDataOffset": 5062656
+          },
+          "arm64-v8a/libplayback.so": {
+            "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+            "zipDataOffset": 5783552
+          },
+          "arm64-v8a/libswresample.so": {
+            "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+            "zipDataOffset": 5849088
+          },
+          "arm64-v8a/libswscale.so": {
+            "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+            "zipDataOffset": 5947392
+          }
+        }
+      }
+    },
+    "http-pom-kotlin": {
+      "outcome": "PASS",
+      "language": "kotlin",
+      "sdkSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+      "source": "http://127.0.0.1:18449/pom",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "cb21b8d0778f352cdec8e5c411377b9489653b2b3992c3d912143ba81b3a9a92",
+        "mapping.txt": "eac851aba691b1a1ed5202a4ee399ef215679feae2c2eb20bf41c1742e735025",
+        "merged-manifest.xml": "676faa357aa17abe90bf4702991d85cf8cf5f767f44645b070155dc5319579f9",
+        "host.aab": "d592043c420dcf30159d650f5f5c4121cbda77705ef862f900f1b1216360f46d",
+        "host.apks": "d4115771624d604b26c2e56b3e9b87c859f1c432d81da7972727bfbf1ee23be9"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": [
+        "splits/base-arm64_v8a.apk",
+        "splits/base-master.apk",
+        "splits/base-master_2.apk"
+      ],
+      "aabSplitNative": {
+        "splits/base-arm64_v8a.apk": {
+          "arm64-v8a/libavcodec.so": {
+            "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+            "zipDataOffset": 16384
+          },
+          "arm64-v8a/libavformat.so": {
+            "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+            "zipDataOffset": 4440064
+          },
+          "arm64-v8a/libavutil.so": {
+            "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+            "zipDataOffset": 5062656
+          },
+          "arm64-v8a/libplayback.so": {
+            "sha256": "16d0b7fac7c8af4ba50887c912dc1c7af06e35f599cd8d33397e12a86f122100",
+            "zipDataOffset": 5783552
+          },
+          "arm64-v8a/libswresample.so": {
+            "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+            "zipDataOffset": 5849088
+          },
+          "arm64-v8a/libswscale.so": {
+            "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+            "zipDataOffset": 5947392
+          }
+        }
+      }
+    },
+    "missing-aar": {
+      "outcome": "PASS",
+      "expectedFailure": "android-playback-sdk-1.0.0-rc.1.aar",
+      "gradleExit": 1,
+      "source": "file:///C:/Users/Work/.gradle/ap-mg8j581s/missing-aar/missing"
+    },
+    "native-collision": {
+      "outcome": "PASS",
+      "expectedFailure": "2 files found with path 'lib/arm64-v8a/libavutil.so'",
+      "gradleExit": 1,
+      "source": "file:///C:/Users/Work/.gradle/ap-mg8j581s/offline"
+    },
+    "http-401": {
+      "outcome": "PASS",
+      "expectedFailure": "401",
+      "gradleExit": 1,
+      "source": "http://127.0.0.1:18449/denied"
+    },
+    "http-404": {
+      "outcome": "PASS",
+      "expectedFailure": "Could not find",
+      "gradleExit": 1,
+      "source": "http://127.0.0.1:18449/missing"
+    },
+    "http-malformed": {
+      "outcome": "PASS",
+      "expectedFailure": "Could not parse module metadata",
+      "gradleExit": 1,
+      "source": "http://127.0.0.1:18449/broken"
+    }
+  },
+  "device": "not run",
+  "privateRepository": "not run",
+  "offlineZipSha256": "dff5656607b627d2844090dc60666df4c08c004a39f3d5e5cf976c9871c2f805",
+  "hostSourcesSha256": "56d9ab4e81b5261ae46d4bad11ba182c14a5c48f06c26301fb541ed8e319d1e7",
+  "javaVersion": "openjdk version \"17.0.17\" 2025-10-21\nOpenJDK Runtime Environment OpenLogic-OpenJDK (build 17.0.17+10-adhoc..jdk17u)\nOpenJDK 64-Bit Server VM OpenLogic-OpenJDK (build 17.0.17+10-adhoc..jdk17u, mixed mode, sharing)",
+  "coordinate": "com.cn.media:android-playback-sdk:1.0.0-rc.1",
+  "aarSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+  "toolchain": {
+    "gradle": "C:\\Users\\Work\\.gradle\\wrapper\\dists\\gradle-8.13-bin\\5xuhj0ry160q40clulazy9h7d\\gradle-8.13\\bin\\gradle.bat",
+    "agp": "8.13.0",
+    "kgp": "2.1.20",
+    "compileSdk": 35,
+    "javaHome": "C:/Program Files/Java/jdk-17.0.17.10",
+    "androidHome": "C:\\Users\\Work\\AppData\\Local\\Android\\Sdk"
+  },
+  "seedInventorySha256": "0248bdee6079802adfba8a2140382416500609c9b0d46a9b38e5c4230fcf5738"
+}

@@ -1,0 +1,11 @@
+{
+  "scope": "synthetic scorer controls only",
+  "cases": {
+    "complete": "PASS",
+    "missing": "REJECTED",
+    "duplicate": "REJECTED",
+    "latency": "FAIL",
+    "position": "FAIL",
+    "audio": "REJECTED"
+  }
+}

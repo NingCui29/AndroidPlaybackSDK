@@ -1,0 +1,10 @@
+INSTRUMENTATION_RESULT: V01.mp4=PASS uri HARDWARE_ONLY video=c2.rk.avc.decoder finalVideo=24 finalPCM=38399
+INSTRUMENTATION_RESULT: V02.mov=PASS uri HARDWARE_ONLY video=c2.rk.avc.decoder finalVideo=20 finalPCM=38399
+INSTRUMENTATION_RESULT: V03.mp4=PASS uri HARDWARE_ONLY video=c2.rk.hevc.decoder finalVideo=20 finalPCM=38399
+INSTRUMENTATION_RESULT: V04.mkv=PASS uri HARDWARE_ONLY video=c2.rk.hevc.decoder finalVideo=20 finalPCM=38384
+INSTRUMENTATION_RESULT: V05.mkv=PASS uri HARDWARE_ONLY video=c2.rk.avc.decoder finalVideo=20 finalPCM=38384
+INSTRUMENTATION_RESULT: V06.webm=PASS uri HARDWARE_ONLY video=c2.rk.vp8.decoder finalVideo=20 finalPCM=39360
+INSTRUMENTATION_RESULT: V07.webm=PASS uri HARDWARE_ONLY video=c2.rk.vp9.decoder finalVideo=20 finalPCM=38040
+INSTRUMENTATION_RESULT: V10.ts=PASS uri HARDWARE_ONLY video=c2.rk.avc.decoder finalVideo=21 finalPCM=38415
+INSTRUMENTATION_RESULT: V11.mp4=PASS uri HARDWARE_ONLY video=c2.rk.avc.decoder finalVideo=24 finalPCM=0
+INSTRUMENTATION_CODE: -1

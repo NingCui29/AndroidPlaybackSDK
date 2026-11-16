@@ -1,0 +1,39 @@
+{
+  "serial": "10.67.116.12:5555",
+  "apkSha256": "04a6adb828342eb3d60a834e65e2a3411ecb0077bbfc8e6b185379aa154d8427",
+  "policy": "AUTO",
+  "steps": [
+    {
+      "suite": "q04V01",
+      "round": 1,
+      "effectiveMediaMs": 7200000,
+      "cycles": 12,
+      "sample": "V01.mp4",
+      "sampleSha256": "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30"
+    },
+    {
+      "suite": "q04V01",
+      "round": 2,
+      "effectiveMediaMs": 7200000,
+      "cycles": 12,
+      "sample": "V01.mp4",
+      "sampleSha256": "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30"
+    },
+    {
+      "suite": "q04A03",
+      "round": 1,
+      "effectiveMediaMs": 7200000,
+      "cycles": 900,
+      "sample": "A03.flac",
+      "sampleSha256": "cac499a8b2aefe750f2a2df8ce9c0bb5cfedee69ccef8db907504a82b562c085"
+    },
+    {
+      "suite": "q04A03",
+      "round": 2,
+      "effectiveMediaMs": 7200000,
+      "cycles": 900,
+      "sample": "A03.flac",
+      "sampleSha256": "cac499a8b2aefe750f2a2df8ce9c0bb5cfedee69ccef8db907504a82b562c085"
+    }
+  ]
+}

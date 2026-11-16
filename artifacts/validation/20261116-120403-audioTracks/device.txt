@@ -1,0 +1,5 @@
+test-apk SHA256 b1fea5013522c8cf43f89507e9267388ed7abeb479ef39e268b61da3ea1bd01c
+rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261112.0435:userdebug/release-keys
+API 32
+ABI arm64-v8a
+page size 4096

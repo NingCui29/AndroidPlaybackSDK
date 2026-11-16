@@ -1,0 +1,115 @@
+{
+  "plan": {
+    "suite": "q04Release",
+    "policy": "AUTO",
+    "rounds": "50",
+    "serial": "10.67.116.12:5555"
+  },
+  "expectedRounds": 50,
+  "device": [
+    "test-apk SHA256 C1ADE282DC6B58DF56D360E72C96D06BDD99C5BF894F226FDA34C997B4CCBF1D",
+    "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261112.0435:userdebug/release-keys",
+    "API 32",
+    "ABI arm64-v8a",
+    "page size 4096"
+  ],
+  "fixtures": [
+    "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30  V01.mp4"
+  ],
+  "rounds": {
+    "normalStop": {
+      "commandMs": {
+        "count": 50,
+        "median": 15.568,
+        "p95": 22.995,
+        "max": 27.797
+      },
+      "missingCount": 0,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0,
+      "lastIdleCount": 10,
+      "pssMedianDeltaMiB": 13.306640625,
+      "heapMedianDeltaMiB": -7.586036682128906
+    },
+    "normalRelease": {
+      "commandMs": {
+        "count": 22,
+        "median": 14.212499999999999,
+        "p95": 26.185,
+        "max": 26.504
+      },
+      "missingCount": 28,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0,
+      "lastIdleCount": 10,
+      "pssMedianDeltaMiB": 13.705078125,
+      "heapMedianDeltaMiB": -11.162345886230469
+    },
+    "stalledStop": {
+      "commandMs": {
+        "count": 0,
+        "median": null,
+        "p95": null,
+        "max": null
+      },
+      "missingCount": 50,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0
+    },
+    "stalledRelease": {
+      "commandMs": {
+        "count": 0,
+        "median": null,
+        "p95": null,
+        "max": null
+      },
+      "missingCount": 50,
+      "overSingleLimit": 0,
+      "observedTimeouts": 0
+    }
+  },
+  "pending": [],
+  "failures": [
+    "instrumentation did not complete",
+    "no final suite event",
+    "java.lang.AssertionError: id=1 got FAILED  expected SUCCESS",
+    "normalStop: idle memory growth",
+    "normalRelease: missing/duplicate commands",
+    "normalRelease: missing/duplicate idle samples",
+    "normalRelease: missing/duplicate active samples",
+    "normalRelease: idle memory growth",
+    "stalledStop: missing/duplicate commands",
+    "stalledStop: missing/duplicate idle samples",
+    "stalledStop: missing/duplicate active samples",
+    "stalledRelease: missing/duplicate commands",
+    "stalledRelease: missing/duplicate idle samples",
+    "stalledRelease: missing/duplicate active samples"
+  ],
+  "samplingGapMs": {
+    "count": 396,
+    "median": 1000.0,
+    "p95": 1001,
+    "max": 1088
+  },
+  "baseline": {
+    "fixtureOrPipeFd": 0.0,
+    "nativeInputFd": 0.0,
+    "sdkNamedThreads": 0.0,
+    "liveCodecs": 0.0,
+    "pssKiB": 37675.0,
+    "nativeBytes": 20347840.0,
+    "processFd": 92.0,
+    "processThreads": 28.0
+  },
+  "status": "failed",
+  "sha256": {
+    "samples.csv": "2998edd2efbdf99af036aba900b0405624bf633f254e03a08b9b8a53771f9a3b",
+    "events.csv": "331ed1f2542bad90b8e82ca1b6522b1c27f4b0954050781851581ae3febe3308",
+    "rendered.csv": "538661c8c38666bb0be8d70b22c9dadedb9ec635335b47c33c70a9c955435899",
+    "inventory.tsv": "bf61d0e92944e4a4e8303f1e08db6361698a9370a2ef53e4f657e5a829c06291",
+    "fixtures.sha256": "38a0ca571a5a30ae5717c0ff8f8b46602f4cbb9780b935a722ce3b7cbe9f8ad9",
+    "device.txt": "4ccc0687554c8bba76b61d58cb50f67d895e9432fc0f435642d00cc357a40976",
+    "plan.txt": "c88766362d5d04d4af140539e660adfd167684ca1a6a6cfd9d2279ad013e247e",
+    "instrumentation.txt": "7de5278d10d883fba9707f0e872d508df97499995c24850849acf728348c27ea"
+  }
+}

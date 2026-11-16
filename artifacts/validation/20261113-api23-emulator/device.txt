@@ -1,0 +1,8 @@
+Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys
+
+23
+
+arm64-v8a
+
+KernelPageSize:        4 kB
+

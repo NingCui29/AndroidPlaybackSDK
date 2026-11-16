@@ -1,0 +1,81 @@
+{
+  "source": "project-generated 8-bit SDR solid colors at 25 fps",
+  "segments": [
+    {
+      "color": "red",
+      "size": "640x360",
+      "frames": 30
+    },
+    {
+      "color": "lime",
+      "size": "320x240",
+      "frames": 30
+    },
+    {
+      "color": "blue",
+      "size": "800x448",
+      "frames": 30
+    }
+  ],
+  "files": {
+    "H02-bad-length.mp4": {
+      "sha256": "dec7d88be5ff811af1afd751b78afe390482c4b00d99b65ba061556e4340d494",
+      "bytes": 2310,
+      "packets": 30,
+      "keyPts": [
+        "0.000000"
+      ],
+      "newExtradataPackets": []
+    },
+    "H02-h264-inband.ts": {
+      "sha256": "5b3d732acd14168c966baa422bb1b2dd6708387123963fb29ed9e22b46e15149",
+      "bytes": 31772,
+      "packets": 90,
+      "keyPts": [
+        "1.400000",
+        "2.600000",
+        "3.800000"
+      ],
+      "newExtradataPackets": []
+    },
+    "H02-h264-stsd.mp4": {
+      "sha256": "06c47d67f2323b9143992d607645335ff818c5152c1c233cad1e2f02e3858a47",
+      "bytes": 5682,
+      "packets": 90,
+      "keyPts": [
+        "0.000000",
+        "1.200000",
+        "2.400000"
+      ],
+      "newExtradataPackets": [
+        30,
+        60
+      ]
+    },
+    "H02-hevc-inband.ts": {
+      "sha256": "4d76d11c85d230174606f64df84544e84ba584615847faa7d838dce9224c3504",
+      "bytes": 36284,
+      "packets": 90,
+      "keyPts": [
+        "1.400000",
+        "2.600000",
+        "3.800000"
+      ],
+      "newExtradataPackets": []
+    },
+    "H02-hevc-stsd.mp4": {
+      "sha256": "f20fc854dc3bdfa2c6b86d0a1ff8a8169b6c2c8806e30bd5fc5aa926fa578450",
+      "bytes": 11958,
+      "packets": 90,
+      "keyPts": [
+        "0.000000",
+        "1.200000",
+        "2.400000"
+      ],
+      "newExtradataPackets": [
+        30,
+        60
+      ]
+    }
+  }
+}

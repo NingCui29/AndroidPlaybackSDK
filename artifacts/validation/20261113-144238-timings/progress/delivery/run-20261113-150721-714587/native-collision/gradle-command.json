@@ -1,0 +1,23 @@
+[
+  "C:\\Users\\Work\\.gradle\\wrapper\\dists\\gradle-8.13-bin\\5xuhj0ry160q40clulazy9h7d\\gradle-8.13\\bin\\gradle.bat",
+  "--no-daemon",
+  "--console=plain",
+  "--no-build-cache",
+  "-p",
+  "C:\\Users\\Work\\.gradle\\ap-h4jqyf7a\\host",
+  "-g",
+  "C:\\Users\\Work\\.gradle\\ap-h4jqyf7a\\native-collision\\gradle-home",
+  "--project-cache-dir",
+  "C:\\Users\\Work\\.gradle\\ap-h4jqyf7a\\native-collision\\project-cache",
+  "-PhostOutput=C:\\Users\\Work\\.gradle\\ap-h4jqyf7a\\native-collision\\built",
+  "-PhostLanguage=java",
+  "-PsdkMode=aar",
+  "-PsdkVersion=1.0.0-rc.1",
+  "-PsdkMetadata=module",
+  "-PsdkAar=C:\\Users\\Work\\.gradle\\ap-h4jqyf7a\\direct\\android-playback-sdk-1.0.0-rc.1.aar",
+  "-PsdkRepository=file:///C:/Users/Work/.gradle/ap-h4jqyf7a/offline",
+  "--offline",
+  "recordResolution",
+  "-PcollisionAar=C:\\Users\\Work\\.gradle\\ap-h4jqyf7a\\native-collision\\other-sdk.aar",
+  "mergeReleaseNativeLibs"
+]

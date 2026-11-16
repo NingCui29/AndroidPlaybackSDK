@@ -1,0 +1,42 @@
+buildscript {
+    repositories { google(); mavenCentral() }
+    dependencies { classpath 'com.android.tools.build:gradle:8.13.0' }
+}
+apply plugin: 'com.android.library'
+
+def candidate = file(providers.gradleProperty('candidateAar').get())
+def suite = file(providers.gradleProperty('suiteRoot').get())
+layout.buildDirectory.set(file(providers.gradleProperty('hostOutput').get()))
+
+android {
+    namespace 'dev.playback.candidateinstrumentation'
+    testNamespace 'com.cn.media.playback.test'
+    compileSdk 35
+    defaultConfig {
+        minSdk 23
+        targetSdk 23
+        testApplicationId 'com.cn.media.playback.test'
+        testInstrumentationRunner 'com.cn.media.playback.InputChecks'
+        ndk { abiFilters 'arm64-v8a' }
+    }
+    sourceSets.androidTest {
+        java.srcDirs = [new File(suite, 'java')]
+        assets.srcDirs = [new File(suite, 'assets')]
+        manifest.srcFile new File(suite, 'AndroidManifest.xml')
+    }
+}
+
+dependencies { androidTestImplementation files(candidate) }
+
+tasks.register('recordCandidate') {
+    doLast {
+        def external = configurations.debugAndroidTestRuntimeClasspath.incoming.artifactView {
+            attributes.attribute(Attribute.of('artifactType', String), 'aar')
+            componentFilter { !(it instanceof org.gradle.api.artifacts.component.ProjectComponentIdentifier) }
+        }
+        def aar = external.files.files.toList()
+        if (aar.size() != 1 || aar.first().canonicalFile != candidate.canonicalFile)
+            throw new GradleException("Unexpected instrumentation input: ${aar}")
+        println "SDK_AAR ${aar.first().canonicalPath}"
+    }
+}

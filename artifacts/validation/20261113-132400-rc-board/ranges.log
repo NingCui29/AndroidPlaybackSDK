@@ -1,0 +1,5 @@
+Performing Streamed Install
+Success
+INSTRUMENTATION_RESULT: range=PASS file/uri/fd bytes=601245585 sha256=6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30
+INSTRUMENTATION_CODE: -1
+Evidence: artifacts/validation/20261113-132400-rc-board/ranges

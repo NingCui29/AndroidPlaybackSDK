@@ -1,0 +1,7 @@
+INSTRUMENTATION_RESULT: H02-bad-length.mp4=hardwareAccessUnit -> ERROR
+INSTRUMENTATION_RESULT: H02-h264-inband.ts=c2.rk.avc.decoder 640x360/ffff0000 320x240/ff00ff00 800x448/ff0000ff versions=3 adaptive=1 rebuild=1 submitted=90 dropped=0
+INSTRUMENTATION_RESULT: H02-h264-stsd.mp4=c2.rk.avc.decoder 640x360/ffff0000 320x240/ff00ff00 800x448/ff0000ff versions=3 adaptive=1 rebuild=1 submitted=90 dropped=0
+INSTRUMENTATION_RESULT: H02-hevc-inband.ts=c2.rk.hevc.decoder 640x360/ffff0000 320x240/ff00ff00 800x448/ff0000ff versions=3 adaptive=1 rebuild=1 submitted=90 dropped=0
+INSTRUMENTATION_RESULT: H02-hevc-stsd.mp4=c2.rk.hevc.decoder 640x360/ffff0000 320x240/ff00ff00 800x448/ff0000ff versions=3 adaptive=1 rebuild=1 submitted=90 dropped=0
+INSTRUMENTATION_RESULT: V11.mp4=submitted=105 late=15
+INSTRUMENTATION_CODE: -1

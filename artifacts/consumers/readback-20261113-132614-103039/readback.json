@@ -1,0 +1,53 @@
+{
+  "channel": "loopback",
+  "coordinate": "com.cn.media:android-playback-sdk:1.0.0-rc.1",
+  "repository": "http://127.0.0.1:57931",
+  "approvalRecordedInCandidate": "pending",
+  "publishedByThisTool": false,
+  "expectedSha256": {
+    "android-playback-sdk-1.0.0-rc.1-javadoc.jar": "d5e6cb6829aacaf0e728f322ecfc52e052c50d3f855c99cb4e01d3de135097cf",
+    "android-playback-sdk-1.0.0-rc.1-sources.jar": "e85536664d40b0227a4e01c94beab542b76951c786b416074a5c4cf0a9520a08",
+    "android-playback-sdk-1.0.0-rc.1.aar": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+    "android-playback-sdk-1.0.0-rc.1.module": "2448a50a4c2ed29cc1cef742910be4f2f73cba854eb1f0714f5b79821f6a9539",
+    "android-playback-sdk-1.0.0-rc.1.pom": "d59697e00e189ab9f3cfc2ac3abd94069fc88f938ca80a3c1aa1c1d556a7474d"
+  },
+  "startedUTC": "2026-11-13T05:26:14.402594+00:00",
+  "polls": [
+    {
+      "elapsedSeconds": 0.0,
+      "files": {
+        "android-playback-sdk-1.0.0-rc.1-javadoc.jar": {
+          "httpStatus": 200,
+          "sha256": "d5e6cb6829aacaf0e728f322ecfc52e052c50d3f855c99cb4e01d3de135097cf",
+          "bytes": 144160,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1-sources.jar": {
+          "httpStatus": 200,
+          "sha256": "e85536664d40b0227a4e01c94beab542b76951c786b416074a5c4cf0a9520a08",
+          "bytes": 139060,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.aar": {
+          "httpStatus": 200,
+          "sha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+          "bytes": 3223623,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.module": {
+          "httpStatus": 200,
+          "sha256": "2448a50a4c2ed29cc1cef742910be4f2f73cba854eb1f0714f5b79821f6a9539",
+          "bytes": 2779,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.pom": {
+          "httpStatus": 200,
+          "sha256": "d59697e00e189ab9f3cfc2ac3abd94069fc88f938ca80a3c1aa1c1d556a7474d",
+          "bytes": 1144,
+          "matched": true
+        }
+      }
+    }
+  ],
+  "outcome": "PASS"
+}

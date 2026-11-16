@@ -1,0 +1,55 @@
+{
+  "channel": "loopback",
+  "coordinate": "com.cn.media:android-playback-sdk:1.0.0-rc.1",
+  "repository": "http://127.0.0.1:63040",
+  "approvalRecordedInCandidate": "pending",
+  "publishedByThisTool": false,
+  "expectedSha256": {
+    "android-playback-sdk-1.0.0-rc.1-javadoc.jar": "d5e6cb6829aacaf0e728f322ecfc52e052c50d3f855c99cb4e01d3de135097cf",
+    "android-playback-sdk-1.0.0-rc.1-sources.jar": "d93354632ef09f59e4c4bddf3f597570b912badae785d3238e540185b9b1ec17",
+    "android-playback-sdk-1.0.0-rc.1.aar": "77494404a06bd18235e1371e289d4eface2be3eb55255ecb8566b53aef4d9271",
+    "android-playback-sdk-1.0.0-rc.1.module": "5e16fe3e2be43e9935f51a278c8031407a1bc5b1301e6e50d792b20284708488",
+    "android-playback-sdk-1.0.0-rc.1.pom": "d59697e00e189ab9f3cfc2ac3abd94069fc88f938ca80a3c1aa1c1d556a7474d"
+  },
+  "startedUTC": "2026-11-13T01:17:43.033606+00:00",
+  "polls": [
+    {
+      "elapsedSeconds": 0.0,
+      "files": {
+        "android-playback-sdk-1.0.0-rc.1-javadoc.jar": {
+          "httpStatus": 200,
+          "sha256": "d5e6cb6829aacaf0e728f322ecfc52e052c50d3f855c99cb4e01d3de135097cf",
+          "bytes": 144160,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1-sources.jar": {
+          "httpStatus": 200,
+          "sha256": "d93354632ef09f59e4c4bddf3f597570b912badae785d3238e540185b9b1ec17",
+          "bytes": 137903,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.aar": {
+          "httpStatus": 200,
+          "sha256": "77494404a06bd18235e1371e289d4eface2be3eb55255ecb8566b53aef4d9271",
+          "bytes": 3221534,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.module": {
+          "httpStatus": 200,
+          "sha256": "5e16fe3e2be43e9935f51a278c8031407a1bc5b1301e6e50d792b20284708488",
+          "bytes": 2779,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-rc.1.pom": {
+          "httpStatus": 200,
+          "sha256": "236157c935d5c0ea1b6d5c8dac8f1ea4305dcb7b996c665d7ff7365e292f4bca",
+          "bytes": 1182,
+          "matched": false
+        }
+      }
+    }
+  ],
+  "outcome": "ERROR",
+  "rehearsalFault": "mismatch",
+  "expectationMatched": true
+}

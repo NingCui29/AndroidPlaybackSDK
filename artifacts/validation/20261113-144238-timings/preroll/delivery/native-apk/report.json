@@ -1,0 +1,35 @@
+{
+  "aarSha256": "e3a45109770d94c5c626defcca53c6ab8a8391433fa0b62cbb8ca57ea0f4aa01",
+  "packages": {
+    "direct": {
+      "file": "host.apk",
+      "sha256": "2e4aaa6329bdba69d111a23f59d60579d90ae64cf326a398aaa1ae0c405397f5",
+      "offsets": {
+        "libavutil.so": 5095424,
+        "libswresample.so": 5881856,
+        "libswscale.so": 5980160,
+        "libavcodec.so": 49152,
+        "libavformat.so": 4472832,
+        "libplayback.so": 5816320
+      }
+    },
+    "split": {
+      "file": "splits/base-arm64_v8a.apk",
+      "sha256": "d735684a5ad9f02515bf106b9994ab28a83bb8996c3c63c557a6519fb5bef480",
+      "offsets": {
+        "libavutil.so": 5062656,
+        "libswresample.so": 5849088,
+        "libswscale.so": 5947392,
+        "libavcodec.so": 16384,
+        "libavformat.so": 4440064,
+        "libplayback.so": 5783552
+      }
+    }
+  },
+  "initramfsSha256": "acc13e5fe09e54407f543c10f2f4b8fd47feb82fb8a3aead89618fad750def86",
+  "kernelSha256": "9be489e37c3966878c3c34fc3a910d34fa3c3d7c1ae4f7262907c69291121935",
+  "A04Sha256": "c8b9f0c0aa93886f06b200b2ee27a08886810785ebf018ece455a4caa6a9a228",
+  "outcome": "PASS",
+  "uartSha256": "4063698368d29ac4d0bb63ec6b8a9510d339bd7efe0aa28271abca81670a7036",
+  "scope": "Native APK entry loading and PCM decoding; no Package Manager, AudioTrack or Surface."
+}

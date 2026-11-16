@@ -1,0 +1,93 @@
+Configuration on demand is an incubating feature.
+
+> Configure project :
+WARNING: The option 'android.enableBuildCache' is deprecated.
+The current default is 'false'.
+It was removed in version 7.0 of the Android Gradle plugin.
+The Android-specific build caches were superseded by the Gradle build cache (https://docs.gradle.org/current/userguide/build_cache.html).
+
+> Task :companion:externalNativeBuildCleanDebug
+Clean companion-arm64-v8a
+
+> Task :companion:externalNativeBuildCleanRelease
+> Task :companion:clean
+> Task :companion:preBuild UP-TO-DATE
+> Task :companion:preDebugBuild UP-TO-DATE
+> Task :companion:writeDebugAarMetadata
+> Task :companion:processDebugNavigationResources FROM-CACHE
+> Task :companion:generateDebugResValues FROM-CACHE
+> Task :companion:generateDebugResources FROM-CACHE
+> Task :companion:packageDebugResources FROM-CACHE
+> Task :companion:extractDeepLinksDebug FROM-CACHE
+> Task :companion:processDebugManifest FROM-CACHE
+> Task :companion:compileDebugLibraryResources FROM-CACHE
+> Task :clean
+> Task :preBuild UP-TO-DATE
+> Task :preDebugBuild UP-TO-DATE
+> Task :mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :companion:parseDebugLocalResources FROM-CACHE
+> Task :javaPreCompileDebug FROM-CACHE
+> Task :checkDebugAarMetadata
+> Task :companion:generateDebugRFile FROM-CACHE
+> Task :processDebugNavigationResources FROM-CACHE
+> Task :companion:javaPreCompileDebug FROM-CACHE
+> Task :compileDebugNavigationResources FROM-CACHE
+> Task :companion:compileDebugJavaWithJavac NO-SOURCE
+> Task :generateDebugResValues FROM-CACHE
+> Task :companion:bundleLibCompileToJarDebug
+> Task :mapDebugSourceSetPaths
+> Task :companion:mergeDebugShaders
+> Task :companion:compileDebugShaders NO-SOURCE
+> Task :companion:generateDebugAssets UP-TO-DATE
+> Task :generateDebugResources FROM-CACHE
+> Task :companion:mergeDebugAssets
+> Task :companion:processDebugJavaRes NO-SOURCE
+> Task :companion:bundleLibRuntimeToJarDebug
+> Task :mergeDebugResources FROM-CACHE
+> Task :packageDebugResources FROM-CACHE
+> Task :parseDebugLocalResources FROM-CACHE
+> Task :createDebugCompatibleScreenManifests
+> Task :extractDeepLinksDebug FROM-CACHE
+> Task :processDebugMainManifest FROM-CACHE
+> Task :processDebugManifest FROM-CACHE
+> Task :processDebugManifestForPackage FROM-CACHE
+> Task :processDebugResources FROM-CACHE
+> Task :compileDebugJavaWithJavac FROM-CACHE
+> Task :mergeDebugShaders
+> Task :compileDebugShaders NO-SOURCE
+> Task :generateDebugAssets UP-TO-DATE
+> Task :mergeDebugAssets
+> Task :compressDebugAssets FROM-CACHE
+> Task :processDebugJavaRes NO-SOURCE
+> Task :checkDebugDuplicateClasses
+> Task :mergeDebugJavaResource
+> Task :desugarDebugFileDependencies FROM-CACHE
+> Task :mergeExtDexDebug FROM-CACHE
+> Task :mergeDebugJniLibFolders
+> Task :validateSigningDebug
+> Task :writeDebugAppMetadata
+> Task :writeDebugSigningConfigVersions
+> Task :companion:configureCMakeDebug[arm64-v8a]
+> Task :dexBuilderDebug FROM-CACHE
+> Task :mergeLibDexDebug FROM-CACHE
+> Task :mergeProjectDexDebug FROM-CACHE
+> Task :companion:buildCMakeDebug[arm64-v8a]
+> Task :companion:mergeDebugJniLibFolders
+> Task :companion:mergeDebugNativeLibs
+> Task :companion:copyDebugJniLibsProjectOnly
+> Task :mergeDebugNativeLibs
+> Task :stripDebugDebugSymbols
+> Task :packageDebug
+> Task :createDebugApkListingFileRedirect
+> Task :assembleDebug
+
+[Incubating] Problems report is available at: file:///D:/Developer/WorkSpace/AndroidPlaybackSDK/tools/assemble-coexist/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 16s
+59 actionable tasks: 29 executed, 30 from cache

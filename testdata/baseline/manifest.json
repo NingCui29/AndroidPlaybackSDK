@@ -1,0 +1,116 @@
+{
+  "generator": "FFmpeg git-2019-10-22-0b8956b, EVCapture local tools",
+  "source": "Independent synthetic media: testsrc2, frame/time overlays, synthesized tones; no business media",
+  "files": {
+    "V01.mp4": {
+      "sha256": "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30",
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "width": 1920,
+          "height": 1080,
+          "pix_fmt": "yuv420p",
+          "color_range": "tv",
+          "color_space": "bt709",
+          "r_frame_rate": "30/1",
+          "avg_frame_rate": "30/1",
+          "time_base": "1/15360",
+          "start_time": "0.000000",
+          "duration": "600.000000",
+          "bit_rate": "8000370",
+          "nb_frames": "18000"
+        },
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0",
+          "avg_frame_rate": "0/0",
+          "time_base": "1/48000",
+          "start_time": "0.000000",
+          "duration": "600.000000",
+          "bit_rate": "7574",
+          "nb_frames": "28126"
+        }
+      ],
+      "format": {
+        "duration": "600.022000",
+        "size": "601245585",
+        "bit_rate": "8016313"
+      }
+    },
+    "A02.m4a": {
+      "sha256": "80e5dfdc0b091efb49f352d74d40ccfe089e46c5019d44409726b46bb5c110f5",
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "aac",
+          "profile": "LC",
+          "sample_rate": "48000",
+          "channels": 1,
+          "r_frame_rate": "0/0",
+          "avg_frame_rate": "0/0",
+          "time_base": "1/48000",
+          "start_time": "0.000000",
+          "duration": "12.000000",
+          "bit_rate": "4956",
+          "nb_frames": "564"
+        }
+      ],
+      "format": {
+        "duration": "12.022000",
+        "size": "10507",
+        "bit_rate": "6991"
+      }
+    },
+    "V11.mp4": {
+      "sha256": "d68cc92b653ed69c2b15eac94cabc56f6254f5cfaee36cb910d2f03081e5c2c1",
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "profile": "High",
+          "width": 1280,
+          "height": 720,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "avg_frame_rate": "25/1",
+          "time_base": "1/15360",
+          "start_time": "0.000000",
+          "duration": "30.000000",
+          "bit_rate": "3031955",
+          "nb_frames": "750"
+        }
+      ],
+      "format": {
+        "duration": "30.000000",
+        "size": "11378334",
+        "bit_rate": "3034222"
+      }
+    },
+    "A04.wav": {
+      "sha256": "c8b9f0c0aa93886f06b200b2ee27a08886810785ebf018ece455a4caa6a9a228",
+      "programs": [],
+      "streams": [
+        {
+          "codec_name": "pcm_s16le",
+          "sample_rate": "48000",
+          "channels": 2,
+          "r_frame_rate": "0/0",
+          "avg_frame_rate": "0/0",
+          "time_base": "1/48000",
+          "duration": "8.000000",
+          "bit_rate": "1536000"
+        }
+      ],
+      "format": {
+        "duration": "8.000000",
+        "size": "1536078",
+        "bit_rate": "1536078"
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "plan": {
+    "suite": "q04Pilot",
+    "policy": "AUTO",
+    "rounds": "1",
+    "serial": "10.67.116.12:5555"
+  },
+  "expectedRounds": 1,
+  "device": [
+    "test-apk SHA256 65B5A652C2F1D126993A8952E4BB74566FBFACCD4E49E9B774ADB87028F89471",
+    "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261111.0441:userdebug/release-keys",
+    "API 32",
+    "ABI arm64-v8a",
+    "page size 4096"
+  ],
+  "fixtures": [
+    "cac499a8b2aefe750f2a2df8ce9c0bb5cfedee69ccef8db907504a82b562c085  A03.flac"
+  ],
+  "rounds": {
+    "1": {
+      "completedCycles": 1,
+      "backends": [],
+      "routeTypes": [
+        "2"
+      ],
+      "wallMs": 8013.726,
+      "mediaMs": 8000,
+      "mediaPerWall": 0.9982871887558922,
+      "pssKiB": {
+        "count": 8,
+        "median": 21141.0,
+        "p95": 21385,
+        "max": 21385
+      },
+      "heapBytes": {
+        "count": 8,
+        "median": 4855200.0,
+        "p95": 4957888,
+        "max": 4957888
+      },
+      "playingSamples": 8,
+      "activeResources": {
+        "fixtureOrPipeFd": {
+          "count": 8,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        },
+        "nativeInputFd": {
+          "count": 8,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "processFd": {
+          "count": 8,
+          "median": 69.0,
+          "p95": 70,
+          "max": 70
+        },
+        "processThreads": {
+          "count": 8,
+          "median": 23.0,
+          "p95": 25,
+          "max": 25
+        },
+        "sdkNamedThreads": {
+          "count": 8,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "liveCodecs": {
+          "count": 8,
+          "median": 0.0,
+          "p95": 0,
+          "max": 0
+        }
+      },
+      "thermalStatusValues": [
+        0
+      ],
+      "steadyCpuOneCorePct": {
+        "count": 8,
+        "median": 7.4,
+        "p95": 17.2,
+        "max": 17.2
+      }
+    }
+  },
+  "pending": [
+    "short A03 pilot"
+  ],
+  "failures": [],
+  "samplingGapMs": {
+    "count": 13,
+    "median": 1000,
+    "p95": 1001,
+    "max": 1001
+  },
+  "status": "pilot",
+  "sha256": {
+    "samples.csv": "dfc46466b599651063b0cbe61f4d17c963fbeca2175a58e6d3ad8eae67225c61",
+    "events.csv": "608890bdb5b877f062db09e1f013e26d8fbcd5fd36e49142ce8dc45e79b4251d",
+    "rendered.csv": "748ff5bcfd8143786a2c5566516f5c20640d16572352315d58d7f14bbab7d956",
+    "inventory.tsv": "7f28590c1545a80c102cfc26a3a821b64022fe280a929a327d958e3e47bb8eb3",
+    "fixtures.sha256": "f3ae9b03e7806cccd1793224918cd1b16843207dd1e757e8fec1895ba61e1061",
+    "device.txt": "a3f9ba0d59413a07afc1c66bb14745541b72ef9fc19fb718e09593dd86ee9042",
+    "plan.txt": "cadb0d9b7a102e42fd956e9f08dcdb3dc218c65093a3694d0229cc9bd23910e2",
+    "instrumentation.txt": "3e88f8a595668af9a959641569651e6b1c20dc9bc5f1322f431402a9a2b1e6c1"
+  }
+}

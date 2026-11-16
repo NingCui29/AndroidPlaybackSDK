@@ -1,0 +1,92 @@
+# ====================================================================
+# Android & Gradle 构建产物与缓存
+# ====================================================================
+.gradle/
+build/
+**/build/
+sdk/build/
+bin/
+gen/
+out/
+captures/
+.navigation/
+
+# Android NDK / CMake / 原生编译中间目录与缓存
+.externalNativeBuild/
+.cxx/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+build.ninja
+.ninja_deps
+.ninja_log
+*.o
+*.obj
+*.d
+*.ninja
+
+# 本地环境变量与私有配置（包含 Android SDK 绝对路径及密钥）
+local.properties
+*.keystore
+*.jks
+secrets.properties
+
+# ====================================================================
+# Android Studio / IntelliJ IDEA / VS Code
+# ====================================================================
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.code-workspace
+
+# ====================================================================
+# Python 运行缓存与虚拟环境（针对 tools/ 工具集）
+# ====================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+venv/
+.venv/
+env/
+
+# ====================================================================
+# 日志、临时与系统文件
+# ====================================================================
+*.log
+*.tmp
+*~
+*.swp
+*.swo
+
+# Windows
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+.directory
+
+# ====================================================================
+# 自动化测试与消费端隔离运行产生的临时 Gradle 缓存
+# ====================================================================
+**/cache/caches/
+**/cache/daemon/
+**/cache/wrapper/
+
+# ====================================================================
+# 大型测试视频素材（超过 GitHub 100MB 限制）
+# ====================================================================
+testdata/baseline/V01.mp4
+

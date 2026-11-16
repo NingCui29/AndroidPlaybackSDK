@@ -1,0 +1,11 @@
+INSTRUMENTATION_RESULT: 0-AUTO-configureMs=47
+INSTRUMENTATION_RESULT: 0-AUTO-createMs=45
+INSTRUMENTATION_RESULT: 0-HARDWARE_ONLY-configureMs=3
+INSTRUMENTATION_RESULT: 0-HARDWARE_ONLY-createMs=8
+INSTRUMENTATION_RESULT: failure=java.lang.AssertionError: No software recovery: start
+	at com.cn.media.playback.PlayerChecks.check(PlayerChecks.java:53)
+	at com.cn.media.playback.PlayerChecks.fault(PlayerChecks.java:321)
+	at com.cn.media.playback.InputChecks.onStart(InputChecks.java:55)
+	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2278)
+
+INSTRUMENTATION_CODE: 0

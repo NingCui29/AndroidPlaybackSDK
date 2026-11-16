@@ -1,0 +1,83 @@
+
+Welcome to Gradle 8.13!
+
+Here are the highlights of this release:
+ - Daemon JVM auto-provisioning
+ - Enhancements for Scala plugin and JUnit testing
+ - Improvements for build authors and plugin developers
+
+For more details see https://docs.gradle.org/8.13/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Shared read-only dependency cache is an incubating feature.
+
+> Task :recordResolution
+MODE aar LANGUAGE java METADATA module
+SOURCE C:\Users\Work\.gradle\ap-pperorhy\direct\android-playback-sdk-1.0.0-rc.1.aar
+ARTIFACT android-playback-sdk-1.0.0-rc.1.aar [local file] android-playback-sdk-1.0.0-rc.1.aar e3a45109770d94c5c626defcca53c6ab8a8391433fa0b62cbb8ca57ea0f4aa01
+
+> Task :preBuild UP-TO-DATE
+> Task :preReleaseBuild UP-TO-DATE
+> Task :mergeReleaseJniLibFolders
+> Task :mergeReleaseNativeLibs
+> Task :checkReleaseDuplicateClasses
+> Task :javaPreCompileRelease
+> Task :processReleaseNavigationResources
+> Task :checkReleaseAarMetadata
+> Task :generateReleaseResValues
+> Task :compileReleaseNavigationResources
+> Task :mapReleaseSourceSetPaths
+> Task :generateReleaseResources
+> Task :mergeReleaseResources
+> Task :stripReleaseDebugSymbols
+> Task :packageReleaseResources
+> Task :extractReleaseNativeSymbolTables
+> Task :mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :createReleaseCompatibleScreenManifests
+> Task :extractDeepLinksRelease
+> Task :parseReleaseLocalResources
+> Task :processReleaseMainManifest
+> Task :processReleaseManifest
+> Task :mergeReleaseArtProfile
+> Task :extractProguardFiles
+> Task :processReleaseJavaRes NO-SOURCE
+> Task :processReleaseManifestForPackage
+> Task :mergeReleaseStartupProfile
+> Task :mergeReleaseShaders
+> Task :compileReleaseShaders NO-SOURCE
+> Task :generateReleaseAssets UP-TO-DATE
+> Task :mergeReleaseAssets
+> Task :compressReleaseAssets
+> Task :mergeReleaseJavaResource
+> Task :extractReleaseVersionControlInfo
+> Task :collectReleaseDependencies
+> Task :sdkReleaseDependencyData
+> Task :validateSigningRelease
+> Task :writeReleaseAppMetadata
+> Task :writeReleaseSigningConfigVersions
+> Task :processReleaseResources
+> Task :compileReleaseJavaWithJavac
+> Task :expandReleaseArtProfileWildcards
+> Task :mergeReleaseGeneratedProguardFiles
+> Task :generateReleaseLintVitalReportModel
+> Task :optimizeReleaseResources
+> Task :minifyReleaseWithR8
+> Task :compileReleaseArtProfile
+> Task :lintVitalAnalyzeRelease
+> Task :lintVitalReportRelease
+> Task :lintVitalRelease
+> Task :packageRelease
+> Task :createReleaseApkListingFileRedirect
+> Task :assembleRelease
+
+[Incubating] Problems report is available at: file:///C:/Users/Work/.gradle/ap-pperorhy/aar-java/built/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 42s
+47 actionable tasks: 47 executed

@@ -1,0 +1,84 @@
+install prefix            /usr/local
+source path               /c/Users/Work/AppData/Local/Temp/apsdk-config-839a9f62a2b149ec82d4ee1d1356fb08/ffmpeg-8.1.3
+C compiler                /c/Users/Work/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe --target=aarch64-linux-android23
+C library                 bionic
+host C compiler           gcc
+host C library            newlib
+ARCH                      aarch64 (generic)
+big-endian                no
+runtime cpu detection     yes
+NEON enabled              yes
+DOTPROD enabled           yes
+I8MM enabled              yes
+SVE enabled               yes
+SVE2 enabled              yes
+SME enabled               yes
+SME-I16I64 enabled        yes
+SME2 enabled              yes
+debug symbols             yes
+strip symbols             yes
+optimize for size         no
+optimizations             yes
+static                    no
+shared                    yes
+network support           no
+threading support         pthreads
+safe bitstream reader     yes
+texi2html enabled         no
+perl enabled              yes
+pod2man enabled           no
+makeinfo enabled          no
+makeinfo supports HTML    no
+experimental features     yes
+xmllint enabled           no
+
+External libraries:
+
+External libraries providing hardware acceleration:
+
+Libraries:
+avcodec                 avutil                  swscale
+avformat                swresample
+
+Programs:
+
+Enabled decoders:
+aac                     mpeg4                   vc1
+flac                    opus                    vorbis
+h263                    pcm_s16le               vp8
+h264                    pcm_s24le               vp9
+hevc                    pcm_s32le               wmav2
+mp3float                pcm_u8                  wmv3
+
+Enabled encoders:
+
+Enabled hwaccels:
+
+Enabled parsers:
+aac                     mpeg4video              vorbis
+flac                    mpegaudio               vp8
+h264                    opus                    vp9
+hevc                    vc1
+
+Enabled demuxers:
+asf                     matroska                mpegts
+avi                     mov                     ogg
+flac                    mp3                     wav
+
+Enabled muxers:
+
+Enabled protocols:
+
+Enabled filters:
+
+Enabled bsfs:
+h264_mp4toannexb        hevc_mp4toannexb        vp9_superframe_split
+
+Enabled indevs:
+
+Enabled outdevs:
+
+License: LGPL version 2.1 or later
+
+WARNING: pkg-config not found, library detection may fail.
+#define FFMPEG_CONFIGURATION "--target-os=android --arch=aarch64 --enable-cross-compile --cc='/c/Users/Work/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe --target=aarch64-linux-android23' --cxx='/c/Users/Work/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe --target=aarch64-linux-android23' --ar=/c/Users/Work/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar.exe --nm=/c/Users/Work/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-nm.exe --ranlib=/c/Users/Work/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ranlib.exe --strip=/c/Users/Work/AppData/Local/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-strip.exe --disable-everything --disable-autodetect --disable-programs --disable-doc --disable-network --disable-avfilter --disable-avdevice --disable-static --enable-shared --enable-pic --enable-demuxer='mov,matroska,avi,asf,mpegts,mp3,flac,wav,ogg' --enable-decoder='h264,hevc,vp8,vp9,mpeg4,wmv3,vc1,mp3float,aac,flac,vorbis,opus,wmav2,pcm_u8,pcm_s16le,pcm_s24le,pcm_s32le' --enable-parser='aac,flac,h264,hevc,mpeg4video,mpegaudio,opus,vc1,vorbis,vp8,vp9' --enable-bsf='h264_mp4toannexb,hevc_mp4toannexb'"

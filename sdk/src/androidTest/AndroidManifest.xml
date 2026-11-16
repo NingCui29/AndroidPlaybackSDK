@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <provider android:name="com.cn.media.playback.FixtureProvider"
+                  android:authorities="com.cn.media.playback.test.fixture" android:exported="false"/>
+        <activity android:name="com.cn.media.playback.DisplayActivity"
+                  android:exported="false" android:theme="@android:style/Theme.Material.NoActionBar"/>
+    </application>
+</manifest>

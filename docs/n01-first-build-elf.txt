@@ -1,0 +1,65 @@
+libavcodec.so
+SHA256 F9389BE907E8A174EC569B97A9FE2B7F2C1E23750F17986FAFD20028EF7F024D
+  Class:                             ELF64
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x4214b0 0x4214b0 R E 0x4000
+  LOAD           0x4214b0 0x00000000004254b0 0x00000000004254b0 0x014890 0x014b50 RW  0x4000
+  LOAD           0x435d40 0x000000000043dd40 0x000000000043dd40 0x000690 0x1aa840 RW  0x4000
+  0x0000000000000001 (NEEDED)       Shared library: [libswresample.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libavutil.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libm.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libc.so]
+  0x000000000000000e (SONAME)       Library soname: [libavcodec.so]
+    Build ID: ce87cd43135383158ab73f60609f8463ebfc78b4
+libavformat.so
+SHA256 877D9480B94913ED7FA01C4DAAE4D7F9FBD7243B0E51CB11973A4E4A58E89F21
+  Class:                             ELF64
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x08b8e0 0x08b8e0 R E 0x4000
+  LOAD           0x08b8e0 0x000000000008f8e0 0x000000000008f8e0 0x008120 0x008720 RW  0x4000
+  LOAD           0x093a00 0x000000000009ba00 0x000000000009ba00 0x000000 0x000011 RW  0x4000
+  0x0000000000000001 (NEEDED)       Shared library: [libavcodec.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libavutil.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libm.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libc.so]
+  0x000000000000000e (SONAME)       Library soname: [libavformat.so]
+    Build ID: 4692de87f440996a3b31b2790480855599f0280b
+libavutil.so
+SHA256 BBD8DE88745C165040B947C4FF3775D7D5EE28B02E3A281A02E004A316DC2961
+  Class:                             ELF64
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x09d830 0x09d830 R E 0x4000
+  LOAD           0x09d830 0x00000000000a1830 0x00000000000a1830 0x011cb0 0x0127d0 RW  0x4000
+  LOAD           0x0af4e0 0x00000000000b74e0 0x00000000000b74e0 0x000028 0x10ebd8 RW  0x4000
+  0x0000000000000001 (NEEDED)       Shared library: [libm.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libc.so]
+  0x000000000000000e (SONAME)       Library soname: [libavutil.so]
+    Build ID: a18e1d921a0b5822d4980065424e12d569e6a69b
+libswresample.so
+SHA256 37AB2F6EE7F0C6FFA439FC757E7E776861DCECF17B896A2F0140D55A1C6D6D47
+  Class:                             ELF64
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0159a0 0x0159a0 R E 0x4000
+  LOAD           0x0159a0 0x00000000000199a0 0x00000000000199a0 0x001c18 0x002660 RW  0x4000
+  0x0000000000000001 (NEEDED)       Shared library: [libavutil.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libm.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libc.so]
+  0x000000000000000e (SONAME)       Library soname: [libswresample.so]
+    Build ID: b3b4f856113561700a9062c65da380a002031069
+libswscale.so
+SHA256 EE39C7DEA1D60416C2EF931400CD282C9BF8D3DEC84BC926511115EFAB035047
+  Class:                             ELF64
+  Type:                              DYN (Shared object file)
+  Machine:                           AArch64
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x1131d0 0x1131d0 R E 0x4000
+  LOAD           0x1131d0 0x00000000001171d0 0x00000000001171d0 0x0061a8 0x006e30 RW  0x4000
+  LOAD           0x119378 0x0000000000121378 0x0000000000121378 0x000000 0x044148 RW  0x4000
+  0x0000000000000001 (NEEDED)       Shared library: [libavutil.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libm.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libc.so]
+  0x000000000000000e (SONAME)       Library soname: [libswscale.so]
+    Build ID: 04d04c964205511d841208b711108c2a4748f48b

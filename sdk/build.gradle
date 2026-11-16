@@ -1,0 +1,75 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+dependencies { compileOnly 'org.jetbrains:annotations:23.0.0' }
+
+android {
+    namespace 'com.cn.media.playback'
+    compileSdk 35
+    ndkVersion '30.0.16248370'
+    defaultConfig {
+        minSdk 23
+        testInstrumentationRunner 'com.cn.media.playback.InputChecks'
+        ndk { abiFilters 'arm64-v8a' }
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+    sourceSets.main.jniLibs.srcDir rootProject.file('artifacts/n01/stripped')
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
+}
+def apiDocs = tasks.register('playbackApiDocs', Javadoc) {
+    source = fileTree('src/main/java') { include '**/*.java' }
+    classpath = files(android.bootClasspath, configurations.releaseCompileClasspath)
+    destinationDir = layout.buildDirectory.dir('docs/api').get().asFile
+    options.encoding = 'UTF-8'
+    options.addBooleanOption('Xdoclint:all,-missing', true)
+}
+def apiDocsJar = tasks.register('playbackApiDocsJar', Jar) {
+    dependsOn apiDocs
+    archiveClassifier = 'javadoc'
+    from(apiDocs.map { it.destinationDir })
+}
+afterEvaluate {
+    tasks.named('sourceReleaseJar') {
+        from('src/main/cpp') { into 'native' }
+        from(rootProject.file('tools/build-ffmpeg.sh')) { into 'tools' }
+        from('src/main/resources')
+        // Freeze the build entry points together with the sources referenced by the POM.
+        from(rootProject.projectDir) {
+            include 'settings.gradle', 'build.gradle', 'gradlew', 'gradlew.bat', 'gradle/wrapper/*'
+            include 'sdk/build.gradle', 'sdk/src/main/AndroidManifest.xml', 'sdk/consumer-rules.pro'
+            into 'rebuild'
+        }
+    }
+    publishing {
+        repositories {
+            maven {
+                name = 'Offline'
+                url = rootProject.layout.buildDirectory.dir('offline-maven')
+            }
+        }
+        publications {
+            playback(MavenPublication) {
+                from components.release
+                artifact apiDocsJar
+                groupId = 'com.cn.media'
+                artifactId = 'android-playback-sdk'
+                version = '1.0.0-rc.1'
+                pom {
+                    name = 'Android Playback SDK'
+                    description = 'Android multi-format player with FFmpeg and MediaCodec; bundled FFmpeg libraries are LGPL-2.1-or-later.'
+                    properties = ['ffmpeg.version':'8.1.3', 'android.minSdk':'23', 'android.abis':'arm64-v8a']
+                }
+            }
+        }
+    }
+}

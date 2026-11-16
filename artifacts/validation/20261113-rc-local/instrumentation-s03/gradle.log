@@ -1,0 +1,79 @@
+Configuration on demand is an incubating feature.
+
+> Configure project :
+WARNING: The option 'android.enableBuildCache' is deprecated.
+The current default is 'false'.
+It was removed in version 7.0 of the Android Gradle plugin.
+The Android-specific build caches were superseded by the Gradle build cache (https://docs.gradle.org/current/userguide/build_cache.html).
+
+> Task :recordCandidate
+SDK_AAR C:\Users\Work\AppData\Local\Temp\playback-candidate-suite-e3asya89\android-playback-sdk-1.0.0-rc.1.aar
+
+> Task :preBuild UP-TO-DATE
+> Task :preDebugBuild UP-TO-DATE
+> Task :generateDebugResValues
+> Task :generateDebugResources
+> Task :packageDebugResources
+> Task :processDebugNavigationResources
+> Task :preDebugAndroidTestBuild UP-TO-DATE
+> Task :javaPreCompileDebug
+> Task :javaPreCompileDebugAndroidTest
+> Task :parseDebugLocalResources
+> Task :writeDebugAarMetadata
+> Task :generateDebugRFile
+> Task :checkDebugAndroidTestAarMetadata
+> Task :compileDebugJavaWithJavac NO-SOURCE
+> Task :bundleLibCompileToJarDebug
+> Task :processDebugAndroidTestNavigationResources
+> Task :compileDebugAndroidTestNavigationResources
+> Task :generateDebugAndroidTestResValues
+> Task :compileDebugLibraryResources
+> Task :mapDebugAndroidTestSourceSetPaths
+> Task :generateDebugAndroidTestResources
+> Task :mergeDebugAndroidTestResources
+> Task :extractDeepLinksDebug
+> Task :mergeDebugAndroidTestShaders
+> Task :processDebugManifest
+> Task :processDebugAndroidTestManifest
+> Task :compileDebugAndroidTestShaders NO-SOURCE
+> Task :generateDebugAndroidTestAssets UP-TO-DATE
+> Task :mergeDebugShaders
+> Task :compileDebugShaders NO-SOURCE
+> Task :generateDebugAssets UP-TO-DATE
+> Task :mergeDebugAssets
+> Task :mergeDebugAndroidTestAssets
+> Task :processDebugAndroidTestJavaRes NO-SOURCE
+> Task :processDebugJavaRes NO-SOURCE
+> Task :compressDebugAndroidTestAssets
+> Task :checkDebugAndroidTestDuplicateClasses
+> Task :mergeDebugAndroidTestJavaResource
+> Task :processDebugAndroidTestResources
+> Task :compileDebugAndroidTestJavaWithJavac
+> Task :bundleLibRuntimeToJarDebug
+> Task :mergeDebugJniLibFolders
+> Task :desugarDebugAndroidTestFileDependencies
+> Task :dexBuilderDebugAndroidTest
+> Task :mergeDebugNativeLibs NO-SOURCE
+> Task :copyDebugJniLibsProjectOnly
+> Task :mergeLibDexDebugAndroidTest
+> Task :mergeDebugAndroidTestJniLibFolders
+> Task :validateSigningDebugAndroidTest
+> Task :mergeExtDexDebugAndroidTest
+> Task :writeDebugAndroidTestSigningConfigVersions
+> Task :mergeProjectDexDebugAndroidTest
+> Task :mergeDebugAndroidTestNativeLibs
+> Task :stripDebugAndroidTestDebugSymbols
+> Task :packageDebugAndroidTest
+> Task :createDebugAndroidTestApkListingFileRedirect
+> Task :assembleDebugAndroidTest
+
+[Incubating] Problems report is available at: file:///C:/Users/Work/AppData/Local/Temp/playback-candidate-suite-e3asya89/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2s
+46 actionable tasks: 46 executed

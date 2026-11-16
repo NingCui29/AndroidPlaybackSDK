@@ -1,0 +1,217 @@
+{
+  "reference": "artifacts\\validation\\20261113-132400-rc-board\\i03-packets\\refs\\V01-0.ref",
+  "keyframes": 72,
+  "pearsonR": 0.9835216929430546,
+  "rows": [
+    {
+      "direction": "forward",
+      "targetMs": 360000,
+      "priorKeyMs": 358333.3333,
+      "prerollGopMs": 1666.6667000000016,
+      "latencyMs": 304.911864
+    },
+    {
+      "direction": "backward",
+      "targetMs": 120000,
+      "priorKeyMs": 116666.6667,
+      "prerollGopMs": 3333.3332999999984,
+      "latencyMs": 581.740309
+    },
+    {
+      "direction": "forward",
+      "targetMs": 390000,
+      "priorKeyMs": 383333.3333,
+      "prerollGopMs": 6666.666700000002,
+      "latencyMs": 966.093722
+    },
+    {
+      "direction": "backward",
+      "targetMs": 150000,
+      "priorKeyMs": 150000.0,
+      "prerollGopMs": 0.0,
+      "latencyMs": 142.700264
+    },
+    {
+      "direction": "forward",
+      "targetMs": 396000,
+      "priorKeyMs": 391666.6667,
+      "prerollGopMs": 4333.333299999998,
+      "latencyMs": 611.90652
+    },
+    {
+      "direction": "backward",
+      "targetMs": 156000,
+      "priorKeyMs": 150000.0,
+      "prerollGopMs": 6000.0,
+      "latencyMs": 873.131963
+    },
+    {
+      "direction": "forward",
+      "targetMs": 402000,
+      "priorKeyMs": 400000.0,
+      "prerollGopMs": 2000.0,
+      "latencyMs": 382.734371
+    },
+    {
+      "direction": "backward",
+      "targetMs": 162000,
+      "priorKeyMs": 158333.3333,
+      "prerollGopMs": 3666.6667000000016,
+      "latencyMs": 561.355723
+    },
+    {
+      "direction": "forward",
+      "targetMs": 408000,
+      "priorKeyMs": 400000.0,
+      "prerollGopMs": 8000.0,
+      "latencyMs": 1128.310863
+    },
+    {
+      "direction": "backward",
+      "targetMs": 168000,
+      "priorKeyMs": 166666.6667,
+      "prerollGopMs": 1333.3332999999984,
+      "latencyMs": 309.753823
+    },
+    {
+      "direction": "forward",
+      "targetMs": 414000,
+      "priorKeyMs": 408333.3333,
+      "prerollGopMs": 5666.666700000002,
+      "latencyMs": 784.389745
+    },
+    {
+      "direction": "backward",
+      "targetMs": 174000,
+      "priorKeyMs": 166666.6667,
+      "prerollGopMs": 7333.333299999998,
+      "latencyMs": 1071.061066
+    },
+    {
+      "direction": "forward",
+      "targetMs": 366000,
+      "priorKeyMs": 358333.3333,
+      "prerollGopMs": 7666.666700000002,
+      "latencyMs": 1050.619897
+    },
+    {
+      "direction": "forward",
+      "targetMs": 420000,
+      "priorKeyMs": 416666.6667,
+      "prerollGopMs": 3333.3332999999984,
+      "latencyMs": 613.671395
+    },
+    {
+      "direction": "backward",
+      "targetMs": 180000,
+      "priorKeyMs": 175000.0,
+      "prerollGopMs": 5000.0,
+      "latencyMs": 823.684541
+    },
+    {
+      "direction": "forward",
+      "targetMs": 426000,
+      "priorKeyMs": 425000.0,
+      "prerollGopMs": 1000.0,
+      "latencyMs": 251.478234
+    },
+    {
+      "direction": "backward",
+      "targetMs": 186000,
+      "priorKeyMs": 183333.3333,
+      "prerollGopMs": 2666.6667000000016,
+      "latencyMs": 523.668595
+    },
+    {
+      "direction": "forward",
+      "targetMs": 432000,
+      "priorKeyMs": 425000.0,
+      "prerollGopMs": 7000.0,
+      "latencyMs": 1195.137828
+    },
+    {
+      "direction": "backward",
+      "targetMs": 192000,
+      "priorKeyMs": 191666.6667,
+      "prerollGopMs": 333.3332999999984,
+      "latencyMs": 164.827559
+    },
+    {
+      "direction": "forward",
+      "targetMs": 438000,
+      "priorKeyMs": 433333.3333,
+      "prerollGopMs": 4666.666700000002,
+      "latencyMs": 732.529073
+    },
+    {
+      "direction": "backward",
+      "targetMs": 198000,
+      "priorKeyMs": 191666.6667,
+      "prerollGopMs": 6333.333299999998,
+      "latencyMs": 843.258585
+    },
+    {
+      "direction": "forward",
+      "targetMs": 444000,
+      "priorKeyMs": 441666.6667,
+      "prerollGopMs": 2333.3332999999984,
+      "latencyMs": 440.239086
+    },
+    {
+      "direction": "backward",
+      "targetMs": 204000,
+      "priorKeyMs": 200000.0,
+      "prerollGopMs": 4000.0,
+      "latencyMs": 596.955393
+    },
+    {
+      "direction": "backward",
+      "targetMs": 126000,
+      "priorKeyMs": 125000.0,
+      "prerollGopMs": 1000.0,
+      "latencyMs": 269.392403
+    },
+    {
+      "direction": "forward",
+      "targetMs": 372000,
+      "priorKeyMs": 366666.6667,
+      "prerollGopMs": 5333.333299999998,
+      "latencyMs": 780.699286
+    },
+    {
+      "direction": "backward",
+      "targetMs": 132000,
+      "priorKeyMs": 125000.0,
+      "prerollGopMs": 7000.0,
+      "latencyMs": 955.262679
+    },
+    {
+      "direction": "forward",
+      "targetMs": 378000,
+      "priorKeyMs": 375000.0,
+      "prerollGopMs": 3000.0,
+      "latencyMs": 507.157635
+    },
+    {
+      "direction": "backward",
+      "targetMs": 138000,
+      "priorKeyMs": 133333.3333,
+      "prerollGopMs": 4666.666700000002,
+      "latencyMs": 677.594818
+    },
+    {
+      "direction": "forward",
+      "targetMs": 384000,
+      "priorKeyMs": 383333.3333,
+      "prerollGopMs": 666.6667000000016,
+      "latencyMs": 205.651271
+    },
+    {
+      "direction": "backward",
+      "targetMs": 144000,
+      "priorKeyMs": 141666.6667,
+      "prerollGopMs": 2333.3332999999984,
+      "latencyMs": 539.684012
+    }
+  ]
+}

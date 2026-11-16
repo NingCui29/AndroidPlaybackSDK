@@ -1,0 +1,4 @@
+suite=q04V01
+policy=AUTO
+rounds=1
+serial=10.67.116.12:5555

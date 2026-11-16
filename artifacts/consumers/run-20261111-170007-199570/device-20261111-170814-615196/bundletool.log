@@ -1,0 +1,66 @@
+Configuration on demand is an incubating feature.
+
+> Configure project :
+WARNING: The option 'android.enableBuildCache' is deprecated.
+The current default is 'false'.
+It was removed in version 7.0 of the Android Gradle plugin.
+The Android-specific build caches were superseded by the Gradle build cache (https://docs.gradle.org/current/userguide/build_cache.html).
+
+> Task :queryAcceptanceDevice
+
+[Incubating] Problems report is available at: file:///D:/Developer/WorkSpace/AndroidPlaybackSDK/acceptance/consumer/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3s
+1 actionable task: 1 executed
+Configuration on demand is an incubating feature.
+
+> Configure project :
+WARNING: The option 'android.enableBuildCache' is deprecated.
+The current default is 'false'.
+It was removed in version 7.0 of the Android Gradle plugin.
+The Android-specific build caches were superseded by the Gradle build cache (https://docs.gradle.org/current/userguide/build_cache.html).
+
+> Task :selectAcceptanceSplits
+11月 11, 2026 5:08:21 下午 com.android.tools.build.bundletool.commands.ExtractApksCommand lambda$extractMatchedApksFromApksArchive$5
+信息: Output directory 'C:\Users\Work\AppData\Local\Temp\consumer-splits-zhoj9us3\http-module-java' does not exist, creating it.
+The APKs have been extracted in the directory: C:\Users\Work\AppData\Local\Temp\consumer-splits-zhoj9us3\http-module-java
+
+[Incubating] Problems report is available at: file:///D:/Developer/WorkSpace/AndroidPlaybackSDK/acceptance/consumer/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
+Configuration on demand is an incubating feature.
+
+> Configure project :
+WARNING: The option 'android.enableBuildCache' is deprecated.
+The current default is 'false'.
+It was removed in version 7.0 of the Android Gradle plugin.
+The Android-specific build caches were superseded by the Gradle build cache (https://docs.gradle.org/current/userguide/build_cache.html).
+
+> Task :selectAcceptanceSplits
+11月 11, 2026 5:08:30 下午 com.android.tools.build.bundletool.commands.ExtractApksCommand lambda$extractMatchedApksFromApksArchive$5
+信息: Output directory 'C:\Users\Work\AppData\Local\Temp\consumer-splits-zhoj9us3\http-pom-kotlin' does not exist, creating it.
+The APKs have been extracted in the directory: C:\Users\Work\AppData\Local\Temp\consumer-splits-zhoj9us3\http-pom-kotlin
+
+[Incubating] Problems report is available at: file:///D:/Developer/WorkSpace/AndroidPlaybackSDK/acceptance/consumer/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed

@@ -1,0 +1,8 @@
+group,round,cycle,phase,monoMs,event,number,value,detail
+q04Pilot,1,1,playing,8456020,cycleStart,8000,384000,A03.flac
+q04Pilot,1,1,playing,8464033,cycleEnd,8000,8013070,
+q04Pilot,1,1,playing,8464033,audioFrames,384000,384000,
+q04Pilot,1,1,playing,8464033,videoFrames,0,0,
+q04Pilot,1,1,playing,8464033,videoMaxSubmitGapMs,0,0,
+q04Pilot,1,1,boundary,8464033,roundEnd,8000,8013726,AUTO
+q04Pilot,1,1,idle,8469067,suiteFinished,1,0,q04Pilot

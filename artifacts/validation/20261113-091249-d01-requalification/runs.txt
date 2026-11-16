@@ -1,0 +1,6 @@
+surface-AUTO FAILED: Failed device test. See artifacts\validation\20261113-091249-d01-requalification\surface-AUTO
+timestamps-SOFTWARE_ONLY PASS
+timestamps-HARDWARE_ONLY PASS
+audioTracks-AUTO FAILED: Failed device test. See artifacts\validation\20261113-091249-d01-requalification\audioTracks-AUTO
+dynamic-HARDWARE_ONLY PASS
+q03-AUTO PASS

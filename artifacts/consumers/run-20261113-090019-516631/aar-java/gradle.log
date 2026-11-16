@@ -1,0 +1,94 @@
+
+Welcome to Gradle 8.13!
+
+Here are the highlights of this release:
+ - Daemon JVM auto-provisioning
+ - Enhancements for Scala plugin and JUnit testing
+ - Improvements for build authors and plugin developers
+
+For more details see https://docs.gradle.org/8.13/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Shared read-only dependency cache is an incubating feature.
+
+> Task :recordResolution
+MODE aar LANGUAGE java METADATA module
+SOURCE C:\Users\Work\.gradle\ap-kpgw06gd\direct\android-playback-sdk-1.0.0-rc.1.aar
+ARTIFACT android-playback-sdk-1.0.0-rc.1.aar [local file] android-playback-sdk-1.0.0-rc.1.aar 03b291912c0fef1dae76c5147602863a1e52b336af3b682f2ab65bf5333b134e
+
+> Task :preBuild UP-TO-DATE
+> Task :preReleaseBuild UP-TO-DATE
+> Task :mergeReleaseJniLibFolders
+> Task :mergeReleaseNativeLibs
+> Task :checkReleaseDuplicateClasses
+> Task :javaPreCompileRelease
+> Task :processReleaseNavigationResources
+> Task :checkReleaseAarMetadata
+> Task :compileReleaseNavigationResources
+> Task :generateReleaseResValues
+> Task :mapReleaseSourceSetPaths
+> Task :stripReleaseDebugSymbols
+> Task :generateReleaseResources
+> Task :extractReleaseNativeSymbolTables
+> Task :mergeReleaseResources
+> Task :mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :packageReleaseResources
+> Task :createReleaseCompatibleScreenManifests
+> Task :extractDeepLinksRelease
+> Task :parseReleaseLocalResources
+> Task :processReleaseMainManifest
+> Task :processReleaseManifest
+> Task :processReleaseManifestForPackage
+> Task :mergeReleaseArtProfile
+> Task :extractProguardFiles
+> Task :processReleaseJavaRes NO-SOURCE
+> Task :mergeReleaseStartupProfile
+> Task :mergeReleaseShaders
+> Task :compileReleaseShaders NO-SOURCE
+> Task :generateReleaseAssets UP-TO-DATE
+> Task :mergeReleaseAssets
+> Task :compressReleaseAssets
+> Task :mergeReleaseJavaResource
+> Task :extractReleaseVersionControlInfo
+> Task :collectReleaseDependencies
+> Task :sdkReleaseDependencyData
+> Task :validateSigningRelease
+> Task :writeReleaseAppMetadata
+> Task :writeReleaseSigningConfigVersions
+> Task :processReleaseResources
+> Task :compileReleaseJavaWithJavac
+> Task :expandReleaseArtProfileWildcards
+> Task :mergeReleaseGeneratedProguardFiles
+> Task :generateReleaseLintVitalReportModel
+
+> Task :minifyReleaseWithR8 FAILED
+ERROR: Missing classes detected while running R8. Please add the missing classes or apply additional keep rules that are generated in C:\Users\Work\.gradle\ap-kpgw06gd\aar-java\built\outputs\mapping\release\missing_rules.txt.
+ERROR: R8: Missing class org.jetbrains.annotations.NotNull (referenced from: com.cn.media.playback.PlayerSnapshot com.cn.media.playback.CommandResult.snapshot and 31 other contexts)
+Missing class org.jetbrains.annotations.Nullable (referenced from: java.lang.Long com.cn.media.playback.CommandResult.actualPositionMs and 10 other contexts)
+
+> Task :lintVitalAnalyzeRelease
+
+[Incubating] Problems report is available at: file:///C:/Users/Work/.gradle/ap-kpgw06gd/aar-java/built/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':minifyReleaseWithR8'.
+> A failure occurred while executing com.android.build.gradle.internal.tasks.R8Task$R8Runnable
+   > Compilation failed to complete
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 22s
+41 actionable tasks: 41 executed

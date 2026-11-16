@@ -1,0 +1,9 @@
+file AUTO Evidence: artifacts\validation\20261111-164420-formats
+file SOFTWARE_ONLY FAILED Failed device test. See artifacts\validation\20261111-164445-formats
+file HARDWARE_ONLY Evidence: artifacts\validation\20261111-164509-formats
+uri AUTO Evidence: artifacts\validation\20261111-164525-formats
+uri SOFTWARE_ONLY FAILED Failed device test. See artifacts\validation\20261111-164550-formats
+uri HARDWARE_ONLY Evidence: artifacts\validation\20261111-164614-formats
+fd AUTO Evidence: artifacts\validation\20261111-164631-formats
+fd SOFTWARE_ONLY FAILED Failed device test. See artifacts\validation\20261111-164656-formats
+fd HARDWARE_ONLY Evidence: artifacts\validation\20261111-164720-formats

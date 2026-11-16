@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "aarSha256": "e271c519539854850993c5de5e927b34cfb1ab516a544d5dc1d264b05e4674b8",
+  "correspondingSourceSha256": "d8dad506532fe6fa42c820c9d4b1e927fe882ae637bfd984112d5bfce6619b5e",
+  "kernelSha256": "9be489e37c3966878c3c34fc3a910d34fa3c3d7c1ae4f7262907c69291121935",
+  "initramfsSha256": "d70ccaad22d86c1ceee6092bca1e801fcd194ac99c2df11dd14836173be31ab3",
+  "uartSha256": "e6e909c94cd7d8872664056f4ed20bd4db15ca8c003ac1d705381b0b0da90e8e",
+  "guestPayloads": {
+    "probe/libavcodec.so": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+    "probe/libavformat.so": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+    "probe/libavutil.so": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+    "probe/libplayback.so": "f176b3398ec5adbb10c3b6b82822e4b9a26b9b115cedb47c68a04381d9739e6c",
+    "probe/libswresample.so": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+    "probe/libswscale.so": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+    "probe/A04.wav": "c8b9f0c0aa93886f06b200b2ee27a08886810785ebf018ece455a4caa6a9a228",
+    "probe/A02.m4a": "80e5dfdc0b091efb49f352d74d40ccfe089e46c5019d44409726b46bb5c110f5",
+    "init": "a5f4375888ea06396bcd776125d4fa832fece4f82ee1b799e045f280a2a4572a",
+    "probe/rgba": "cc94f91eef81acd2951a7176489d0bcbfc3b637f51e3379eb12223d43dde794c",
+    "probe/pcm": "ebb9f7118fde49cb4ee1515fa2ee8a18736ba7bf436fd4c06f0e2d8326d287ac",
+    "probe/cache": "fbfb07954a21e02b5e357405407708873e7170e3f2295a3c3de74be89d79b46e"
+  },
+  "testSources": {
+    "rgba_checks.c": "8233ed10970eea9e1b3627c39ca7ca5f926e05e912373e21d4f1bd9db732db5a",
+    "pcm_output_checks.c": "6366c8a0db63673c5188c52d08c8949900d47b5c3e773decf9258a0f83e0005c",
+    "recovery_cache.c": "bd76a1ddcc2f38fcdf4a6da32b090c68cf940a1d1dd2a1cb02d98ee2360f7b48"
+  },
+  "expectedWavPcmSha256": "4c0c474c8a7ebdc3c023d250f82adcfa030f2b5b564ec788ad594e5b2d39f7a7",
+  "scope": "Digital PCM, RGBA and cache functions; no Android framework or physical output."
+}

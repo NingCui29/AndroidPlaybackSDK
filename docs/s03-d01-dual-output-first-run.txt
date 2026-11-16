@@ -1,0 +1,4 @@
+D01 V01, original dual JNI session, API 32. Previous application build.
+Instrumentation returned code 0 (failure); checkVideo: AssertionError: Audio frames: -1.
+PcmOutput.drain did not confirm content consumption. Last playback head and submitted
+count were not captured by this revision. No end-to-end pass or A/V skew is claimed.

@@ -1,0 +1,3 @@
+INSTRUMENTATION_RESULT: V02_geometry=surface=3840x2160 fitted=1215x2160 red=fffc0000 blue=ff0000fd bar=ff000000 rotation=270
+INSTRUMENTATION_RESULT: V11_late=submitted=106 received=106 dropped=14 frameBytes=1417053 matrix=BT.709 range=limited
+INSTRUMENTATION_CODE: -1

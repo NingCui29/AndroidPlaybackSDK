@@ -1,0 +1,52 @@
+
+Welcome to Gradle 8.13!
+
+Here are the highlights of this release:
+ - Daemon JVM auto-provisioning
+ - Enhancements for Scala plugin and JUnit testing
+ - Improvements for build authors and plugin developers
+
+For more details see https://docs.gradle.org/8.13/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Shared read-only dependency cache is an incubating feature.
+
+> Task :recordResolution
+MODE aar LANGUAGE java METADATA module
+SOURCE C:\Users\Work\.gradle\ap-2sufww65\direct\android-playback-sdk-1.0.0-rc.1.aar
+ARTIFACT android-playback-sdk-1.0.0-rc.1.aar [local file] android-playback-sdk-1.0.0-rc.1.aar e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24
+ARTIFACT other-sdk.aar [local file] other-sdk.aar cfd4ce3be86b0a005deecdc6e183c0c19a48c3dab7934ba4f6cc24525de4caf9
+
+> Task :preBuild UP-TO-DATE
+> Task :preReleaseBuild UP-TO-DATE
+> Task :mergeReleaseJniLibFolders
+> Task :mergeReleaseNativeLibs FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/Work/.gradle/ap-2sufww65/native-collision/built/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':mergeReleaseNativeLibs'.
+> A failure occurred while executing com.android.build.gradle.internal.tasks.MergeNativeLibsTask$MergeNativeLibsTaskWorkAction
+   > 2 files found with path 'lib/arm64-v8a/libavutil.so' from inputs:
+      - C:\Users\Work\.gradle\ap-2sufww65\native-collision\gradle-home\caches\8.13\transforms\04d1cca280c41dac4de9e2e7416e9fb6\transformed\android-playback-sdk-1.0.0-rc.1\jni\arm64-v8a\libavutil.so
+      - C:\Users\Work\.gradle\ap-2sufww65\native-collision\gradle-home\caches\8.13\transforms\bac9d0daeb8a18589194cdcd94e20b53\transformed\other-sdk\jni\arm64-v8a\libavutil.so
+     If you are using jniLibs and CMake IMPORTED targets, see
+     https://developer.android.com/r/tools/jniLibs-vs-imported-targets
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 45s
+3 actionable tasks: 3 executed

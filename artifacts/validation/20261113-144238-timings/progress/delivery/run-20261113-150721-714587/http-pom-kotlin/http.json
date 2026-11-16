@@ -1,0 +1,17 @@
+[
+  {
+    "method": "GET",
+    "path": "/pom/com/cn/media/android-playback-sdk/1.0.0-rc.1/android-playback-sdk-1.0.0-rc.1.pom",
+    "status": 200
+  },
+  {
+    "method": "HEAD",
+    "path": "/pom/com/cn/media/android-playback-sdk/1.0.0-rc.1/android-playback-sdk-1.0.0-rc.1.aar",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/pom/com/cn/media/android-playback-sdk/1.0.0-rc.1/android-playback-sdk-1.0.0-rc.1.aar",
+    "status": 200
+  }
+]

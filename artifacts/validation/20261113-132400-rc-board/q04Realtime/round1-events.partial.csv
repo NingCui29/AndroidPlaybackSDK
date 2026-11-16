@@ -1,0 +1,8 @@
+group,round,cycle,phase,monoMs,event,number,value,detail
+q04Realtime,1,1,playing,15273181,cycleStart,600000,28800000,V01.mp4
+q04Realtime,1,1,playing,15873160,cycleEnd,600000,599977896,c2.rk.avc.decoder
+q04Realtime,1,1,playing,15873160,audioFrames,28800000,28800000,
+q04Realtime,1,1,playing,15873160,videoFrames,18000,0,
+q04Realtime,1,1,playing,15873160,videoMaxSubmitGapMs,190,0,
+q04Realtime,1,1,boundary,15873160,roundEnd,600000,599978872,AUTO
+q04Realtime,2,1,playing,15878279,cycleStart,600000,28800000,V01.mp4

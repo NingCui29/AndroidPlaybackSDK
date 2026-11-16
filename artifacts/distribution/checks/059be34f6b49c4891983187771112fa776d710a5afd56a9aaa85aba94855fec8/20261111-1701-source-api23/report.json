@@ -1,0 +1,28 @@
+{
+  "aarSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+  "sourceZipSha256": "3e3140a41438f5cd4e9ed1c3320cbe93434fd2866e3d11ebb25539d0ef5fa6e0",
+  "ffmpegRecipeSha256": "4939b82b4ce44f65aeec838182a8dc89ea667c26be5e5c64a15ad945190b08dc",
+  "rebuiltAarSha256": "7e6569b7756abaab8c5627d2ea600f909dd103757722f08a56470a6104634f81",
+  "rebuiltAarBytes": 3179338,
+  "matchingClassFiles": 33,
+  "publishedNative": {
+    "jni/arm64-v8a/libavcodec.so": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+    "jni/arm64-v8a/libavformat.so": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+    "jni/arm64-v8a/libavutil.so": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+    "jni/arm64-v8a/libplayback.so": "26ba3fd7ac4c33fbc9f9f55f914472214ceba6d4e9834c49ec8910a7cbacdf88",
+    "jni/arm64-v8a/libswresample.so": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+    "jni/arm64-v8a/libswscale.so": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308"
+  },
+  "rebuiltNative": {
+    "jni/arm64-v8a/libavcodec.so": "7fb0781b9756c1d8b39f8c703376ab3f2446e035a1691a9f7ea2364644452292",
+    "jni/arm64-v8a/libavformat.so": "272d0e51b9eff312deeb64eb1883a1676a30de1ec6c775cce47e6123f641af6f",
+    "jni/arm64-v8a/libavutil.so": "7e8b6584e2312e4d35436030c8fa0e23631cf5e254db5d446cda290319de0fed",
+    "jni/arm64-v8a/libplayback.so": "0c588ff53c780c6414b497f3a7831400092b035afe8a2851d16e081fb6651f9c",
+    "jni/arm64-v8a/libswresample.so": "96e2afa2ccf0957bd847b369b14db03ebe6f74e52cb47b0f57409bbfdb77c8ec",
+    "jni/arm64-v8a/libswscale.so": "4a8383bf8deda6bb10d2560aea9147991141c23aaaa55c93954ed4545863f4d3"
+  },
+  "installedHeaders": 136,
+  "minSdk": 23,
+  "lint": "NewApi, AGP 8.13.0, zero issues; negative control detected unguarded API 29",
+  "api23Device": "unavailable"
+}

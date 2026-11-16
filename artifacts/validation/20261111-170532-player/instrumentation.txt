@@ -1,0 +1,6 @@
+INSTRUMENTATION_RESULT: blockedStopMs=1
+INSTRUMENTATION_RESULT: pausedSeekMs=605
+INSTRUMENTATION_RESULT: publicApi=V01/A02 pause, seek, EOS, reuse, cancel, release passed
+INSTRUMENTATION_RESULT: surfaceFramesReceived=55
+INSTRUMENTATION_RESULT: volumeAfterUnmuteMillis=400
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,10 @@
+INFO         | Android emulator version 36.6.11.0 (build_id 15507667) (CL:N/A)
+INFO         | Graphics backend: gfxstream
+DEBUG   | Current emulator version 36.6.11 is the same as the required version 36.6.11.
+INFO         | Found AVD name 'apsdk-api23-arm64'
+INFO         | Found AVD target architecture: arm64
+INFO         | argv[0]: 'C:\Users\Work\AppData\Local\Android\Sdk\emulator\emulator.exe'; program directory: 'C:\Users\Work\AppData\Local\Android\Sdk\emulator'
+INFO         | Found systemPath C:\Users\Work\AppData\Local\Android\Sdk\system-images\android-23\default\arm64-v8a\
+INFO         | emuDirName: 'C:\Users\Work\AppData\Local\Android\Sdk\emulator'
+INFO         | try dir C:\Users\Work\AppData\Local\Android\Sdk\emulator
+FATAL        | QEMU2 emulator does not support arm64 CPU architecture

@@ -1,0 +1,20 @@
+Performing Streamed Install
+Success
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-0=detachMs=42.399588 firstSubmitMs=1510.83611 version=3 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-1=detachMs=41.153587 firstSubmitMs=1503.990984 version=5 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-2=detachMs=17.097794 firstSubmitMs=1546.450072 version=7 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-3=detachMs=25.419044 firstSubmitMs=1793.666472 version=9 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-4=detachMs=20.223294 firstSubmitMs=1744.914967 version=11 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-5=detachMs=21.68746 firstSubmitMs=1593.869826 version=13 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-6=detachMs=28.88492 firstSubmitMs=1775.722262 version=15 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-7=detachMs=11.841668 firstSubmitMs=1819.758391 version=17 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-8=detachMs=31.609961 firstSubmitMs=1887.361773 version=19 from=bind backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-9=detachMs=15.900794 firstSubmitMs=1891.825732 version=21 from=resume backend=ffmpeg
+INSTRUMENTATION_RESULT: V01.mp4-SOFTWARE_ONLY-summary=detachP95=42.399588 submitP95=1891.825732
+INSTRUMENTATION_RESULT: failure=java.lang.AssertionError: Direct bind or detach P95 missed
+	at com.cn.media.playback.PlayerChecks.check(PlayerChecks.java:61)
+	at com.cn.media.playback.PlayerChecks.surfaceLifecycle(PlayerChecks.java:775)
+	at com.cn.media.playback.InputChecks.onStart(InputChecks.java:95)
+	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2278)
+
+INSTRUMENTATION_CODE: 0

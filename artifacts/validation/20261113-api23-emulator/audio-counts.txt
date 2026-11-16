@@ -1,0 +1,10 @@
+WARNING: linker: ./decode_count: unsupported flags DT_FLAGS_1=0x8000001
+
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x7df9265000] Protocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
+
+decoded=576512 expected=576512 status=0
+
+WARNING: linker: ./decode_count: unsupported flags DT_FLAGS_1=0x8000001
+
+decoded=384000 expected=384000 status=0
+

@@ -1,0 +1,60 @@
+{
+  "aarSha256": "e271c519539854850993c5de5e927b34cfb1ab516a544d5dc1d264b05e4674b8",
+  "samples": {
+    "V01.mp4": {
+      "fixtureSha256": "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30",
+      "packets": 320,
+      "timeBase": "1/15360",
+      "scope": "first 320 demuxed video packets",
+      "lengthBytes": 4,
+      "decreasingPtsPairs": 135,
+      "timestampAndAnnexBHash": "47a791b595a5bf5572f7982c572c5dead1ad70cdf4f7df6e735a618aa73e4edf",
+      "result": "PASS 320 packets"
+    },
+    "V03.mp4": {
+      "fixtureSha256": "1c7ffe786cef9352193b627201c3d1bb6294fb97dd520e63f4742dede501f1b3",
+      "packets": 200,
+      "timeBase": "1/12800",
+      "scope": "full video stream",
+      "lengthBytes": 4,
+      "decreasingPtsPairs": 100,
+      "timestampAndAnnexBHash": "b4bce23402fd3a32ce5e962cf71b2b0cf9d90d27c9806ed898ce543a6ac38079",
+      "result": "PASS 200 packets"
+    },
+    "V04.mkv": {
+      "fixtureSha256": "0c90ee9733460de36f31610f9f10c0f3fd56023ef11482c16953e3a58d09db21",
+      "packets": 200,
+      "timeBase": "1/1000",
+      "scope": "full video stream",
+      "lengthBytes": 4,
+      "decreasingPtsPairs": 100,
+      "timestampAndAnnexBHash": "210783d6c30adcf20ddcbfa5e8a8960b6621011fe71b465cc04b84c45624da3f",
+      "result": "PASS 200 packets"
+    },
+    "V10.ts": {
+      "fixtureSha256": "1613e513d5771883ac5d07c7e1c3322d3ce668703403849b865d390dc7fc844b",
+      "packets": 200,
+      "timeBase": "1/90000",
+      "scope": "full video stream",
+      "lengthBytes": 0,
+      "decreasingPtsPairs": 94,
+      "timestampAndAnnexBHash": "83913f746fd3fef127f403fcb10dc8b1b5da0dab2fb9d364af1c745522604efc",
+      "result": "PASS 200 packets"
+    },
+    "V11.mp4": {
+      "fixtureSha256": "d68cc92b653ed69c2b15eac94cabc56f6254f5cfaee36cb910d2f03081e5c2c1",
+      "packets": 750,
+      "timeBase": "1/15360",
+      "scope": "full video stream",
+      "lengthBytes": 4,
+      "decreasingPtsPairs": 265,
+      "timestampAndAnnexBHash": "54b051101a439bf9ff1f155431c8faf6075426c3708c173f4c3f4ba71a181f20",
+      "result": "PASS 750 packets"
+    }
+  },
+  "ffprobe": "ffprobe version git-2019-10-22-0b8956b Copyright (c) 2007-2019 the FFmpeg developers",
+  "parameterVariants": [
+    "PASS h264 3 changing SPS dimensions, lengths 1/2/4, configuration + AU, malformed/truncated",
+    "PASS hevc 3 changing SPS dimensions, lengths 1/2/4, configuration + AU, malformed/truncated"
+  ]
+}

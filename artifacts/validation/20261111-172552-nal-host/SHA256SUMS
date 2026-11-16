@@ -1,0 +1,4 @@
+f9897e9d333d8b0b8f09e1465c161d4be291d2be61a2d8bf327d9c2e675e77e5  sdk/src/main/java/com/cn/media/playback/NalAdapter.java
+7a8edee85f65d5f8a0fa77b6987b38b93de11ce19ec2fb080dca83c7bc811ec1  sdk/src/main/java/com/cn/media/playback/NalParameters.java
+5f773aeec8cf606de4ef7ff2dcd5e685e898f546bffd4c748a27152e90529988  native-tests/NalAdapterChecks.java
+ce2061f3dd72c27630acade4436726a2d9c2a1c0295e6cd31f5c1627e31b9deb  testdata/hardware/manifest.json

@@ -1,0 +1,98 @@
+buildscript {
+    repositories { google(); mavenCentral() }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.0'
+        if (project.findProperty('hostLanguage') == 'kotlin') {
+            classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20'
+        }
+    }
+}
+apply plugin: 'com.android.application'
+def language = providers.gradleProperty('hostLanguage').getOrElse('java')
+if (!(language in ['java', 'kotlin'])) throw new GradleException("Invalid host language: ${language}")
+if (language == 'kotlin') apply plugin: 'org.jetbrains.kotlin.android'
+def sdkMode = providers.gradleProperty('sdkMode').getOrElse('aar')
+if (!(sdkMode in ['aar', 'maven', 'tools'])) throw new GradleException("Invalid SDK mode: ${sdkMode}")
+def versionUsed = providers.gradleProperty('sdkVersion').getOrElse('1.0.0-rc.1')
+if (project.hasProperty('hostOutput')) layout.buildDirectory.set(file(project.property('hostOutput')))
+
+android {
+    namespace 'dev.playback.acceptance'
+    compileSdk 35
+    defaultConfig {
+        applicationId "dev.playback.acceptance.${language}"
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1'
+        ndk { abiFilters 'arm64-v8a' }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+        }
+    }
+    sourceSets.main.java.srcDirs = ['src/main/java', "src/${language}Host"]
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+if (language == 'kotlin') {
+    kotlin.compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+}
+dependencies {
+    if (sdkMode == 'aar') implementation files(providers.gradleProperty('sdkAar').get())
+    else if (sdkMode == 'maven') implementation "com.cn.media:android-playback-sdk:${versionUsed}"
+    if (project.hasProperty('collisionAar')) implementation files(project.property('collisionAar'))
+}
+tasks.register('recordResolution') {
+    doLast {
+        def cfg = configurations.releaseRuntimeClasspath
+        println "MODE ${sdkMode} LANGUAGE ${language} METADATA ${project.findProperty('sdkMetadata') ?: 'n/a'}"
+        println "SOURCE ${sdkMode == 'aar' ? project.property('sdkAar') : project.property('sdkRepository')}"
+        for (artifact in cfg.incoming.artifacts.artifacts) {
+            def digest = java.security.MessageDigest.getInstance('SHA-256')
+            artifact.file.withInputStream { stream -> stream.transferTo(new java.security.DigestOutputStream(OutputStream.nullOutputStream(), digest)) }
+            println "ARTIFACT ${artifact.id.componentIdentifier} [${artifact.variant.displayName}] ${artifact.file.name} ${digest.digest().encodeHex()}"
+        }
+        cfg.incoming.resolutionResult.allDependencies { dep ->
+            if (dep instanceof org.gradle.api.artifacts.result.ResolvedDependencyResult)
+                println "EDGE ${dep.from.id} -> ${dep.selected.id}"
+        }
+    }
+}
+// Uses the bundletool version already pinned by AGP. The generated key is for this test host only.
+tasks.register('buildAcceptanceApks', JavaExec) {
+    dependsOn 'bundleRelease'
+    classpath = buildscript.configurations.classpath
+    mainClass.set('com.android.tools.build.bundletool.BundleToolMain')
+    doFirst {
+        def bundle = fileTree(layout.buildDirectory.dir('outputs/bundle/release')).matching { include '*.aab' }.singleFile
+        def executable = System.getProperty('os.name').startsWith('Windows') ? 'aapt2.exe' : 'aapt2'
+        def aapt = new File(android.sdkDirectory, "build-tools/${android.buildToolsVersion}/${executable}")
+        args 'build-apks', "--bundle=${bundle}", "--output=${layout.buildDirectory.file('host.apks').get().asFile}",
+                "--aapt2=${aapt}", "--ks=${android.signingConfigs.debug.storeFile}", '--ks-pass=pass:android',
+                '--ks-key-alias=androiddebugkey', '--key-pass=pass:android', '--overwrite'
+    }
+}
+
+tasks.register('queryAcceptanceDevice', JavaExec) {
+    classpath = buildscript.configurations.classpath
+    mainClass.set('com.android.tools.build.bundletool.BundleToolMain')
+    doFirst {
+        args 'get-device-spec', "--device-id=${project.property('deviceId')}",
+                "--adb=${project.property('adbPath')}", "--output=${project.property('specOutput')}", '--overwrite'
+    }
+}
+
+tasks.register('selectAcceptanceSplits', JavaExec) {
+    classpath = buildscript.configurations.classpath
+    mainClass.set('com.android.tools.build.bundletool.BundleToolMain')
+    doFirst {
+        args 'extract-apks', "--apks=${project.property('apksArchive')}",
+                "--device-spec=${project.property('specOutput')}", "--output-dir=${project.property('selectedDir')}"
+    }
+}

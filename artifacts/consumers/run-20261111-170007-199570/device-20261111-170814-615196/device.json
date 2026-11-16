@@ -1,0 +1,100 @@
+{
+  "device": {
+    "serial": "10.67.116.12:5555",
+    "pageBytes": "4096",
+    "firmware": "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261111.0441:userdebug/release-keys",
+    "sdk": "32",
+    "abis": "arm64-v8a,armeabi-v7a,armeabi"
+  },
+  "sdkSha256": "059be34f6b49c4891983187771112fa776d710a5afd56a9aaa85aba94855fec8",
+  "fixturesSha256": {
+    "V01.mp4": "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30",
+    "A01.mp3": "52678effc0aa90c2778f80431ec87adfddc4b6ca61e96811b2ac379f7adb2a8f"
+  },
+  "cases": {
+    "http-module-java": {
+      "package": "dev.playback.acceptance.java",
+      "artifact": "host.apks",
+      "samples": {
+        "V01": {
+          "sample": "V01",
+          "application": "dev.playback.acceptance.java",
+          "audioCodec": "aac",
+          "videoCodec": "h264",
+          "audioFramesConsumed": 22528,
+          "videoFramesSubmitted": 15,
+          "backend": "c2.rk.avc.decoder",
+          "visibleNonuniformFrame": true,
+          "seekActualMs": 1500,
+          "resumedPositionMs": 1990,
+          "outcome": "PASS",
+          "elapsedMs": 1306
+        },
+        "A01": {
+          "sample": "A01",
+          "application": "dev.playback.acceptance.java",
+          "audioCodec": "mp3",
+          "audioFramesConsumed": 23552,
+          "videoFramesSubmitted": 0,
+          "backend": "",
+          "seekActualMs": 1500,
+          "resumedPositionMs": 2012,
+          "outcome": "PASS",
+          "elapsedMs": 1162
+        }
+      },
+      "splitDigests": {
+        "base-arm64_v8a.apk": "f0985dddeac0b1be22033fd2b973dcb05c8071f77c1eff971598a139969d3e2d",
+        "base-master_2.apk": "f8a6167a6eea389e906eedb122435a1400e49a2c735d6de154f7aded4e5b540b"
+      },
+      "installOutput": "Success",
+      "installedPaths": [
+        "package:/data/app/~~czYskv2af6ftSENrXugT7w==/dev.playback.acceptance.java-uoWR_r4nTYcdBYWkTekLXQ==/base.apk",
+        "package:/data/app/~~czYskv2af6ftSENrXugT7w==/dev.playback.acceptance.java-uoWR_r4nTYcdBYWkTekLXQ==/split_config.arm64_v8a.apk"
+      ],
+      "outcome": "PASS"
+    },
+    "http-pom-kotlin": {
+      "package": "dev.playback.acceptance.kotlin",
+      "artifact": "host.apks",
+      "samples": {
+        "V01": {
+          "sample": "V01",
+          "application": "dev.playback.acceptance.kotlin",
+          "audioCodec": "aac",
+          "videoCodec": "h264",
+          "audioFramesConsumed": 23552,
+          "videoFramesSubmitted": 15,
+          "backend": "c2.rk.avc.decoder",
+          "visibleNonuniformFrame": true,
+          "seekActualMs": 1500,
+          "resumedPositionMs": 2012,
+          "outcome": "PASS",
+          "elapsedMs": 1303
+        },
+        "A01": {
+          "sample": "A01",
+          "application": "dev.playback.acceptance.kotlin",
+          "audioCodec": "mp3",
+          "audioFramesConsumed": 21504,
+          "videoFramesSubmitted": 0,
+          "backend": "",
+          "seekActualMs": 1500,
+          "resumedPositionMs": 1990,
+          "outcome": "PASS",
+          "elapsedMs": 1138
+        }
+      },
+      "splitDigests": {
+        "base-arm64_v8a.apk": "4da8f1a866199d466c26845bdc0ead5ad14b1f642a5a80836c78356feb8a0817",
+        "base-master_2.apk": "8b03029dea1a5526d1eeac0249953731fa128cddff630e5d49e1688949db838d"
+      },
+      "installOutput": "Success",
+      "installedPaths": [
+        "package:/data/app/~~8uB-RbmwXoDXrxyVMCiMGA==/dev.playback.acceptance.kotlin-R0sUbqK6LEkzaYHJ7Nv8Lg==/base.apk",
+        "package:/data/app/~~8uB-RbmwXoDXrxyVMCiMGA==/dev.playback.acceptance.kotlin-R0sUbqK6LEkzaYHJ7Nv8Lg==/split_config.arm64_v8a.apk"
+      ],
+      "outcome": "PASS"
+    }
+  }
+}

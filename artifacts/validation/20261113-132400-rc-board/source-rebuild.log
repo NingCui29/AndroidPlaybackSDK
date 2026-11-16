@@ -1,0 +1,68 @@
+Configuration on demand is an incubating feature.
+
+> Configure project :sdk
+WARNING: The option 'android.enableBuildCache' is deprecated.
+The current default is 'false'.
+It was removed in version 7.0 of the Android Gradle plugin.
+The Android-specific build caches were superseded by the Gradle build cache (https://docs.gradle.org/current/userguide/build_cache.html).
+
+> Task :sdk:preBuild UP-TO-DATE
+> Task :sdk:preReleaseBuild UP-TO-DATE
+> Task :sdk:checkReleaseAarMetadata
+> Task :sdk:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :sdk:buildCMakeRelWithDebInfo[arm64-v8a]
+> Task :sdk:mergeReleaseJniLibFolders
+> Task :sdk:generateReleaseResValues FROM-CACHE
+> Task :sdk:extractDeepLinksForAarRelease FROM-CACHE
+> Task :sdk:generateReleaseResources FROM-CACHE
+> Task :sdk:packageReleaseResources FROM-CACHE
+> Task :sdk:mergeReleaseNativeLibs
+> Task :sdk:processReleaseNavigationResources FROM-CACHE
+> Task :sdk:parseReleaseLocalResources FROM-CACHE
+> Task :sdk:generateReleaseRFile FROM-CACHE
+> Task :sdk:stripReleaseDebugSymbols
+> Task :sdk:extractReleaseAnnotations FROM-CACHE
+> Task :sdk:mergeReleaseShaders
+> Task :sdk:compileReleaseShaders NO-SOURCE
+> Task :sdk:generateReleaseAssets UP-TO-DATE
+> Task :sdk:mergeReleaseAssets
+> Task :sdk:copyReleaseJniLibsProjectAndLocalJars
+> Task :sdk:javaPreCompileRelease FROM-CACHE
+> Task :sdk:compileReleaseJavaWithJavac FROM-CACHE
+> Task :sdk:mergeReleaseGeneratedProguardFiles
+> Task :sdk:mergeReleaseConsumerProguardFiles
+> Task :sdk:prepareLintJarForPublish
+> Task :sdk:prepareReleaseArtProfile
+> Task :sdk:processReleaseManifest FROM-CACHE
+> Task :sdk:processReleaseJavaRes
+> Task :sdk:writeReleaseAarMetadata
+> Task :sdk:mapReleaseSourceSetPaths
+> Task :sdk:mergeReleaseJavaResource
+> Task :sdk:mergeReleaseResources FROM-CACHE
+> Task :sdk:syncReleaseLibJars FROM-CACHE
+> Task :sdk:bundleReleaseAar
+> Task :sdk:verifyReleaseResources FROM-CACHE
+> Task :sdk:assembleRelease
+> Task :sdk:extractProguardFiles
+> Task :sdk:generateReleaseLintReportModel
+> Task :sdk:bundleReleaseLocalLintAar
+> Task :sdk:preReleaseUnitTestBuild UP-TO-DATE
+> Task :sdk:writeReleaseLintModelMetadata
+> Task :sdk:bundleLibRuntimeToJarRelease
+> Task :sdk:createFullJarRelease
+> Task :sdk:generateReleaseUnitTestLintModel
+> Task :sdk:lintAnalyzeReleaseUnitTest
+> Task :sdk:lintAnalyzeRelease
+> Task :sdk:lintReportRelease
+> Task :sdk:lintRelease
+
+[Incubating] Problems report is available at: file:///C:/Users/Work/AppData/Local/Temp/apsdk-rc-d6e8-ff8ea60c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 17s
+43 actionable tasks: 29 executed, 14 from cache

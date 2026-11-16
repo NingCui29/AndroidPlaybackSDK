@@ -1,0 +1,10 @@
+{
+  "build.gradle": "12b8afe74d3193b72b5705d4f61247db97ea0afedaa6a206878b307eaf53471c",
+  "gradle.properties": "1f79ace7b1b953ba1480ae736e88de58c54f5a388c8a986649a29a44144accd5",
+  "settings.gradle": "da7209376a67d7d40ae4f81224487d528bac792e293016354bdeff9bdf63f482",
+  "src/javaHost/dev/playback/acceptance/HostBinding.java": "45c2572b49e8fb04387f4e094ad13959e5b5bbced6941c57d0eca0bcab73ead6",
+  "src/kotlinHost/dev/playback/acceptance/HostBinding.kt": "c709f50074e9a8c3d6a66886e0b2f1fa0ea30be381695078636b2082b6e8af93",
+  "src/main/AndroidManifest.xml": "72725cd1e171f0c19c1d32d09804e917d81463df5f9956094791ab442d0023f7",
+  "src/main/java/dev/playback/acceptance/HostCommands.java": "82d36568ab996deda5647b50d6607c2dcc51068b730a774d3ee94f31d702e391",
+  "src/main/java/dev/playback/acceptance/SmokeActivity.java": "4fe25bc3167472abea98a6a22753f15e486290ffa5d7dcb640e78ef79cbcfe63"
+}

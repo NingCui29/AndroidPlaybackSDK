@@ -1,0 +1,11 @@
+INSTRUMENTATION_RESULT: track-0-file=PASS initial=21 actual=130 elapsedMs=23
+INSTRUMENTATION_RESULT: track-0-late-pipe=PASS trackSwitchTimeout, active=1, ms=2001
+INSTRUMENTATION_RESULT: track-0-latest=PASS superseded 3 winner 4
+INSTRUMENTATION_RESULT: track-0-paused-file=PASS initial=21 actual=130 elapsedMs=23
+INSTRUMENTATION_RESULT: track-0-paused-pipe=PASS initial=21 actual=130 elapsedMs=11
+INSTRUMENTATION_RESULT: track-0-pipe=PASS initial=21 actual=130 elapsedMs=12
+INSTRUMENTATION_RESULT: track-0-prepare-fault=PASS trackPrepare, active=1, ms=6
+INSTRUMENTATION_RESULT: track-0-rollback=PASS trackNewOutput, active=1, ms=965
+INSTRUMENTATION_RESULT: track-0-rollback-fault=PASS trackNewOutput, active=-1, ms=30
+INSTRUMENTATION_RESULT: track-0-seek=PASS superseded 3 winner 4
+INSTRUMENTATION_CODE: -1

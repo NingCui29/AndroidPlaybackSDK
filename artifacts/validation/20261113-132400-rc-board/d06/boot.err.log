@@ -1,0 +1,7 @@
+[Vulkan Loader] ERROR:          loader_get_json: Failed to open JSON file C:\Users\Work\AppData\Local\Android\Sdk\emulator\qemu\windows-x86_64\lib\qemu\lib64\vulkan\vk_swiftshader_icd.json
+[Vulkan Loader] ERROR:          loader_get_json: Failed to open JSON file C:\Users\Work\AppData\Local\Android\Sdk\emulator\qemu\windows-x86_64\lib\qemu\lib64\vulkan\vk_swiftshader_icd.json
+[Vulkan Loader] ERROR:          loader_get_json: Failed to open JSON file C:\Users\Work\AppData\Local\Android\Sdk\emulator\qemu\windows-x86_64\lib\qemu\lib64\vulkan\vk_swiftshader_icd.json
+[Vulkan Loader] WARNING | LAYER: windows_read_data_files_in_registry: Registry lookup failed to get layer manifest files.
+[Vulkan Loader] ERROR:          loader_get_json: Failed to open JSON file C:\Users\Work\AppData\Local\Android\Sdk\emulator\qemu\windows-x86_64\lib\qemu\lib64\vulkan\vk_swiftshader_icd.json
+[Vulkan Loader] ERROR | DRIVER: vkCreateInstance: Found no drivers!
+C:\Users\Work\AppData\Local\Android\Sdk\emulator\qemu\windows-x86_64\qemu-system-aarch64-headless.exe: PCI bus not available for virtio-snd-pci

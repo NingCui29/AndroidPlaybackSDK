@@ -1,0 +1,190 @@
+{
+  "candidateAarSha256": "d6e8ee937ad63340ba98709eed19fe6777eddde2ec9fb5d0f4b400f9b0927fb6",
+  "bundledMediaEntries": [],
+  "samples": [
+    {
+      "path": "testdata/baseline/V01.mp4",
+      "sha256": "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30",
+      "bytes": 601245585,
+      "codecs": [
+        "h264",
+        "aac"
+      ],
+      "manifest": "testdata/baseline/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V02.mov",
+      "sha256": "cc01b2b2272ff80b6bebc33332813217dc2de278c909246f72e91fe54d760fd6",
+      "bytes": 992254,
+      "codecs": [
+        "h264",
+        "aac"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V03.mp4",
+      "sha256": "1c7ffe786cef9352193b627201c3d1bb6294fb97dd520e63f4742dede501f1b3",
+      "bytes": 582900,
+      "codecs": [
+        "hevc",
+        "aac"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V04.mkv",
+      "sha256": "0c90ee9733460de36f31610f9f10c0f3fd56023ef11482c16953e3a58d09db21",
+      "bytes": 580317,
+      "codecs": [
+        "hevc",
+        "aac"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V05.mkv",
+      "sha256": "325c9eee1eb1b4806c7f7cac5002d58593d706eb95a9ede7a611197bba943f54",
+      "bytes": 1061066,
+      "codecs": [
+        "h264",
+        "aac",
+        "aac"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V06.webm",
+      "sha256": "313e8739fb0f969ee7804379c26d05a8f36ac3d04f0b0f75ada32b352b8540c7",
+      "bytes": 524144,
+      "codecs": [
+        "vp8",
+        "vorbis"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V07.webm",
+      "sha256": "e5abf1f0e05be0bbeb37bfaeae4abfccd4b1e75ac6fd1731df847af4a6e21df6",
+      "bytes": 564071,
+      "codecs": [
+        "vp9",
+        "opus"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V08.avi",
+      "sha256": "150b3ae7aed95e769e31b06b858523eaad35e6814292fa8144922040c021c2d5",
+      "bytes": 2269432,
+      "codecs": [
+        "mpeg4",
+        "mp3"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V09a.wmv",
+      "sha256": "6a0598e4158d7ceb3d1363829a512088db8b076f57680f6b0d202a56ba44d277",
+      "bytes": 353151,
+      "codecs": [
+        "wmv3",
+        "wmav2"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V09b.wmv",
+      "sha256": "0e66e8734c51cef67cda49356a28a90bd145d8d705f752be9f64bd385760c050",
+      "bytes": 378775,
+      "codecs": [
+        "vc1",
+        "wmav2"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/V10.ts",
+      "sha256": "1613e513d5771883ac5d07c7e1c3322d3ce668703403849b865d390dc7fc844b",
+      "bytes": 1065396,
+      "codecs": [
+        "h264",
+        "aac"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/baseline/V11.mp4",
+      "sha256": "d68cc92b653ed69c2b15eac94cabc56f6254f5cfaee36cb910d2f03081e5c2c1",
+      "bytes": 11378334,
+      "codecs": [
+        "h264"
+      ],
+      "manifest": "testdata/baseline/manifest.json"
+    },
+    {
+      "path": "testdata/formats/A01.mp3",
+      "sha256": "52678effc0aa90c2778f80431ec87adfddc4b6ca61e96811b2ac379f7adb2a8f",
+      "bytes": 129149,
+      "codecs": [
+        "mp3",
+        "mjpeg"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/baseline/A02.m4a",
+      "sha256": "80e5dfdc0b091efb49f352d74d40ccfe089e46c5019d44409726b46bb5c110f5",
+      "bytes": 10507,
+      "codecs": [
+        "aac"
+      ],
+      "manifest": "testdata/baseline/manifest.json"
+    },
+    {
+      "path": "testdata/formats/A03.flac",
+      "sha256": "cac499a8b2aefe750f2a2df8ce9c0bb5cfedee69ccef8db907504a82b562c085",
+      "bytes": 49542,
+      "codecs": [
+        "flac"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/baseline/A04.wav",
+      "sha256": "c8b9f0c0aa93886f06b200b2ee27a08886810785ebf018ece455a4caa6a9a228",
+      "bytes": 1536078,
+      "codecs": [
+        "pcm_s16le"
+      ],
+      "manifest": "testdata/baseline/manifest.json"
+    },
+    {
+      "path": "testdata/formats/A05a.ogg",
+      "sha256": "16851b618e32cf9fbffcc3f7da2457d91a1f46033f05440f5512367eb0d377fd",
+      "bytes": 13252,
+      "codecs": [
+        "vorbis"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/A05b.ogg",
+      "sha256": "16c66139c5a2b0c8027fcdd2776765f16955fda312869fb47d2bbef41263a132",
+      "bytes": 68078,
+      "codecs": [
+        "opus"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    },
+    {
+      "path": "testdata/formats/A06.wma",
+      "sha256": "e55ea6e7d8a71f48d7b89e0b45d9cef3e1205d135cc9418f814bad13ac9042db",
+      "bytes": 150944,
+      "codecs": [
+        "wmav2"
+      ],
+      "manifest": "testdata/formats/manifest.json"
+    }
+  ]
+}

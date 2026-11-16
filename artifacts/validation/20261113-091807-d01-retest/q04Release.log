@@ -1,0 +1,33 @@
+Performing Streamed Install
+Success
+Evidence: artifacts/validation/20261113-091807-d01-retest/q04Release
+INSTRUMENTATION_STATUS: trace=q04-1794532743329
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_RESULT: failure=java.lang.AssertionError: id=1 got FAILED, expected SUCCESS
+	at com.cn.media.playback.Q04Checks.require(Q04Checks.java:32)
+	at com.cn.media.playback.Q04Checks.access$400(Q04Checks.java:16)
+	at com.cn.media.playback.Q04Checks$Session.await(Q04Checks.java:132)
+	at com.cn.media.playback.Q04Checks$Session.ok(Q04Checks.java:135)
+	at com.cn.media.playback.Q04Checks.releaseCase(Q04Checks.java:254)
+	at com.cn.media.playback.Q04Checks.releaseGroups(Q04Checks.java:231)
+	at com.cn.media.playback.Q04Checks.run(Q04Checks.java:53)
+	at com.cn.media.playback.InputChecks.onStart(InputChecks.java:114)
+	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2278)
+
+INSTRUMENTATION_RESULT: trace=q04-1794532743329
+INSTRUMENTATION_CODE: 0
+artifacts\validation\20261113-091807-d01-retest\q04Release\summary.json
+FAILED: instrumentation did not complete
+FAILED: no final suite event
+FAILED: java.lang.AssertionError: id=1 got FAILED  expected SUCCESS
+FAILED: normalStop: idle memory growth
+FAILED: normalRelease: missing/duplicate commands
+FAILED: normalRelease: missing/duplicate idle samples
+FAILED: normalRelease: missing/duplicate active samples
+FAILED: normalRelease: idle memory growth
+FAILED: stalledStop: missing/duplicate commands
+FAILED: stalledStop: missing/duplicate idle samples
+FAILED: stalledStop: missing/duplicate active samples
+FAILED: stalledRelease: missing/duplicate commands
+FAILED: stalledRelease: missing/duplicate idle samples
+FAILED: stalledRelease: missing/duplicate active samples

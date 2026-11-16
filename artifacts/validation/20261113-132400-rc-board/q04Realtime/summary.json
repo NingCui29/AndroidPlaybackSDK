@@ -1,0 +1,298 @@
+{
+  "plan": {
+    "suite": "q04Realtime",
+    "policy": "AUTO",
+    "rounds": "3",
+    "serial": "10.67.116.12:5555"
+  },
+  "expectedRounds": 3,
+  "device": [
+    "test-apk SHA256 04a6adb828342eb3d60a834e65e2a3411ecb0077bbfc8e6b185379aa154d8427",
+    "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261112.0435:userdebug/release-keys",
+    "API 32",
+    "ABI arm64-v8a",
+    "page size 4096"
+  ],
+  "fixtures": [
+    "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30  V01.mp4"
+  ],
+  "rounds": {
+    "1": {
+      "completedCycles": 1,
+      "backends": [
+        "c2.rk.avc.decoder"
+      ],
+      "routeTypes": [
+        "2"
+      ],
+      "wallMs": 599978.872,
+      "mediaMs": 600000,
+      "mediaPerWall": 1.000035214573356,
+      "pssKiB": {
+        "count": 600,
+        "median": 45044.0,
+        "p95": 60288,
+        "max": 68106
+      },
+      "heapBytes": {
+        "count": 600,
+        "median": 28030496.0,
+        "p95": 29556512,
+        "max": 29972976
+      },
+      "playingSamples": 600,
+      "activeResources": {
+        "fixtureOrPipeFd": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        },
+        "nativeInputFd": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "processFd": {
+          "count": 600,
+          "median": 241.0,
+          "p95": 244,
+          "max": 249
+        },
+        "processThreads": {
+          "count": 600,
+          "median": 37.0,
+          "p95": 37,
+          "max": 41
+        },
+        "sdkNamedThreads": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "liveCodecs": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        }
+      },
+      "thermalStatusValues": [
+        0
+      ],
+      "steadyCpuOneCorePct": {
+        "count": 540,
+        "median": 12.012012012012011,
+        "p95": 13.4,
+        "max": 16.1
+      },
+      "submitted": 18000,
+      "sdkLateDrops": 0,
+      "sdkLateDropRate": 0.0,
+      "sdkMaxSubmissionGapMs": 190,
+      "codecRenderedCallbacks": 18000,
+      "codecRenderedUniquePts": 18000,
+      "codecRenderedGapMs": {
+        "count": 17999,
+        "median": 34.089712,
+        "p95": 46.923922,
+        "max": 190.250977
+      },
+      "distinctCodecRenderTimes": 18000
+    },
+    "2": {
+      "completedCycles": 1,
+      "backends": [
+        "c2.rk.avc.decoder"
+      ],
+      "routeTypes": [
+        "2"
+      ],
+      "wallMs": 599831.41,
+      "mediaMs": 600000,
+      "mediaPerWall": 1.0002810623071572,
+      "pssKiB": {
+        "count": 600,
+        "median": 45141.0,
+        "p95": 46440,
+        "max": 52631
+      },
+      "heapBytes": {
+        "count": 600,
+        "median": 27007432.0,
+        "p95": 27714944,
+        "max": 28091312
+      },
+      "playingSamples": 600,
+      "activeResources": {
+        "fixtureOrPipeFd": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        },
+        "nativeInputFd": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "processFd": {
+          "count": 600,
+          "median": 241.0,
+          "p95": 244,
+          "max": 247
+        },
+        "processThreads": {
+          "count": 600,
+          "median": 37.0,
+          "p95": 37,
+          "max": 37
+        },
+        "sdkNamedThreads": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "liveCodecs": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        }
+      },
+      "thermalStatusValues": [
+        0
+      ],
+      "steadyCpuOneCorePct": {
+        "count": 540,
+        "median": 11.5,
+        "p95": 12.7,
+        "max": 14.8
+      },
+      "submitted": 18000,
+      "sdkLateDrops": 0,
+      "sdkLateDropRate": 0.0,
+      "sdkMaxSubmissionGapMs": 185,
+      "codecRenderedCallbacks": 18000,
+      "codecRenderedUniquePts": 18000,
+      "codecRenderedGapMs": {
+        "count": 17999,
+        "median": 34.076587,
+        "p95": 46.928297,
+        "max": 184.501352
+      },
+      "distinctCodecRenderTimes": 18000
+    },
+    "3": {
+      "completedCycles": 1,
+      "backends": [
+        "c2.rk.avc.decoder"
+      ],
+      "routeTypes": [
+        "2"
+      ],
+      "wallMs": 599877.965,
+      "mediaMs": 600000,
+      "mediaPerWall": 1.0002034330432525,
+      "pssKiB": {
+        "count": 600,
+        "median": 44980.0,
+        "p95": 46174,
+        "max": 52748
+      },
+      "heapBytes": {
+        "count": 600,
+        "median": 26004552.0,
+        "p95": 26797216,
+        "max": 27166208
+      },
+      "playingSamples": 600,
+      "activeResources": {
+        "fixtureOrPipeFd": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        },
+        "nativeInputFd": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "processFd": {
+          "count": 600,
+          "median": 242.0,
+          "p95": 247,
+          "max": 253
+        },
+        "processThreads": {
+          "count": 600,
+          "median": 37.0,
+          "p95": 37,
+          "max": 37
+        },
+        "sdkNamedThreads": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "liveCodecs": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        }
+      },
+      "thermalStatusValues": [
+        0
+      ],
+      "steadyCpuOneCorePct": {
+        "count": 540,
+        "median": 11.894055944055944,
+        "p95": 13.1,
+        "max": 17.41741741741742
+      },
+      "submitted": 18000,
+      "sdkLateDrops": 0,
+      "sdkLateDropRate": 0.0,
+      "sdkMaxSubmissionGapMs": 192,
+      "codecRenderedCallbacks": 18000,
+      "codecRenderedUniquePts": 18000,
+      "codecRenderedGapMs": {
+        "count": 17999,
+        "median": 34.196462,
+        "p95": 46.425755,
+        "max": 191.881686
+      },
+      "distinctCodecRenderTimes": 18000
+    }
+  },
+  "pending": [
+    "CPU P95 recorded as first baseline; no paired reference",
+    "physical output needs calibrated external recording"
+  ],
+  "failures": [],
+  "samplingGapMs": {
+    "count": 1815,
+    "median": 1000,
+    "p95": 1001,
+    "max": 1004
+  },
+  "status": "pending-evidence",
+  "sha256": {
+    "samples.csv": "f64faf6419b9e0ffd7d9175a0a5b329ee2baac98b264912db3b9ef0f370cc83e",
+    "events.csv": "c93d222bc23fb7a309ebc3f8db774b64e1f517672cf71c1be178f2db1f30f216",
+    "rendered.csv": "bcd65013acff67b18200193d271ba09d9193817739c21ef685ea84e8f82548ce",
+    "inventory.tsv": "15932565abb599cd127c90aaf28de380bfa04076d3694fe275f315a440c0d9aa",
+    "fixtures.sha256": "38a0ca571a5a30ae5717c0ff8f8b46602f4cbb9780b935a722ce3b7cbe9f8ad9",
+    "device.txt": "9484bda9b436ada66ec1665f3c97eadd3c9fb94cb1d2709568247a084024d0c2",
+    "plan.txt": "6aae4b24170e84eff97a192364eeee5238ca1725fade4a2485388fc82d37751a",
+    "instrumentation.txt": "7246293b98097c5330aa028502970aee3b34bf29156c536c3e07bd9b7f95b9da"
+  }
+}

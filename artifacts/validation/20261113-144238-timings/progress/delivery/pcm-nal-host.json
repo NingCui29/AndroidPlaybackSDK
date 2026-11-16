@@ -1,0 +1,13 @@
+{
+  "aarSha256": "e271c519539854850993c5de5e927b34cfb1ab516a544d5dc1d264b05e4674b8",
+  "results": {
+    "PcmTimelineChecks": [
+      "PASS extended frame count across 2^32, replaced boundary and old pending segment cleared",
+      "PASS forward/backward PCM boundaries, queued jumps, 48/44.1 kHz track handoff"
+    ],
+    "NalAdapterChecks": [
+      "PASS h264 3 changing SPS dimensions, lengths 1/2/4, configuration + AU, malformed/truncated",
+      "PASS hevc 3 changing SPS dimensions, lengths 1/2/4, configuration + AU, malformed/truncated"
+    ]
+  }
+}

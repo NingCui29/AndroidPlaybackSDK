@@ -1,0 +1,72 @@
+{
+  "coordinate": "com.cn.media:android-playback-sdk:1.0.0-rc.1",
+  "aarSha256": "77494404a06bd18235e1371e289d4eface2be3eb55255ecb8566b53aef4d9271",
+  "apkSha256": "4f68ac85258140452be455f3b7646086b9541edcb43aca0c5424550773353db0",
+  "testInputsSha256": "34939bc75dbca05dcae6f401c25e6e56e1b73a5c87e5affa6af3ece02c323466",
+  "inputs": {
+    "host/build.gradle": "0625360172d52b096f074cf5b38fcb0d4d6b379e92a774304caa6f5906c8294c",
+    "host/settings.gradle": "f1051022b79f71fa9ef56b95f5b1f47b7023c7fd2601fc6512811e84f429e6e6",
+    "host/src/main/AndroidManifest.xml": "571f2735faf5e857752ee057ac8ef63425576a721616c60b86ee5d4c0a2d682f",
+    "suite/AndroidManifest.xml": "702c0163027090ec2de249e4d1f85f4941e6da39473ec6f6ddaf52768672c51f",
+    "suite/assets/A02.m4a": "80e5dfdc0b091efb49f352d74d40ccfe089e46c5019d44409726b46bb5c110f5",
+    "suite/java/com/cn/media/playback/AudioTrackChecks.java": "ef217af384cea37c0a8de0b9cbac71bdabdc5f05d87ac630c4ed17048e2fcb49",
+    "suite/java/com/cn/media/playback/ConcurrencyChecks.java": "62d7747fc620518d32eaa686260a9c0fb07f263a723186767e905a320e3b7ee6",
+    "suite/java/com/cn/media/playback/DisplayActivity.java": "dda5bc7926b77669c4cfbb9404c39825bd580fa0e91624f433a169525326e76c",
+    "suite/java/com/cn/media/playback/FixtureProvider.java": "55a61036fe1472bc6372305a7d93b23318f2edbf8951e881a17f82887d27a3da",
+    "suite/java/com/cn/media/playback/InputChecks.java": "4b3847488e76d6812606898897cea2a8b605294d86d7af0036ec31427d09de64",
+    "suite/java/com/cn/media/playback/PlayerChecks.java": "79e7744c766e6f7fb9e48fd2c9d51d90b81a39b55dbcf9b1f908d1a06fa474f0",
+    "suite/java/com/cn/media/playback/Q04Checks.java": "485e15393ffff893233d3177a7618ddff121162c99733f3f195377e6e00acf06",
+    "suite/java/com/cn/media/playback/Q04Trace.java": "af63fa7900d718e45debafa16c942ea9d5bccae97a1e041aa8a092ed048eb173"
+  },
+  "package": "com.cn.media.playback.test",
+  "targetPackage": "com.cn.media.playback.test",
+  "runner": "com.cn.media.playback.InputChecks",
+  "signerSha256": "e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c",
+  "dex": {
+    "classesJarSha256": "c4f8eec0e39497be62e464e7f8313fd1d7b09ad7b272fb22d6b0c27acf822fc9",
+    "aarClassCount": 48,
+    "sdkDexSha256": "11f531d7c37cb37c77079f0435af8856bacfee1d2a0bce21b155504a083a47bd",
+    "apkDex": {
+      "classes.dex": "11f531d7c37cb37c77079f0435af8856bacfee1d2a0bce21b155504a083a47bd",
+      "classes2.dex": "d337e4712da3ae3893a2d8ddec4b83284dc8dd49c88b2ae83f04f2038dfc25fe",
+      "classes3.dex": "ac1de9582927ec2719caf71f31aac87a7ff725a9b3b2b9e1c6a4fbd4cb5ff610"
+    },
+    "testSuites": [
+      "AudioTrackChecks",
+      "ConcurrencyChecks",
+      "DisplayActivity",
+      "FixtureProvider",
+      "InputChecks",
+      "PlayerChecks",
+      "Q04Checks",
+      "Q04Trace"
+    ]
+  },
+  "native": {
+    "arm64-v8a/libavcodec.so": {
+      "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+      "zipDataOffset": 131072
+    },
+    "arm64-v8a/libavformat.so": {
+      "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+      "zipDataOffset": 4554752
+    },
+    "arm64-v8a/libavutil.so": {
+      "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+      "zipDataOffset": 5177344
+    },
+    "arm64-v8a/libplayback.so": {
+      "sha256": "88b25ab43517c7c525bca992c2c6ffeea34559a72f3e6b8dbe3bfc984c5b4ffb",
+      "zipDataOffset": 5898240
+    },
+    "arm64-v8a/libswresample.so": {
+      "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+      "zipDataOffset": 5963776
+    },
+    "arm64-v8a/libswscale.so": {
+      "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+      "zipDataOffset": 6062080
+    }
+  },
+  "deviceRun": false
+}

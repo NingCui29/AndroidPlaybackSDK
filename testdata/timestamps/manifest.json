@@ -1,0 +1,38 @@
+{
+  "sourceSHA256": "1613e513d5771883ac5d07c7e1c3322d3ce668703403849b865d390dc7fc844b",
+  "cutBytes": 529784,
+  "files": {
+    "V10-forward.ts": {
+      "sha256": "cca05c7a7ca639c0127022dada7ccd966830624770ce61527f6c3f7ab58affff",
+      "delta90k": 270000,
+      "firstChanged": {
+        "0": {
+          "packetIndex": 100,
+          "beforePts90k": 493200,
+          "newPts90k": 763200
+        },
+        "1": {
+          "packetIndex": 180,
+          "beforePts90k": 476880,
+          "newPts90k": 746880
+        }
+      }
+    },
+    "V10-backward.ts": {
+      "sha256": "c6d962d19504ccf45da7e59f57e1ca19d2d261b7ed841282a40134c0dcadfb91",
+      "delta90k": -135000,
+      "firstChanged": {
+        "0": {
+          "packetIndex": 100,
+          "beforePts90k": 493200,
+          "newPts90k": 358200
+        },
+        "1": {
+          "packetIndex": 180,
+          "beforePts90k": 476880,
+          "newPts90k": 341880
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "cases": 14,
+  "rounds": 1,
+  "samples": [
+    {
+      "round": 0,
+      "stage": "create",
+      "mode": "AUTO",
+      "observationMs": 105,
+      "firstSoftwareUs": 88347,
+      "positionErrorUs": 0
+    },
+    {
+      "round": 0,
+      "stage": "create",
+      "mode": "HARDWARE_ONLY",
+      "observationMs": 6
+    },
+    {
+      "round": 0,
+      "stage": "configure",
+      "mode": "AUTO",
+      "observationMs": 83,
+      "firstSoftwareUs": 81809,
+      "positionErrorUs": -21333
+    },
+    {
+      "round": 0,
+      "stage": "configure",
+      "mode": "HARDWARE_ONLY",
+      "observationMs": 7
+    },
+    {
+      "round": 0,
+      "stage": "start",
+      "mode": "AUTO",
+      "observationMs": 72,
+      "firstSoftwareUs": 70466,
+      "positionErrorUs": -21333
+    },
+    {
+      "round": 0,
+      "stage": "start",
+      "mode": "HARDWARE_ONLY",
+      "observationMs": 3
+    },
+    {
+      "round": 0,
+      "stage": "runtime",
+      "mode": "AUTO",
+      "observationMs": 195,
+      "firstSoftwareUs": 194345,
+      "positionErrorUs": -7333
+    },
+    {
+      "round": 0,
+      "stage": "runtime",
+      "mode": "HARDWARE_ONLY",
+      "observationMs": 16
+    },
+    {
+      "round": 0,
+      "stage": "pipeRuntime",
+      "mode": "AUTO",
+      "observationMs": 217,
+      "firstSoftwareUs": 215999,
+      "positionErrorUs": -17333
+    },
+    {
+      "round": 0,
+      "stage": "pipeRuntime",
+      "mode": "HARDWARE_ONLY",
+      "observationMs": 24
+    },
+    {
+      "round": 0,
+      "stage": "pipeNextEntry",
+      "mode": "AUTO",
+      "observationMs": 104,
+      "firstSoftwareUs": 103891,
+      "positionErrorUs": 717333
+    },
+    {
+      "round": 0,
+      "stage": "pipeNextEntry",
+      "mode": "HARDWARE_ONLY",
+      "observationMs": 16
+    },
+    {
+      "round": 0,
+      "stage": "pipeNoEntry",
+      "mode": "AUTO",
+      "observationMs": 2125,
+      "audioAdvance": 102400
+    },
+    {
+      "round": 0,
+      "stage": "pipeNoEntry",
+      "mode": "HARDWARE_ONLY",
+      "observationMs": 17
+    }
+  ],
+  "seekableRecoveryP95Us": 194345,
+  "seekableRecoveryMaxUs": 194345,
+  "maxPositionErrorUs": 7333,
+  "status": "pilot",
+  "installedApk": {
+    "package": "com.cn.media.playback.test",
+    "devicePath": "/data/app/~~qyNLvqiB7B85RCnaKbxa2A==/com.cn.media.playback.test-S2gy8pi2li9RVJVkAws4Lw==/base.apk",
+    "apkSha256": "4f9d224d9c72273773cbe3cfa0ed8649b2ce4ee7735ee16b4362ffa5d768f35e"
+  },
+  "device": [
+    "test-apk SHA256 4f9d224d9c72273773cbe3cfa0ed8649b2ce4ee7735ee16b4362ffa5d768f35e",
+    "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261112.0435:userdebug/release-keys",
+    "API 32",
+    "ABI arm64-v8a",
+    "page size 4096"
+  ],
+  "fixtures": [
+    "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30  V01.mp4"
+  ]
+}

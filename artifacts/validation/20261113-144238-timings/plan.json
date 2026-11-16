@@ -1,0 +1,17 @@
+{
+  "device": {
+    "ro.build.fingerprint": "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261112.0435:userdebug/release-keys",
+    "ro.product.cpu.abi": "arm64-v8a",
+    "ro.build.version.sdk": "32"
+  },
+  "testAPK": "04a6adb828342eb3d60a834e65e2a3411ecb0077bbfc8e6b185379aa154d8427",
+  "fixtures": {
+    "V01.mp4": "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30",
+    "V11.mp4": "d68cc92b653ed69c2b15eac94cabc56f6254f5cfaee36cb910d2f03081e5c2c1",
+    "A02.m4a": "80e5dfdc0b091efb49f352d74d40ccfe089e46c5019d44409726b46bb5c110f5",
+    "A04.wav": "c8b9f0c0aa93886f06b200b2ee27a08886810785ebf018ece455a4caa6a9a228"
+  },
+  "mode": "SOFTWARE_ONLY",
+  "startup": "V01/A02/A04 cold/warm 30 each",
+  "seek": "V01/V11/A02 forward/backward 15 each"
+}
