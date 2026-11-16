@@ -1,0 +1,110 @@
+{
+  "cases": {
+    "aar-java": {
+      "outcome": "PASS",
+      "language": "java",
+      "sdkSha256": "e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24",
+      "source": "C:\\Users\\Work\\.gradle\\ap-vvg8rs47\\direct\\android-playback-sdk-1.0.0.aar",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "81bfd8047e25ed1c0907339d7dc1c975dd8766a4a725db6da861c1acff4bb6f9",
+        "mapping.txt": "1b3238c1be0ac2d136eae6913e8932b891448b510e68fbc2ca183e0654c5b4a5",
+        "merged-manifest.xml": "098fa4b48667d112a26f25ac5582f39e3386f38cc92de6b2b767fad160ac9ee2"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "f176b3398ec5adbb10c3b6b82822e4b9a26b9b115cedb47c68a04381d9739e6c",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": []
+    },
+    "offline-kotlin": {
+      "outcome": "PASS",
+      "language": "kotlin",
+      "sdkSha256": "e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24",
+      "source": "file:///C:/Users/Work/.gradle/ap-vvg8rs47/offline",
+      "releaseMinified": true,
+      "files": {
+        "host.apk": "28a6a7642d53efd0a50dc8de10ad5226a3531ca85a66a5aff37fb20df9daa3bc",
+        "mapping.txt": "b6f6d432b8d8d5f4a8a0a9c73c041360ec82212291445d72da1d805b140ac786",
+        "merged-manifest.xml": "676faa357aa17abe90bf4702991d85cf8cf5f767f44645b070155dc5319579f9"
+      },
+      "native": {
+        "arm64-v8a/libavcodec.so": {
+          "sha256": "a99820543c0986d4b81bf1edfe15949c0092e365f8cc97c85ce3ada8f04f68da",
+          "zipDataOffset": 49152
+        },
+        "arm64-v8a/libavformat.so": {
+          "sha256": "6f324a626ca93ccd88ed1f2dbdc51c6c3bb54077d177e12fadd907b870ffc117",
+          "zipDataOffset": 4472832
+        },
+        "arm64-v8a/libavutil.so": {
+          "sha256": "b46e9f46b7e20b8adbafa2685d9090678928fbd9a4edef7ec0ac91574a2f7033",
+          "zipDataOffset": 5095424
+        },
+        "arm64-v8a/libplayback.so": {
+          "sha256": "f176b3398ec5adbb10c3b6b82822e4b9a26b9b115cedb47c68a04381d9739e6c",
+          "zipDataOffset": 5816320
+        },
+        "arm64-v8a/libswresample.so": {
+          "sha256": "4c0a100be00dc60a5098469282be70c5a703f31f726dc3b142fb07f27fd0e64d",
+          "zipDataOffset": 5881856
+        },
+        "arm64-v8a/libswscale.so": {
+          "sha256": "fcad3746598f7f1c1be360934942d6ab16c5116796904c189c4d0c82b04bc308",
+          "zipDataOffset": 5980160
+        }
+      },
+      "aabSplits": []
+    },
+    "missing-aar": {
+      "outcome": "PASS",
+      "expectedFailure": "android-playback-sdk-1.0.0.aar",
+      "gradleExit": 1,
+      "source": "file:///C:/Users/Work/.gradle/ap-vvg8rs47/missing-aar/missing"
+    },
+    "native-collision": {
+      "outcome": "PASS",
+      "expectedFailure": "2 files found with path 'lib/arm64-v8a/libavutil.so'",
+      "gradleExit": 1,
+      "source": "file:///C:/Users/Work/.gradle/ap-vvg8rs47/offline"
+    }
+  },
+  "device": "not run",
+  "privateRepository": "not run",
+  "offlineZipSha256": "445ace5524e55df7d9f59bd931e8e923d133647a08e9f2a7572eeb571d06cb83",
+  "hostSourcesSha256": "b7aabf4187f3020b6964c09ef69c22470211b8d8525c45e81e0951a0df4a8b2f",
+  "javaVersion": "openjdk version \"17.0.17\" 2025-10-21\nOpenJDK Runtime Environment OpenLogic-OpenJDK (build 17.0.17+10-adhoc..jdk17u)\nOpenJDK 64-Bit Server VM OpenLogic-OpenJDK (build 17.0.17+10-adhoc..jdk17u, mixed mode, sharing)",
+  "coordinate": "com.cn.media:android-playback-sdk:1.0.0",
+  "aarSha256": "e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24",
+  "toolchain": {
+    "gradle": "C:\\Users\\Work\\.gradle\\wrapper\\dists\\gradle-8.13-bin\\5xuhj0ry160q40clulazy9h7d\\gradle-8.13\\bin\\gradle.bat",
+    "agp": "8.13.0",
+    "kgp": "2.1.20",
+    "compileSdk": 35,
+    "javaHome": "C:\\Program Files\\Java\\jdk-17.0.17.10",
+    "androidHome": "C:\\Users\\Work\\AppData\\Local\\Android\\Sdk"
+  },
+  "seedInventorySha256": "d7fba099d751bc3caf937fcea0c8d0541794e22dbd74985386185ed95c32dde7"
+}

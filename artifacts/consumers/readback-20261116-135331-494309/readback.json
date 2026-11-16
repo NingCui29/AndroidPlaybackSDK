@@ -1,0 +1,53 @@
+{
+  "channel": "loopback",
+  "coordinate": "com.cn.media:android-playback-sdk:1.0.0",
+  "repository": "http://127.0.0.1:15501",
+  "approvalRecordedInCandidate": "pending",
+  "publishedByThisTool": false,
+  "expectedSha256": {
+    "android-playback-sdk-1.0.0-javadoc.jar": "1d5f6e6d0f4c9780977eb832241113590ba2a29a8d1a0b57a64847eca62d6386",
+    "android-playback-sdk-1.0.0-sources.jar": "44a69935dce57b46c927eef6feef8d3c39015fa4fe312fd004962fdf723ff68a",
+    "android-playback-sdk-1.0.0.aar": "e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24",
+    "android-playback-sdk-1.0.0.module": "9c20fea8e8da4c1c5d98fa3f7a4820e42dac4c4f1fd3c25fe0ccd3ccf0a6bbb2",
+    "android-playback-sdk-1.0.0.pom": "732500e9443d2ae1d2a4f282c468714d7915cd7a1d9df37858977a8f575ece32"
+  },
+  "startedUTC": "2026-11-16T05:53:31.827182+00:00",
+  "polls": [
+    {
+      "elapsedSeconds": 0.0,
+      "files": {
+        "android-playback-sdk-1.0.0-javadoc.jar": {
+          "httpStatus": 200,
+          "sha256": "1d5f6e6d0f4c9780977eb832241113590ba2a29a8d1a0b57a64847eca62d6386",
+          "bytes": 160306,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0-sources.jar": {
+          "httpStatus": 200,
+          "sha256": "44a69935dce57b46c927eef6feef8d3c39015fa4fe312fd004962fdf723ff68a",
+          "bytes": 167710,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0.aar": {
+          "httpStatus": 200,
+          "sha256": "e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24",
+          "bytes": 3224058,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0.module": {
+          "httpStatus": 200,
+          "sha256": "9c20fea8e8da4c1c5d98fa3f7a4820e42dac4c4f1fd3c25fe0ccd3ccf0a6bbb2",
+          "bytes": 2744,
+          "matched": true
+        },
+        "android-playback-sdk-1.0.0.pom": {
+          "httpStatus": 200,
+          "sha256": "732500e9443d2ae1d2a4f282c468714d7915cd7a1d9df37858977a8f575ece32",
+          "bytes": 1139,
+          "matched": true
+        }
+      }
+    }
+  ],
+  "outcome": "PASS"
+}

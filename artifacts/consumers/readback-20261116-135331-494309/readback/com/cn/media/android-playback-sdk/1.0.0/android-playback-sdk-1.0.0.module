@@ -1,0 +1,78 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.cn.media",
+    "module": "android-playback-sdk",
+    "version": "1.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.13"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "android-playback-sdk-1.0.0.aar",
+          "url": "android-playback-sdk-1.0.0.aar",
+          "size": 3224058,
+          "sha512": "1ffb5d645faac60efcd880f7033093af73b5d35fc43d79f21ce93811d513c2eac52e779dd9a52fedd76fdd167ab7d2b316f8c2e813143b24baff29d9db9f60b6",
+          "sha256": "e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24",
+          "sha1": "546c970f88aa61c33eee9a8d10a7599e5d7d7ab8",
+          "md5": "2f02045f9d88a0c5bb29a249d6889885"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "android-playback-sdk-1.0.0.aar",
+          "url": "android-playback-sdk-1.0.0.aar",
+          "size": 3224058,
+          "sha512": "1ffb5d645faac60efcd880f7033093af73b5d35fc43d79f21ce93811d513c2eac52e779dd9a52fedd76fdd167ab7d2b316f8c2e813143b24baff29d9db9f60b6",
+          "sha256": "e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24",
+          "sha1": "546c970f88aa61c33eee9a8d10a7599e5d7d7ab8",
+          "md5": "2f02045f9d88a0c5bb29a249d6889885"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "android-playback-sdk-1.0.0-sources.jar",
+          "url": "android-playback-sdk-1.0.0-sources.jar",
+          "size": 167710,
+          "sha512": "632873fcff2c5423eb57eccb5eb6f941e76ba13cf7f6978d7408d48d9f42e86b5def55911cdb27cc6cb5656185d060b02dcc76714fee0609c87b5bcfb5a9de57",
+          "sha256": "44a69935dce57b46c927eef6feef8d3c39015fa4fe312fd004962fdf723ff68a",
+          "sha1": "afccd16f5990eb75be34688392e0328a6f984acb",
+          "md5": "aaa3eb3f407996117303263635f70a0b"
+        }
+      ]
+    }
+  ]
+}
