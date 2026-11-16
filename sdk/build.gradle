@@ -56,6 +56,14 @@ afterEvaluate {
                 name = 'Offline'
                 url = rootProject.layout.buildDirectory.dir('offline-maven')
             }
+            maven {
+                name = 'GitHubPackages'
+                url = uri('https://maven.pkg.github.com/NingCui29/AndroidPlaybackSDK')
+                credentials {
+                    username = System.getenv('GITHUB_ACTOR') ?: System.getenv('GITHUB_USER') ?: 'NingCui29'
+                    password = System.getenv('GITHUB_TOKEN') ?: System.getenv('GH_TOKEN')
+                }
+            }
         }
         publications {
             playback(MavenPublication) {
