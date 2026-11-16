@@ -1,0 +1,42 @@
+name: Publish to GitHub Packages
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Extract Offline Maven Repo & Upload to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: NingCui29
+          REPO: AndroidPlaybackSDK
+        run: |
+          ZIP_FILE="artifacts/distribution/1.0.0/e77ae1ed5348f997-400859b7f23b/public/offline-maven.zip"
+          mkdir -p /tmp/maven-repo
+          unzip "$ZIP_FILE" -d /tmp/maven-repo
+          
+          echo "Uploading Maven artifacts to GitHub Packages..."
+          cd /tmp/maven-repo
+          find . -type f | while read -r file; do
+            clean_path=$(echo "$file" | sed 's|^\./||')
+            target_url="https://maven.pkg.github.com/${OWNER}/${REPO}/${clean_path}"
+            echo "Uploading: $clean_path -> $target_url"
+            curl -s -f -X PUT \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "User-Agent: GitHub-Actions" \
+              -T "$file" \
+              "$target_url" || echo "Warning: failed to upload $clean_path"
+          done
+          echo "Publish completed successfully."
