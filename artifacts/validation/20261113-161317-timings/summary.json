@@ -1,5 +1,0 @@
-{
-  "status": "superseded",
-  "apkSha256": "1d54895934f8683912bc9685e31bdbba7533ed546ba5bf37f1cc7e6860792ce6",
-  "reason": "Run full K01-K03 on current release candidate e271c519 instead."
-}

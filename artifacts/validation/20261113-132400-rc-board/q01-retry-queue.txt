@@ -1,2 +1,0 @@
-Waiting for board process 34852 to finish (including endurance)
-旧包 Q01 重跑与中间包诊断已撤出设备队列。

@@ -1,8 +1,0 @@
-[0;35m[mov,mp4,m4a,3gp,3g2,mj2 @ 0xb4007ffe2d4952d0] [0mProtocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
-[0;35m[mov,mp4,m4a,3gp,3g2,mj2 @ 0xb4007ffe2d4952d0] [0mProtocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
-targetMs=7010 preFrames=210/123 outputFrames=31/31 firstPTS=107520/107520 pixelAndPtsSHA256Equal=1 verdict=PASS
-[0;35m[mov,mp4,m4a,3gp,3g2,mj2 @ 0xb4007ffc737236d0] [0mProtocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
-[0;35m[mov,mp4,m4a,3gp,3g2,mj2 @ 0xb4007ffc737236d0] [0mProtocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
-targetMs=7522 preFrames=225/130 outputFrames=16/16 firstPTS=115200/115200 pixelAndPtsSHA256Equal=1 verdict=PASS
-S04 AVC frame comparison overall=PASS
-[   45.216780][    T1] reboot: Power down

@@ -1,4 +1,0 @@
-audioTracks PASS
-surface FAIL Failed device test. See artifacts/validation/20261113-091807-d01-retest/surface
-degrade PASS
-q04Release FAIL Q04 measured gate or evidence failure: artifacts/validation/20261113-091807-d01-retest/q04Release

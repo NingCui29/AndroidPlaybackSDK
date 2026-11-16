@@ -27,10 +27,10 @@
 
 ### 2026-11-11 本机盘点
 
-- 设备型号、固件和 ABI 已登记在[B01 设备清单](06-devices.md)。D01 已确定为 RK3588 NEXBoard，固件随设备升级，每轮测试登记实际构建号；本次连接列表中没有 API 23 真机或 16 KB 页环境。
+- 设备型号、固件和 ABI 已登记在[B01 设备清单](06-devices.md)。D01 已确定为 ARM64 参考开发板，固件随设备升级，每轮测试登记实际构建号；本次连接列表中没有 API 23 真机或 16 KB 页环境。
 - 首批四份独立生成素材已登记在 [B02](07-samples.md)，尚无 SDK 真机验收结果。此前工程盘点未见 Gradle wrapper 或构建脚本。
 - PATH 的 java/javac 来自 JDK 24，java 运行时为 24.0.1；gradle 命令指向 Gradle 7.4.2 分发目录。项目尚未锁定 JDK/Gradle/AGP/Kotlin 组合，未验证这些本机工具可配套构建。
-- 本机 Android SDK 目录为 C:\Users\Work\AppData\Local\Android\Sdk。已枚举的 side-by-side NDK 为 21.4.7075529、26.1.10909125、27.0.12077973；早期盘点时 r30 尚未安装，后续已补齐。可见 SDK CMake 3.22.1、platforms android-35 等及 Build Tools 35.0.1 等；最终 compileSdk 与 Build Tools 待选。PATH 未检出 ffmpeg/ffprobe，不影响 FFmpeg 源码版本决策。
+- 本机 Android SDK 目录可通过环境变量 $ANDROID_HOME 配置。已枚举的 side-by-side NDK 为 21.4.7075529、26.1.10909125、27.0.12077973；早期盘点时 r30 尚未安装，后续已补齐。可见 SDK CMake 3.22.1、platforms android-35 等及 Build Tools 35.0.1 等；最终 compileSdk 与 Build Tools 待选。PATH 未检出 ffmpeg/ffprobe，不影响 FFmpeg 源码版本决策。
 
 | 优先级 / 阶段 | 需补信息 | 就绪判据 |
 |---|---|---|

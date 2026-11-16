@@ -1,6 +1,6 @@
 # B01 设备清单
 
-首版正式 AAR 仅 arm64-v8a。D01 已指定为 RK3588 NEXBoard，固件随设备升级，每轮测试登记实际构建号。[D01 运行记录](21-implementation.md)记录 API 32 真机覆盖。用户已移除 Android 6.0 验收，D02 设备角色关闭。以下为历史测量。2026-11-13，官方 API 23 arm64 镜像已启动，固件为 Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys，页大小 4 KB。该模拟器已实际加载 native 库并通过[顺序输入原生用例](../artifacts/validation/20261113-090925-prefix-api23/native.txt)。性能和出货设备结论仍由对应真机给出。
+首版正式 AAR 仅 arm64-v8a。D01 已指定为 ARM64 参考开发板，固件随设备升级，每轮测试登记实际构建号。[D01 运行记录](21-implementation.md)记录 API 32 真机覆盖。用户已移除 Android 6.0 验收，D02 设备角色关闭。以下为历史测量。2026-11-13，官方 API 23 arm64 镜像已启动，固件为 Android/sdk_phone_arm64/generic_arm64:6.0/MASTER/8690019:userdebug/test-keys，页大小 4 KB。该模拟器已实际加载 native 库并通过[顺序输入原生用例](../artifacts/validation/20261113-090925-prefix-api23/native.txt)。性能和出货设备结论仍由对应真机给出。
 
 | 编号 | 设备角色与候选配置 | 需要确认或采集 | 验收用途 |
 |---|---|---|---|
@@ -18,18 +18,18 @@
 
 2026-11-13 已校验 D06 候选环境的官方 Android 15 / API 35、arm64、16 KB 页镜像（修订号 5）。Windows x86_64 上自带的 Android Emulator 36.6.11 使用软件 CPU 启动时，在内核开启 MMU 前进入等待循环；读取到启动状态 0x202。这是自带模拟器的首次启动记录。另一个虚拟 CPU 上实测的页大小和原生加载见上段。[镜像与客体启动状态](../artifacts/validation/20261113-132400-rc-board/d06/boot-result.json)
 
-2026-11-13 D01 再次上线。本轮固件标识为 `NEXBoard-V3.0001-20261112.0435`，Android 12 / API 32、arm64-v8a、4 KB 页。[完整指纹与测试包摘要](../artifacts/validation/20261113-091249-d01-requalification/timestamps-HARDWARE_ONLY/device.txt)。这个标识只描述本轮设备，固件升级后另记。
+2026-11-13 D01 再次上线。本轮系统标识为 `Reference-OS-V3.0`，Android 12 / API 32、arm64-v8a、4 KB 页。[完整指纹与测试包摘要](../artifacts/validation/20261113-091249-d01-requalification/timestamps-HARDWARE_ONLY/device.txt)。这个标识只描述本轮设备，固件升级后另记。
 
 2026-11-11 ADB 只读盘点发现两台在线设备。下表是一次快照；D01 角色已由用户指定，使用档期及实际宿主进程位数待登记。系统 ABI 列表仅表示固件支持的 ABI。
 
 | 候选设备 | 系统与固件标识 | SoC / 平台 | 系统 ABI / 页大小 | 内核可见 MemTotal | 候选用途 |
 |---|---|---|---|---|---|
-| nexboard_vc，型号 mt | Android 12 / API 32；NEXBoard-V3.0001-20261110，userdebug | board.platform=rk3588 | arm64-v8a、armeabi-v7a、armeabi / 4096 B | 8,104,732 kB | D01 已确认；版本号为本次只读采集快照，每轮测试登记实际构建号 |
+| reference_board，型号 generic | Android 12 / API 32；Reference-OS-V3.0，userdebug | board.platform=arm64 | arm64-v8a、armeabi-v7a、armeabi / 4096 B | 8,104,732 kB | D01 已确认；版本号为本次只读采集快照，每轮测试登记实际构建号 |
 | 型号 24031PN0DC | Android 16 / API 36；BP2A.250605.031.A3 | SM8650 | arm64-v8a / 4096 B | 15,531,228 kB | 跨平台对照候选；是否代表第二出货平台待确认 |
 
 两台均未覆盖 D02 的 API 23 或 D06 的 16 KB 页环境。未安装 SDK 或运行播放用例。
 
-**11 月 11 日原始设备安排（D02 已撤销）**：最低 Android 6.0（API 23），正式 AAR 首版仅打包 arm64-v8a，以宿主实际运行的进程 ABI 为准。D04 留作未来扩展。D01 使用已指定的 RK3588 NEXBoard；D02 选可运行 64 位宿主的 API 23 真机，可由满足条件的 D01 兼任。若暂缺 D02，最低版本验收标为待补。D06 用 arm64 的 16 KB 页环境验证同一正式制品。D05 如需 x86_64，可用开发构建验证接口，正式 AAR 的安装结论取自其实际包含的 ABI。D03 按第二种出货 SoC 启用，D07 按高规格承诺启用。D01 当前固件已登记；每轮记录当时固件和实际宿主进程位数。[Android ABI 说明](https://developer.android.com/ndk/guides/abis)
+**11 月 11 日原始设备安排（D02 已撤销）**：最低 Android 6.0（API 23），正式 AAR 首版仅打包 arm64-v8a，以宿主实际运行的进程 ABI 为准。D04 留作未来扩展。D01 使用已指定的 ARM64 参考开发板；D02 选可运行 64 位宿主的 API 23 真机，可由满足条件的 D01 兼任。若暂缺 D02，最低版本验收标为待补。D06 用 arm64 的 16 KB 页环境验证同一正式制品。D05 如需 x86_64，可用开发构建验证接口，正式 AAR 的安装结论取自其实际包含的 ABI。D03 按第二种出货 SoC 启用，D07 按高规格承诺启用。D01 当前固件已登记；每轮记录当时固件和实际宿主进程位数。[Android ABI 说明](https://developer.android.com/ndk/guides/abis)
 
 | 资产别名 / 角色编号 | 型号 / SoC / RAM | API / 固件构建号 | 进程 ABI / 页大小 | 显示刷新率 / 音频路由 | 解码器名称与能力 / 采集记录 | 可用时间 / 负责人 |
 |---|---|---|---|---|---|---|

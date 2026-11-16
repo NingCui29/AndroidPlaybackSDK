@@ -17,7 +17,7 @@ class CodecCalls {
     /**
      * 根据组件名称创建底层系统 {@link MediaCodec} 实例。
      *
-     * @param name 解码组件名称（例如 {@code "c2.rk.avc.decoder"}）
+     * @param name 解码组件名称（例如 {@code "c2.android.avc.decoder"}）
      * @return 创建成功的系统 MediaCodec 实例
      * @throws IOException 当平台找不到指定组件或实例化失败时抛出
      */

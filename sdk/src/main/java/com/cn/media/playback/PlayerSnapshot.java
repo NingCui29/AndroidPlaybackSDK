@@ -65,7 +65,7 @@ public final class PlayerSnapshot {
     public final @Nullable TrackInfo videoTrack;
     /** 正在准备切换中的目标音轨（切换完成前有效音轨仍由 audioTrack 保持）。 */
     public final @Nullable TrackInfo pendingAudioTrack;
-    /** 当前视频解码后端名称（如 "c2.rk.avc.decoder"、"c2.rk.hevc.decoder"、"ffmpeg" 等）。 */
+    /** 当前视频解码后端名称（如 "c2.android.avc.decoder"、"c2.android.hevc.decoder"、"ffmpeg" 等）。 */
     public final @NotNull String videoBackend;
     /** 当前会话终止或发生的错误（无错误时为 null）。 */
     public final @Nullable PlayerError error;

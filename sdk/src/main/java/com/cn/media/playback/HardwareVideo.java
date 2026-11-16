@@ -39,7 +39,7 @@ final class HardwareVideo implements AutoCloseable {
     static final class Fault extends RuntimeException {
         /** 发生故障的执行阶段（如 "hardwareSetup"、"hardwareConfigure"、"hardwareDecode" 等）。 */
         final String stage;
-        /** 发生故障的编解码器组件名称（如 "c2.rk.avc.decoder"）。 */
+        /** 发生故障的编解码器组件名称（如 "c2.android.avc.decoder"）。 */
         final String component;
         /** 底层系统 {@link MediaCodec.CodecException} 返回的原生错误代码，非系统异常时为 0。 */
         final int platformCode;

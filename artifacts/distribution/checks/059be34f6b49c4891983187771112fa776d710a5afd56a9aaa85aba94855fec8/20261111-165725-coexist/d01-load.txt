@@ -1,2 +1,0 @@
---------- beginning of main
-11-11 17:20:55.831 28652 28652 I PlaybackCoexist: both JNI libraries loaded; marker=2301, state=IDLE

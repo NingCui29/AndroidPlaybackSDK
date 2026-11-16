@@ -1,2 +1,0 @@
-PASS angles=0/90/180/270 crop=1,1,3,1 SAR=3:2 padded_source_and_destination=verified
-PASS SDR palettes=8 max_channel_error=3/255 observed_peak_bytes=125760 over_budget=ENOMEM

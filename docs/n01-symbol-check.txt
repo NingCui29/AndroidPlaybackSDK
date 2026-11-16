@@ -15,4 +15,4 @@ libswscale.so  Build ID 04d04c964205511d841208b711108c2a4748f48b  bytes 4590568 
   stripped SHA256 FCAD3746598F7F1C1BE360934942D6AB16C5116796904C189C4D0C82B04BC308
 Address from stripped libavcodec.so: 0x0000000000132540
 avcodec_send_packet
-C:/Users/Work/AppData/Local/Temp/apsdk-config-839a9f62a2b149ec82d4ee1d1356fb08/ffmpeg-8.1.3/libavcodec/decode.c:718
+<source_root>/ffmpeg-8.1.3/libavcodec/decode.c:718

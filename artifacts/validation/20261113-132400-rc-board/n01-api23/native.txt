@@ -1,4 +1,0 @@
-WARNING: linker: /data/local/tmp/apsdk-load-98a22407/aar_load: unsupported flags DT_FLAGS_1=0x8000001
-
-PASS dlopen=RTLD_NOW ffmpeg=8.1.3 jniLiveInputFds=0
-

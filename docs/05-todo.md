@@ -18,7 +18,7 @@
 
 填写入口：[B01 设备清单](06-devices.md) · [B02 音视频样本矩阵](07-samples.md) · [B03 验收指标表](08-metrics.md)。
 
-- [x] **B01 确定设备。** 前置：无。2026-11-13/16 确定基线设备 D01 为 RK3588 NEXBoard（Android 12，API 32，ARM64-v8a，4 KB 页，固件 NEXBoard-V3.0001-20261112.0435）。Android 6.0 模拟器专项已按用户决策撤销，全套验收以 D01 为核心参考设备。
+- [x] **B01 确定设备。** 前置：无。2026-11-13/16 确定基线设备 D01 为 ARM64 参考开发板（Android 12，API 32，ARM64-v8a，4 KB 页，系统版本 Reference-OS-V3.0）。Android 6.0 模拟器专项已按用户决策撤销，全套验收以 D01 为核心参考设备。
 - [x] **B02 编目素材。** 前置：无。2026-11-13 按首版已确认的项目测试用途核对 19 个必播子编号。两份生成清单记录逐文件 SHA-256 与实际轨道参数，矩阵登记来源、使用范围、预期输出和设备角色。X01/X02 复用基准或派生输入；X03 高规格为 D07 条件项。对外分发 V05 合成语音的条件仍待核实；候选 AAR 未附带测试素材。[矩阵与使用范围](07-samples.md) · [19 份实文件复核](../artifacts/validation/20261113-132400-rc-board/b02-samples.json)
 - [x] **B03 固定测量口径。** 前置：B01、B02。指标门槛在 [08-metrics.md](08-metrics.md) 完全冻结：首帧 ≤800ms、定位预滚 ≤800ms、故障回退恢复 ≤1500ms、音画同步偏差 ≤66.6ms、内存释放无泄漏。2026-11-16 自动化测试套件（Q01/H04/formats/surface/diagnostics）全部以此门槛严格判定通过。
 
@@ -48,13 +48,13 @@
 - [x] **S03 建立媒体时钟。** 前置：S01、S02、A02。PCM 映射与边界跳变通过，2026-11-16 在 Q01 纯音频（A02）、有声视频（V01）及纯视频（V11）时钟调度通过。
 - [x] **S04 实现定位与预滚。** 前置：S03、I02。预滚跳过非参考帧优化（AVDISCARD_NONREF）已生效，2026-11-16 在 Q01 完成 A02/V01 各 4 次、V11 5 次定位预滚全部达标。
 - [x] **S05 完成排空与释放。** 前置：S03、I02。自然结束尾帧尾音与同实例重开通过，2026-11-16 在 Q01（三样本 endEvents 均为 1，无泄漏）通过。
-- [x] **Q01 验收软解闭环。** 前置：B03、A03、S04、S05。2026-11-16 在 D01（10.67.116.12）通过。A02 纯音频 576,512 PCM 采样帧、V01 有声视频 14,345 帧/28.8M 采样帧、V11 纯视频 677 帧无音频，打开、播放、暂停、4/5 次定位预滚、自然结束及同实例重开全部通过，返回码 -1。[验收记录](../artifacts/validation/20261116-102602-q01/instrumentation.txt)
+- [x] **Q01 验收软解闭环。** 前置：B03、A03、S04、S05。2026-11-16 在 D01（参考设备）通过。A02 纯音频 576,512 PCM 采样帧、V01 有声视频 14,345 帧/28.8M 采样帧、V11 纯视频 677 帧无音频，打开、播放、暂停、4/5 次定位预滚、自然结束及同实例重开全部通过，返回码 -1。[验收记录](../artifacts/validation/20261116-102602-q01/instrumentation.txt)
 
 ## MediaCodec 与回退
 
 逐项设计见 [H01～H04 硬解与回退](13-hardware-playback.md)，实机执行见[硬解真机验收操作表](14-hardware-device.md)。
 
-- [x] **H01 选择设备解码器。** 前置：Q01。2026-11-16，D01 上成功筛选并驱动硬件加速组件 c2.rk.avc.decoder 与 c2.rk.hevc.decoder，未支持能力明确降级或报错。[硬件输出记录](../artifacts/validation/20261116-104828-hardware/instrumentation.txt)
+- [x] **H01 选择设备解码器。** 前置：Q01。2026-11-16，D01 上成功筛选并驱动平台硬件加速组件（MediaCodec AVC / HEVC），未支持能力明确降级或报错。[硬件输出记录](../artifacts/validation/20261116-104828-hardware/instrumentation.txt)
 - [x] **H02 适配压缩码流。** 前置：Q01。2026-11-16，NalAdapter 与 NalParameters 完成 AVC/HEVC 码流参数集（SPS/PPS/VPS）抽取与 Annex B 起始码适配，动态尺寸与时间戳跳变验证通过。
 - [x] **H03 接入 Surface 直出。** 前置：H01、H02。2026-11-16，D01 实测硬件解码直出 Surface，首帧正确交付并显示，画幅变化与暂停恢复无闪烁。[直出记录](../artifacts/validation/20261116-104828-hardware/instrumentation.txt)
 - [x] **H04 实现并验收回退。** 前置：H03、S04。2026-11-16，D01 上执行 10 轮标准测试（7 阶段 140 场景故障注入），全部成功降级回退至软解继续播放；seekableRecoveryP95 = 187.8ms（门槛 ≤1500ms），maxPositionError = 10.0ms（门槛 ≤66.6ms），全部 PASS。[验收记录](../artifacts/validation/20261116-115157-faults/instrumentation.txt)
@@ -69,14 +69,14 @@ L01～L02 的行为与边界见[音轨、路由与 Surface 切换设计](15-trac
 - [x] **L02 实现 Surface 解绑与重建。** 前置：H03、S05。2026-11-16，D01 实测播放中 Surface 动态解绑（detachP95 ≤ 38ms）与重绑首帧交付（submitP95 ≤ 53ms），画面无撕裂、音视频持续同步。[Surface记录](../artifacts/validation/20261116-120301-surface/instrumentation.txt)
 - [x] **Q02 执行格式矩阵。** 前置：H04、L01、L02。2026-11-16，D01 跑通全部 19/19 媒体样本（MP4/MOV/MKV/WebM/AVI/TS/WMV/WMA/MP3/FLAC/OGG/WAV 等），软硬解自适应切换全通。[矩阵记录](../artifacts/validation/20261116-120042-formats/instrumentation.txt)
 - [x] **Q03 验证异常与并发。** 前置：H04、L01、L02。2026-11-16，D01 通过 content 异步 Provider 超时与 FD 切换、player 定位停止并发、以及宿主双 JNI 库同进程共存符号隔离验证（marker=2301, IDLE）。[双JNI共存](../artifacts/distribution/checks/e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24/20261116-120529-coexist/device-20261116-120530-000000.json)
-- [x] **Q04 验证持续性能与回收。** 前置：H04、L01、L02。2026-11-16，D01 上完成 V01 600 秒实时长播（c2.rk.avc.decoder 直出，提交 18,000 帧，SDK 迟到丢帧 0，丢帧率 0.0%，单核稳态 CPU P95 仅 13.7%，渲染时间戳 100% 连续且唯一）以及 10 轮循环高压释放（normal/stalled Stop/Release 全部 0 泄露，FD/线程/解码器全部归零）。[长播记录](../artifacts/validation/20261116-133534-q04Realtime/summary.json) · [释放记录](../artifacts/validation/20261116-123442-q04Release/summary.json)
+- [x] **Q04 验证持续性能与回收。** 前置：H04、L01、L02。2026-11-16，D01 上完成 V01 600 秒实时长播（硬件加速直出，提交 18,000 帧，SDK 迟到丢帧 0，丢帧率 0.0%，单核稳态 CPU P95 仅 13.7%，渲染时间戳 100% 连续且唯一）以及 10 轮循环高压释放（normal/stalled Stop/Release 全部 0 泄露，FD/线程/解码器全部归零）。[长播记录](../artifacts/validation/20261116-133534-q04Realtime/summary.json) · [释放记录](../artifacts/validation/20261116-123442-q04Release/summary.json)
 
 ## AAR、Maven 与发布
 
 D01～D05 的执行顺序、三渠道验收表和发布后回读要求见[发行与接入验收手册](18-release-verification.md)。
 
 - [x] **D01 生成候选制品与元数据。** 前置：N01、A01。验收：生成 release AAR、POM、Gradle Module Metadata、consumer R8 规则、摘要与符号档案；核对所有 ABI 的依赖闭包和许可证材料。2026-11-13 核对本地候选 d6e8ee93 的 11 项归档摘要、arm64 六库、两种 Maven 元数据解析及同名 native 库冲突。[制品清单](../artifacts/distribution/1.0.0-rc.1/d6e8ee937ad63340-3c57d888cb3f/public/candidate.json) · [回读](../artifacts/consumers/readback-20261113-132614-103039/readback.json) · [宿主构建](../artifacts/consumers/run-20261113-132621-423000/summary.json)
-- [x] **D02 验证本地与离线接入。** 前置：D01、Q01。验收：独立宿主分别直接导入 AAR、从文件型 Maven 仓库解析坐标；预置构建工具后断网构建混淆 release，安装并播放。 2026-11-13，四组直接 AAR/文件 Maven 的 Java/Kotlin 宿主以独立缓存和 Gradle 离线模式完成 R8 构建；RK3588 同一固件逐组安装，在 V01、A01、V05 上共 12 次冒烟通过。缺失 AAR 负例按预期失败。[离线构建](../artifacts/consumers/run-20261113-132948-807094/summary.json) · [安装与播放](../artifacts/consumers/run-20261113-132948-807094/device-20261113-142403-040541/device.json) · [缺件负例](../artifacts/consumers/run-20261113-132621-423000/summary.json)
+- [x] **D02 验证本地与离线接入。** 前置：D01、Q01。验收：独立宿主分别直接导入 AAR、从文件型 Maven 仓库解析坐标；预置构建工具后断网构建混淆 release，安装并播放。 2026-11-13，四组直接 AAR/文件 Maven 的 Java/Kotlin 宿主以独立缓存和 Gradle 离线模式完成 R8 构建；参考设备同一系统环境逐组安装，在 V01、A01、V05 上共 12 次冒烟通过。缺失 AAR 负例按预期失败。[离线构建](../artifacts/consumers/run-20261113-132948-807094/summary.json) · [安装与播放](../artifacts/consumers/run-20261113-132948-807094/device-20261113-142403-040541/device.json) · [缺件负例](../artifacts/consumers/run-20261113-132621-423000/summary.json)
 - [x] **D03 验证远程接入与最终安装包。** 前置：D01、Q01。2026-11-16 通过 verify-maven-readback.py 针对候选 e77ae1ed 完成 HTTP 暂存仓库回环解析，5 件制品 HTTP 状态均为 200，SHA-256 逐项比对完全一致；缺失 AAR 与摘要不匹配负例拦截验证通过。[暂存回读记录](../artifacts/consumers/readback-20261116-133613-981744/readback.json)
 - [x] **D04 审核发行候选。** 前置：Q02、Q03、Q04、D02、D03。2026-11-16 完成最终候选 e77ae1ed 的全面审核签核，全量功能、真机实测、双 JNI 隔离、R8 消费端及 HTTP 回环回读全部 PASS，质量签核通过。[审核签核记录](d04-e77ae1ed.md)
 - [x] **D05 正式发布与回读。** 前置：D04、用户发布授权。2026-11-16 获得发布授权，版本正式提升为 1.0.0（com.cn.media:android-playback-sdk:1.0.0）；assemble-delivery 装配不可变生产制品，AAR SHA-256 为 e77ae1ed5348f997...；HTTP 暂存回读 5 件套 100% 匹配；Java 与 Kotlin 两个独立混淆宿主（aar-java、offline-kotlin）在真机 D01 安装并冒烟播放全部 PASS。[生产回读记录](../artifacts/consumers/readback-20261116-135331-494309/readback.json) · [真机宿主冒烟](../artifacts/consumers/run-20261116-135611-442003/device-20261116-140237-469888/device.json)

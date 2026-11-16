@@ -1,4 +1,0 @@
-suite=q04Realtime
-policy=AUTO
-rounds=3
-serial=10.67.116.12:5555

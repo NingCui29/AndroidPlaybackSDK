@@ -1,8 +1,0 @@
-INSTRUMENTATION_RESULT: V02_geometry=surface=3840x2160 fitted=1215x2160 red=fffc0000 blue=ff0000fd bar=ff000000 rotation=270
-INSTRUMENTATION_RESULT: failure=java.lang.AssertionError: V11 late frames 120/0/104
-	at com.cn.media.playback.PlayerChecks.check(PlayerChecks.java:58)
-	at com.cn.media.playback.PlayerChecks.lateVideo(PlayerChecks.java:174)
-	at com.cn.media.playback.InputChecks.onStart(InputChecks.java:37)
-	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2278)
-
-INSTRUMENTATION_CODE: 0

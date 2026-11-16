@@ -1,1 +1,0 @@
-Verified 4 APK signatures; test certificate SHA-256 e964b185170e37c175a222aaa2af8849eda522ae5901b3209806ec2780de233c

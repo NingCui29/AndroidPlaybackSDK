@@ -1,6 +1,0 @@
-[    0.000000][    T0] 'bootconfig' found on command line, but no bootconfig found
-I03 kernel page size=16384
-PASS no-demand idle=11s, resumed byte=R, continuous stall=10019158 us raw=-110, writer close=EOF
-PASS probe=331776 prefixReread=4000 extraBudget=0 finalBytes=532480 outsidePrefix=ESPIPE
-I02 sequential overall=PASS
-[   25.362716][    T1] reboot: Power down

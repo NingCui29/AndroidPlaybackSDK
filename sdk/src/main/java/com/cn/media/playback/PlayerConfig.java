@@ -80,7 +80,7 @@ public final class PlayerConfig {
          * 注册在指定固件指纹上实测已验证的硬件解码器组件名称（适用于旧版本系统）。
          *
          * @param fingerprint   系统构建指纹（Build.FINGERPRINT）
-         * @param componentName 硬件解码组件名（如 c2.rk.avc.decoder）
+         * @param componentName 硬件解码组件名（如 c2.android.avc.decoder）
          * @return 当前构建器实例
          */
         public @NotNull Builder addVerifiedHardwareDecoder(@NotNull String fingerprint, @NotNull String componentName) {

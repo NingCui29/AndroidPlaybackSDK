@@ -1,9 +1,0 @@
-INSTRUMENTATION_RESULT: failure=java.lang.AssertionError: Request timed out 15 last=PREPARING
-	at com.cn.media.playback.PlayerChecks.check(PlayerChecks.java:58)
-	at com.cn.media.playback.PlayerChecks.await(PlayerChecks.java:65)
-	at com.cn.media.playback.PlayerChecks.ok(PlayerChecks.java:74)
-	at com.cn.media.playback.PlayerChecks.content(PlayerChecks.java:404)
-	at com.cn.media.playback.InputChecks.onStart(InputChecks.java:88)
-	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2278)
-
-INSTRUMENTATION_CODE: 0

@@ -1,2 +1,0 @@
-Waiting for preceding candidate consumer/timing process 32728 started 2026-11-13T15:08:13.0027639+08:00
-Superseded waiting H04 runner only; candidate unchanged; controlled-apk holds the pipe before the next keyframe.

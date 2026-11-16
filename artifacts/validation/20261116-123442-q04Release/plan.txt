@@ -1,4 +1,0 @@
-suite=q04Release
-policy=AUTO
-rounds=10
-serial=10.67.116.12:5555

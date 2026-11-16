@@ -81,7 +81,7 @@ public final class PlayerError {
     public final long requestId;
     /** 发生错误的内部处理阶段标识（如 "surface"、"render"、"demux" 等）。 */
     public final @NotNull String stage;
-    /** 发生错误的软硬件后端名称（如 "c2.rk.avc.decoder"、"ffmpeg" 等）。 */
+    /** 发生错误的软硬件后端名称（如 "c2.android.avc.decoder"、"ffmpeg" 等）。 */
     public final @NotNull String backend;
     /** 底层 FFmpeg 返回的负数错误码或平台 MediaCodec 错误码，无则为 0。 */
     public final int nativeStatus;

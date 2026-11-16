@@ -1,5 +1,0 @@
-INSTRUMENTATION_RESULT: V10-backward.ts/file/HARDWARE_ONLY=PASS PCM=385024 frames=200 dropped=0 jumps=1 elapsedMs=8019 maxGapMs=57
-INSTRUMENTATION_RESULT: V10-backward.ts/pipe/HARDWARE_ONLY=PASS PCM=385024 frames=200 dropped=0 jumps=1 elapsedMs=8046 maxGapMs=57
-INSTRUMENTATION_RESULT: V10-forward.ts/file/HARDWARE_ONLY=PASS PCM=385024 frames=200 dropped=0 jumps=1 elapsedMs=8088 maxGapMs=57
-INSTRUMENTATION_RESULT: V10-forward.ts/pipe/HARDWARE_ONLY=PASS PCM=385024 frames=200 dropped=0 jumps=1 elapsedMs=8037 maxGapMs=58
-INSTRUMENTATION_CODE: -1

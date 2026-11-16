@@ -1,3 +1,0 @@
-H04 cache PASS unkeyed, cloned packet and side data, byte limit, DTS span, missing timestamps, count limit, new key, clear
-H04 native candidate cache PASS
-[    3.175282][    T1] reboot: Power down

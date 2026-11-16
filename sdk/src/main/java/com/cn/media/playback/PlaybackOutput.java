@@ -152,7 +152,7 @@ final class PlaybackOutput implements AutoCloseable {
     private volatile HardwareVideo hardware;
     /** 最近一次发生的硬件解码故障。 */
     private volatile HardwareVideo.Fault lastFault;
-    /** 当前使用的解码后端名称（如 "c2.rk.avc.decoder" 或 "ffmpeg"）。 */
+    /** 当前使用的解码后端名称（如 "c2.android.avc.decoder" 或 "ffmpeg"）。 */
     private volatile String backend;
     /** 音频输出采样率（Hz）。 */
     private int rate;

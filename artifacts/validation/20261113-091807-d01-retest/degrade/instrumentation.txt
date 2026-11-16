@@ -1,7 +1,0 @@
-INSTRUMENTATION_RESULT: 0-bad-audio.mov-false=PASS track errors=1, reopened audio
-INSTRUMENTATION_RESULT: 0-bad-audio.mov-true=PASS track errors=0, reopened audio
-INSTRUMENTATION_RESULT: 0-bad-both.mov-false=PASS track errors=2, reopened audio
-INSTRUMENTATION_RESULT: 0-bad-both.mov-true=PASS track errors=0, reopened audio
-INSTRUMENTATION_RESULT: 0-bad-video.mov-false=PASS track errors=1, reopened audio
-INSTRUMENTATION_RESULT: 0-bad-video.mov-true=PASS track errors=0, reopened audio
-INSTRUMENTATION_CODE: -1
