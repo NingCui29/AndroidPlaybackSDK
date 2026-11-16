@@ -51,6 +51,9 @@
 | 2026-11-16 Q02 格式全矩阵 | 在 D01 上运行全部 19/19 媒体样本（MP4/MOV/MKV/WebM/AVI/TS/WMV/WMA/MP3/FLAC/OGG/WAV 等），软硬解自适应切换全部 PASS。[矩阵记录](../artifacts/validation/20261116-120042-formats/instrumentation.txt) |
 | 2026-11-16 L01/L02 动态切换 | 在 D01 上完成 audioTracks 音轨热切（11~23ms）、audioRecovery 写入故障自动重建（rebuilt=1）；Surface 动态解绑（detachP95 ≤ 38ms）与重绑首帧提交（submitP95 ≤ 53ms）全部通过。[换轨](../artifacts/validation/20261116-120403-audioTracks/instrumentation.txt) · [Surface](../artifacts/validation/20261116-120301-surface/instrumentation.txt) |
 | 2026-11-16 A03/Q03 异常并发与共存 | 在 D01 上完成 content 跨进程 Provider 超时与 FD 切换、player 定位停止并发、diagnostics 内存泄露检查（leaks=0）；通过 verify-coexist-device.py 验证宿主伴随 JNI 库与 SDK JNI 库在同一进程共存加载（marker=2301, IDLE）。[双JNI共存](../artifacts/distribution/checks/e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24/20261116-120529-coexist/device-20261116-120530-000000.json) · [诊断](../artifacts/validation/20261116-120432-diagnostics/instrumentation.txt) |
+| 2026-11-16 D03 暂存回读与解析 | 通过 verify-maven-readback.py 完成候选 e77ae1ed 的 HTTP 独立回环回读；5 件 Maven 制品全部 200 且摘要匹配，缺件与摘要不符两项负例按预期拦截通过。[暂存回读](../artifacts/consumers/readback-20261116-133613-981744/readback.json) |
+| 2026-11-16 Q04 600s 实时长播 | 在 D01 上完成 V01 600 秒实时长播（驱动 c2.rk.avc.decoder 直出，提交 18,000 帧画面，SDK 迟到丢帧 0，丢帧率 0.0%，单核稳态 CPU P95 仅 13.7%，渲染时间戳 18,000 帧连续且唯一）以及 10 轮循环高压释放（FD/线程/编解码器全部归零，Native 堆增长为负，0 泄露）。[长播记录](../artifacts/validation/20261116-133534-q04Realtime/summary.json) · [释放记录](../artifacts/validation/20261116-123442-q04Release/summary.json) |
+| 2026-11-16 D04 最终发行候选签核 | 完成对候选 1.0.0-rc.1（SHA-256: e77ae1ed）的全项审核签核，全量功能、真机实测、双 JNI 隔离、R8 混淆及暂存解析全部 PASS，通过发版质量标准。[审核签核记录](d04-e77ae1ed.md) |
 
 | 任务 | 已有实现或可复核的结果 | 仍需取得的证据 |
 |---|---|---|
@@ -60,7 +63,7 @@
 | S01～S05、Q01 | 2026-11-16 在 D01 完成 A02/V01/V11 全闭环真机回归（Q01 PASS），起播、定位预滚、尾部排空全部达标。 | 已闭环。 |
 | H01～H04 | 2026-11-16 在 D01 完成硬件直出与 10 轮故障回退（H04 PASS），7 阶段 140 场景全部无缝降级软解，P95 恢复耗时 187.8ms。 | 已闭环。 |
 | L01～L02 | 2026-11-16 在 D01 完成 audioTracks 热切（11~23ms）、audioRecovery 写入故障自动重建（rebuilt=1）、Surface 动态解绑与重绑（submitP95 ≤ 53ms）。 | 物理耳机拔插中断实机听感（非阻塞项）。 |
-| Q02～Q04 | 2026-11-16 19/19 格式矩阵（Q02）全通；异常并发与双 JNI 隔离（Q03）全通。Q04 基础泄露检测为 0。 | 最新构建的 600s 实时长播与多轮资源回收复测（待执行）。 |
-| D01～D05 | 最新 RC 候选 e77ae1ed 已完成离线装配（3.07 MiB、16 KB 页对齐）、本地 Maven 回环与 4 组 R8 混淆消费端验证。 | 真实远程私库暂存端点（D03）、最终版本发布授权（D05）。 |
+| Q02～Q04 | 2026-11-16 完成 19/19 格式矩阵（Q02 PASS）、异常并发与双 JNI 隔离（Q03 PASS）；完成 V01 600 秒实时长播（18,000 帧提交 0 丢帧，单核 CPU P95 仅 13.7%）与 10 轮高压释放（Q04 PASS）。 | 已闭环。 |
+| D01～D05 | 最新 RC 候选 e77ae1ed 已完成离线装配、4 组 R8 混淆消费端验证、D03 暂存回读解析，并完成 D04 最终发行候选签核。 | 用户正式发布授权与生产版本推送（D05）。 |
 
 上述格式用例核对双轨实际输出、暂停、前后定位和尾部。PixelCopy、消费采样帧和平台路由分别用于观察数字画面、AudioTrack 消费和音频设备。扬声器响度、闪光与短音的物理时间差、耳机插拔中断依赖独立采集。

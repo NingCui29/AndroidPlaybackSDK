@@ -1,0 +1,130 @@
+{
+  "plan": {
+    "suite": "q04Realtime",
+    "policy": "AUTO",
+    "rounds": "1",
+    "serial": "10.67.116.12:5555"
+  },
+  "expectedRounds": 3,
+  "device": [
+    "test-apk SHA256 b1fea5013522c8cf43f89507e9267388ed7abeb479ef39e268b61da3ea1bd01c",
+    "rockchip/nexboard_vc/nexboard_vc:12/SQ3A.220705.003.A1/NEXBoard-V3.0001-20261112.0435:userdebug/release-keys",
+    "API 32",
+    "ABI arm64-v8a",
+    "page size 4096"
+  ],
+  "fixtures": [
+    "6036a8ea2dbc5767e31b430009313c34213a88e48e5b6ee42957e80ad2276a30  V01.mp4"
+  ],
+  "rounds": {
+    "1": {
+      "completedCycles": 1,
+      "backends": [
+        "c2.rk.avc.decoder"
+      ],
+      "routeTypes": [
+        "2"
+      ],
+      "wallMs": 599985.023,
+      "mediaMs": 600000,
+      "mediaPerWall": 1.000024962289767,
+      "pssKiB": {
+        "count": 600,
+        "median": 45122.0,
+        "p95": 60219,
+        "max": 67543
+      },
+      "heapBytes": {
+        "count": 600,
+        "median": 28273136.0,
+        "p95": 29390160,
+        "max": 29756544
+      },
+      "playingSamples": 600,
+      "activeResources": {
+        "fixtureOrPipeFd": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        },
+        "nativeInputFd": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "processFd": {
+          "count": 600,
+          "median": 246.0,
+          "p95": 249,
+          "max": 253
+        },
+        "processThreads": {
+          "count": 600,
+          "median": 37.0,
+          "p95": 38,
+          "max": 41
+        },
+        "sdkNamedThreads": {
+          "count": 600,
+          "median": 2.0,
+          "p95": 2,
+          "max": 2
+        },
+        "liveCodecs": {
+          "count": 600,
+          "median": 1.0,
+          "p95": 1,
+          "max": 1
+        }
+      },
+      "thermalStatusValues": [
+        0
+      ],
+      "steadyCpuOneCorePct": {
+        "count": 540,
+        "median": 12.2,
+        "p95": 13.7,
+        "max": 19.0
+      },
+      "submitted": 18000,
+      "sdkLateDrops": 0,
+      "sdkLateDropRate": 0.0,
+      "sdkMaxSubmissionGapMs": 190,
+      "codecRenderedCallbacks": 18000,
+      "codecRenderedUniquePts": 18000,
+      "codecRenderedGapMs": {
+        "count": 17999,
+        "median": 33.914712,
+        "p95": 46.522879,
+        "max": 190.642102
+      },
+      "distinctCodecRenderTimes": 18000,
+      "codecRenderTimelineComplete": true
+    }
+  },
+  "pending": [
+    "planned 1 rounds; required 3",
+    "CPU P95 recorded as first baseline; no paired reference",
+    "physical output needs calibrated external recording"
+  ],
+  "failures": [],
+  "samplingGapMs": {
+    "count": 605,
+    "median": 1000,
+    "p95": 1001,
+    "max": 1003
+  },
+  "status": "pending-evidence",
+  "sha256": {
+    "samples.csv": "a15e7c43eae31f6f468db62faf78e69bdf80738d055197c2fabc28432543cff3",
+    "events.csv": "b8719b73a1988a55b16307e1735e07545c364bf4269d74ebddd016ee7ee257ce",
+    "rendered.csv": "775ac51636f78bfca3b4b85fdcc8284f852cc5e8a4d1ed7f97fab365e6dca5c6",
+    "inventory.tsv": "e209ceffe2346733657b13ab708273c8a859cfa9c72b7ec99046b27f3fb61f06",
+    "fixtures.sha256": "38a0ca571a5a30ae5717c0ff8f8b46602f4cbb9780b935a722ce3b7cbe9f8ad9",
+    "device.txt": "919e10756b7615663a361bb55fdb8ca15a4d0a4152754e2c29d10a6607ade0d2",
+    "plan.txt": "5ce91a1129d4e8d9471bb61aecebd75f67386337afd621fe8a253843fef0d26b",
+    "instrumentation.txt": "c691f22f852aee145c8a98de991ca9caddce395160976fd3f8112480f458c339"
+  }
+}

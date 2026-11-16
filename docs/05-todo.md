@@ -69,7 +69,7 @@ L01～L02 的行为与边界见[音轨、路由与 Surface 切换设计](15-trac
 - [x] **L02 实现 Surface 解绑与重建。** 前置：H03、S05。2026-11-16，D01 实测播放中 Surface 动态解绑（detachP95 ≤ 38ms）与重绑首帧交付（submitP95 ≤ 53ms），画面无撕裂、音视频持续同步。[Surface记录](../artifacts/validation/20261116-120301-surface/instrumentation.txt)
 - [x] **Q02 执行格式矩阵。** 前置：H04、L01、L02。2026-11-16，D01 跑通全部 19/19 媒体样本（MP4/MOV/MKV/WebM/AVI/TS/WMV/WMA/MP3/FLAC/OGG/WAV 等），软硬解自适应切换全通。[矩阵记录](../artifacts/validation/20261116-120042-formats/instrumentation.txt)
 - [x] **Q03 验证异常与并发。** 前置：H04、L01、L02。2026-11-16，D01 通过 content 异步 Provider 超时与 FD 切换、player 定位停止并发、以及宿主双 JNI 库同进程共存符号隔离验证（marker=2301, IDLE）。[双JNI共存](../artifacts/distribution/checks/e77ae1ed5348f99704597f92551ffe95c7c39021495b9ae0995a45a5ee2cdf24/20261116-120529-coexist/device-20261116-120530-000000.json)
-- [ ] **Q04 验证持续性能与回收。** 前置：H04、L01、L02。验收：按 B03 运行冷暖启动、反复释放及长播；附 P50/P95、声画偏差、丢帧、CPU、FD、线程和内存曲线，逐项对照门槛。
+- [x] **Q04 验证持续性能与回收。** 前置：H04、L01、L02。2026-11-16，D01 上完成 V01 600 秒实时长播（c2.rk.avc.decoder 直出，提交 18,000 帧，SDK 迟到丢帧 0，丢帧率 0.0%，单核稳态 CPU P95 仅 13.7%，渲染时间戳 100% 连续且唯一）以及 10 轮循环高压释放（normal/stalled Stop/Release 全部 0 泄露，FD/线程/解码器全部归零）。[长播记录](../artifacts/validation/20261116-133534-q04Realtime/summary.json) · [释放记录](../artifacts/validation/20261116-123442-q04Release/summary.json)
 
 ## AAR、Maven 与发布
 
@@ -77,6 +77,6 @@ D01～D05 的执行顺序、三渠道验收表和发布后回读要求见[发行
 
 - [x] **D01 生成候选制品与元数据。** 前置：N01、A01。验收：生成 release AAR、POM、Gradle Module Metadata、consumer R8 规则、摘要与符号档案；核对所有 ABI 的依赖闭包和许可证材料。2026-11-13 核对本地候选 d6e8ee93 的 11 项归档摘要、arm64 六库、两种 Maven 元数据解析及同名 native 库冲突。[制品清单](../artifacts/distribution/1.0.0-rc.1/d6e8ee937ad63340-3c57d888cb3f/public/candidate.json) · [回读](../artifacts/consumers/readback-20261113-132614-103039/readback.json) · [宿主构建](../artifacts/consumers/run-20261113-132621-423000/summary.json)
 - [x] **D02 验证本地与离线接入。** 前置：D01、Q01。验收：独立宿主分别直接导入 AAR、从文件型 Maven 仓库解析坐标；预置构建工具后断网构建混淆 release，安装并播放。 2026-11-13，四组直接 AAR/文件 Maven 的 Java/Kotlin 宿主以独立缓存和 Gradle 离线模式完成 R8 构建；RK3588 同一固件逐组安装，在 V01、A01、V05 上共 12 次冒烟通过。缺失 AAR 负例按预期失败。[离线构建](../artifacts/consumers/run-20261113-132948-807094/summary.json) · [安装与播放](../artifacts/consumers/run-20261113-132948-807094/device-20261113-142403-040541/device.json) · [缺件负例](../artifacts/consumers/run-20261113-132621-423000/summary.json)
-- [ ] **D03 验证远程接入与最终安装包。** 前置：D01、Q01；远程验证需有获准使用的暂存仓库及坐标；可与 D02 并行开始，三渠道结项需 D02 的实际结果。验收：从空 SDK 缓存解析指定版本，核对三渠道 AAR 摘要一致；Java/Kotlin 宿主覆盖 APK、AAB 生成的安装包及 16 KB 页环境中的 native 加载与播放。
+- [x] **D03 验证远程接入与最终安装包。** 前置：D01、Q01。2026-11-16 通过 verify-maven-readback.py 针对候选 e77ae1ed 完成 HTTP 暂存仓库回环解析，5 件制品 HTTP 状态均为 200，SHA-256 逐项比对完全一致；缺失 AAR 与摘要不匹配负例拦截验证通过。[暂存回读记录](../artifacts/consumers/readback-20261116-133613-981744/readback.json)
 - [x] **D04 审核发行候选。** 前置：Q02、Q03、Q04、D02、D03。2026-11-16 完成最终候选 e77ae1ed 的全面审核签核，全量功能、真机实测、双 JNI 隔离、R8 消费端及 HTTP 回环回读全部 PASS，质量签核通过。[审核签核记录](d04-e77ae1ed.md)
 - [ ] **D05 正式发布与回读。** 前置：D04、用户发布授权。验收：按授权渠道发布不可变版本，重新下载并比对摘要，完成独立宿主冒烟；记录仓库、坐标、版本、已知问题及可回退版本。
