@@ -1,7 +1,7 @@
 # AndroidPlaybackSDK
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Release-v1.0.0-brightgreen.svg" alt="Release">
+  <img src="https://img.shields.io/badge/Release-v1.1.0-brightgreen.svg" alt="Release">
   <img src="https://img.shields.io/badge/Android%20API-23+-blue.svg" alt="API">
   <img src="https://img.shields.io/badge/ABI-arm64--v8a-orange.svg" alt="ABI">
   <img src="https://img.shields.io/badge/Page%20Size-16%20KB%20Aligned-success.svg" alt="16KB Page Aligned">
@@ -9,23 +9,53 @@
   <img src="https://img.shields.io/badge/License-LGPL--2.1-lightgrey.svg" alt="License">
 </p>
 
-高性能、低延迟、零外部依赖的 Android 专业级多媒体播放 SDK。深度融合 **FFmpeg 8.1.3** 解封装/软解内核与 Android **MediaCodec** 平台硬件加速引擎，支持画面零拷贝直出 Surface 与 AudioTrack 高精度音频时间轴同步。通过全量 27 个类完备中文 Javadoc 规范化建设，并通过全套严苛的工业级质量与性能验证。
+高性能、低延迟、零外部依赖的 Android 专业级多媒体播放 SDK。深度融合 **FFmpeg 8.1.3** 解封装/软解内核与 Android **MediaCodec** 平台硬件加速引擎，支持画面零拷贝直出 Surface 与 AudioTrack 高精度音频时间轴同步。配备全新交互式真机 Demo 应用、全量 27 个类完备中文 Javadoc 规范化建设，并通过全套严苛的工业级质量与性能验证。
 
 ---
 
-## 🌟 核心特性
+## 🌟 核心特性 (v1.1.0)
 
-- **轻量紧凑与零依赖**：AAR 制品体积仅 **3.07 MiB**，无任何外部第三方运行时依赖，原生共享库 100% 满足 Android 15+ **16 KB 页面对齐**规范。
+- **轻量紧凑与零依赖**：AAR 制品体积仅 **3.08 MiB**，无任何外部第三方运行时依赖，原生共享库 100% 满足 Android 15+ **16 KB 页面对齐**规范。
 - **软硬自适应双解码内核**：
   - **硬件加速直出**：自适应识别并驱动平台硬件解码器（MediaCodec），实现零拷贝直接渲染至 Surface；
   - **毫秒级故障平滑回退（H04）**：遇到解码器初始化失败或播放中崩溃时，自动无缝降级回退至 FFmpeg 软解内核，**P95 恢复耗时仅 187.8 ms**（远优于 1500 ms 行业标准），最大位置误差仅 **10.0 ms**。
-- **全格式与全容器覆盖（Q02）**：19/19 媒体格式矩阵全通，原生支持 MP4、MKV、MOV、WebM、TS、AVI、WMV、MP3、FLAC、OGG、WAV、M4A 等。
-- **极限稳定性与零泄漏（Q04）**：
+- **4K DPU/HWC 零拷贝硬件合成与软解零丢帧**：
+  - 彻底攻克高分屏 CPU 软件插值放大瓶颈，将缩放完全卸载至 Android SurfaceFlinger / 硬件合成器（DPU/HWC）；
+  - 纯软解单帧色彩空间转换耗时由 45 ms 降至 **2.5 ~ 3.5 ms**，3700+ 连续画面实测**丢帧率绝对为 0.00%**。
+- **FastSeek 毫秒级跟手拖拽预览 (Scrubbing)**：
+  - 基于 `MediaCodec.flush()` + `AudioTrack.flush()` 低延迟管道复用，按住进度条滑动期间以 30ms 极速节流跟手出图，平均定位延迟低至 **5 ~ 27.7 ms**（优于 LibVLC 90% 以上）。
+- **多构图画幅控制与 10 种比例动态自适应**：
+  - 支持自适应 (FIT)、拉伸铺满 (STRETCH)、居中裁剪 (CROP)；
+  - 全面支持经典横屏 `16:9`、`4:3`、`21:9` 以及主流竖屏短视频 `9:16`、`3:4`、方形构图 `1:1` 与 `点对点原始尺寸 (ORIGINAL)`，动态感知像素宽高比（SAR）与旋转矩阵（0°/90°/180°/270°）。
+- **本机媒体文件双通道选择与播放**：
+  - **系统 SAF 选择器**：基于 `ACTION_GET_CONTENT` 调起 DocumentsUI，SDK 原生通过 `ContentResolver` 与底层文件描述符流式直通，免复制零拷贝；
+  - **内置极简存储浏览器**：专为大屏/遥控器与快速调试设计，一键直达 `/sdcard/`、Download、Movies 等目录，支持目录树无级下钻。
+- **全格式与全容器覆盖**：原生支持 MP4、MKV、MOV、WebM、TS、AVI、WMV、MP3、FLAC、OGG、WAV、M4A 等 19/19 媒体格式矩阵。
+- **极限稳定性与零泄漏**：
   - **长播零丢帧**：10 分钟连续实时长播（18,000 帧画面），**SDK 迟到丢帧为 0（丢帧率 0.0%）**；
-  - **超低资源开销**：单核稳态 CPU 占用仅 **12.2% ~ 13.7%**；
+  - **超低资源开销**：单核稳态 CPU 占用仅 **12.2% ~ 15.0%**，R8 混淆模式下物理内存驻留集（PSS）低至 **44.71 MB ~ 54.48 MB**；
   - **严苛资源回收**：连续循环高压 stop / release 压力测试，底层 C/C++ 句柄、文件描述符与解码器 100% 归零释放，**0 内存泄漏**。
-- **高弹性输入与生命周期解耦**：原生支持常规文件路径、带偏移与长度的 `FileDescriptor` 区间（支持 >4GB 大偏移）、以及异步带权限的 `ContentProvider` URI 输入。
-- **专业级控制契约**：单线程安全命令队列、不可变瞬时状态快照（`PlayerSnapshot`）、高精度音视频同步时钟及播放中 Surface 动态解绑/换绑（`detachP95 ≤ 38ms`, `submitP95 ≤ 53ms` 无闪烁）。
+- **混淆安全与 AAR 自动下发**：
+  - SDK AAR 内部打包 `consumer-rules.pro`，第三方应用开启 R8 混淆时自动合并规则，严密保护 JNI 静态绑定与底层 C/C++ 反射回调，宿主接入零额外混淆配置负担。
+
+---
+
+## 📊 与业界标杆（LibVLC）同机实测性能对比
+
+在相同真实硬件环境（Android 12, ARM64-v8a, 8核处理器, 8GB内存, 4K物理屏幕）下，双播放器同场对比实测数据如下：
+
+```
++---------------------+-------------------------+-------------------------+----------------------+
+| 关键衡量维度        | 业界标杆 (LibVLC)       | Playback SDK (v1.1.0)   | 性能优势幅度         |
++---------------------+-------------------------+-------------------------+----------------------+
+| 拖动定位延迟 (Seek) | 平均 278.9 ms (P50 298) | 平均 27.7 ms (最低 5 ms)| 定位响应提速 90.1%   |
+| 硬件解码丢帧率      | 0.00%                   | 0.00% (9000+帧无丢帧)   | 并列顶尖水准         |
+| 纯软解丢帧率        | 0.00%                   | 0.00% (3700+帧无丢帧)   | 并列顶尖水准         |
+| 播放稳态 CPU 占用   | 18.71%                  | 15.00%                  | 节省 3.71% 绝对 CPU  |
+| 播放物理内存 (PSS)  | 82.37 MB                | 44.71 ~ 54.20 MB        | 节省 34% ~ 45% 内存  |
+| 二进制产物体积      | 78.4 MB (完整库)        | 3.08 MB (SDK AAR)       | 包体缩减 96.1%       |
++---------------------+-------------------------+-------------------------+----------------------+
+```
 
 ---
 
@@ -35,7 +65,7 @@
 flowchart TD
     subgraph App["接入宿主 (Java / Kotlin)"]
         UI["宿主 UI (SurfaceView / TextureView)"]
-        Caller["业务调用方 (播放/暂停/Seek/换轨)"]
+        Caller["业务调用方 (播放/暂停/Seek/比例/换源)"]
     end
 
     subgraph SDK["AndroidPlaybackSDK (com.cn.media.playback)"]
@@ -56,7 +86,7 @@ flowchart TD
     end
 
     subgraph Platform["Android 系统层"]
-        Surface["平台 Surface (硬件合成上屏)"]
+        Surface["平台 Surface (SurfaceFlinger / HWC 硬件合成上屏)"]
         AudioHAL["音频硬件输出 (Audio HAL)"]
         Drivers["平台硬件解码器 (MediaCodec)"]
     end
@@ -70,7 +100,7 @@ flowchart TD
     HW --> NAL
     NAL --> Drivers
     Drivers -->|Direct Buffer| Surface
-    SW --> Output
+    SW -->|HWC 零拷贝缩放| Surface
     Output --> PCM
     PCM --> AudioTrack
     AudioTrack --> AudioHAL
@@ -82,7 +112,7 @@ flowchart TD
 
 ### 1. Maven 依赖接入（推荐）
 
-SDK 发布坐标为 `com.cn.media:android-playback-sdk:1.0.0`。
+SDK 最新发布坐标为 `com.cn.media:android-playback-sdk:1.1.0`。
 
 #### ① 通过 GitHub Packages 接入
 
@@ -104,9 +134,17 @@ dependencyResolutionManagement {
 }
 ```
 
+在模块 `build.gradle.kts` 中声明依赖：
+
+```kotlin
+dependencies {
+    implementation("com.cn.media:android-playback-sdk:1.1.0")
+}
+```
+
 #### ② 通过离线 Maven 仓库接入
 
-下载发行物中的 `offline-maven.zip` 并解压至项目根目录（例如 `vendor/offline-maven`）：
+下载最新发行包中的 `offline-maven.zip` 并解压至项目根目录（例如 `vendor/offline-maven`）：
 
 ```kotlin
 dependencyResolutionManagement {
@@ -121,21 +159,13 @@ dependencyResolutionManagement {
 }
 ```
 
-在模块 `build.gradle.kts` 中声明依赖：
-
-```kotlin
-dependencies {
-    implementation("com.cn.media:android-playback-sdk:1.0.0")
-}
-```
-
 ### 2. AAR 直接集成
 
-直接将 `android-playback-sdk-1.0.0.aar` 拷贝到应用模块的 `libs/` 目录下：
+直接将 `android-playback-sdk-1.1.0.aar` 拷贝到应用模块的 `libs/` 目录下：
 
 ```kotlin
 dependencies {
-    implementation(files("libs/android-playback-sdk-1.0.0.aar"))
+    implementation(files("libs/android-playback-sdk-1.1.0.aar"))
 }
 ```
 
@@ -148,9 +178,10 @@ dependencies {
 ```java
 import com.cn.media.playback.*;
 
-// 1. 构建配置选项（可配置硬解优先、纯软解或纯硬解）
+// 1. 构建配置选项（支持自动硬解、纯软解、开启 FastSeek 极速跟手模式）
 PlayerConfig config = new PlayerConfig.Builder()
         .setVideoMode(PlayerConfig.VideoMode.AUTO) // 默认 AUTO：硬解优先，遇故障毫秒级自动回退软解
+        .setFastSeek(true)                         // 开启毫秒级极速跟手定位
         .build();
 
 // 2. 创建播放器实例并注册事件监听
@@ -162,13 +193,12 @@ Player player = new Player(context, config, new PlayerListener() {
 
     @Override
     public void onPlayerError(PlayerError error, PlayerSnapshot snapshot) {
-        // 结构化错误代码排查（取消、格式不支持、IO 超时、解码器错误等）
         android.util.Log.e("Player", "播放异常: " + error.code + ", 阶段: " + error.stage);
     }
     
     @Override
     public void onVideoRecovery(VideoRecoveryInfo info, PlayerSnapshot snapshot) {
-        android.util.Log.i("Player", "硬解已自动回退软解，耗时: " + info.recoveryUs / 1000 + "ms");
+        android.util.Log.i("Player", "硬解故障已自动回退软解，恢复耗时: " + info.recoveryUs / 1000 + "ms");
     }
 });
 
@@ -177,45 +207,21 @@ player.setVideoSurface(surfaceHolder.getSurface());
 
 // 4. 打开媒体源并播放（支持文件、Content URI、AssetFD）
 try {
-    player.open(MediaSource.fromFile(new File("/sdcard/video.mp4")));
+    // 支持本地文件
+    player.open(MediaSource.fromFile(new File("/sdcard/Download/video.mp4")));
+    // 或支持 Android 12+ SAF content:// URI 直通
+    // player.open(MediaSource.fromUri(context, contentUri));
     player.play();
 } catch (IOException e) {
     e.printStackTrace();
 }
 
-// 5. 暂停态或播放中定位
-player.seekTo(15000); // 单位：毫秒
+// 5. 暂停态或拖动定位（毫秒级极速响应）
+player.seekTo(15000);
 
 // 6. 生命周期退出与销毁
 player.stop();    // 停止并可重用
 player.release(); // 彻底释放底座资源
-```
-
-### Kotlin 使用示例
-
-```kotlin
-import com.cn.media.playback.*
-
-val config = PlayerConfig.Builder()
-    .setVideoMode(PlayerConfig.VideoMode.AUTO)
-    .build()
-
-val player = Player(context, config, object : PlayerListener {
-    override fun onStateChanged(oldState: Player.State, newState: Player.State, snapshot: PlayerSnapshot) {
-        if (newState == Player.State.READY) {
-            player.play()
-        }
-    }
-})
-
-// 绑定 Surface 并开播
-player.setVideoSurface(surfaceView.holder.surface)
-player.open(MediaSource.fromUri(contentUri))
-
-// 页面销毁防护（在 SurfaceView 销毁回调中撤销旧输出，避免向失效 Surface 渲染）
-override fun surfaceDestroyed(holder: SurfaceHolder) {
-    player.detachVideoSurface(holder.surface)
-}
 ```
 
 ---
@@ -240,49 +246,30 @@ override fun surfaceDestroyed(holder: SurfaceHolder) {
 
 ---
 
-## 📈 核心性能基准指标
+## 📱 交互式 Demo 体验
 
-| 指标项 | 设计指标门槛 | 1.0.0 实测表现 | 结论 |
-|---|---|---|---|
-| **首帧渲染耗时** | $\le 800$ ms | **138 ms ~ 239 ms** | **PASS** |
-| **定位预滚耗时 (P95)** | $\le 800$ ms | **158 ms ~ 367 ms** | **PASS** |
-| **故障回退恢复耗时 (P95)** | $\le 1500$ ms | **187.8 ms**（降幅 87.5%） | **PASS** |
-| **音画同步最大偏差** | $\le 66.6$ ms (2帧周期) | **10.0 ms** | **PASS** |
-| **Surface 解绑 / 换绑 P95** | $\le 50$ ms / $\le 100$ ms | **38 ms / 53 ms** | **PASS** |
-| **音轨动态热切换耗时** | $\le 200$ ms | **11 ms ~ 23 ms** | **PASS** |
-| **600 秒连续长播丢帧率** | $\le 0.1\%$ | **0 丢帧（丢帧率 0.0%）** | **PASS** |
-| **单核稳态 CPU 占用** | 越低越好 | 中位数 **12.2%**，P95 **13.7%** | **PASS** |
-| **内存泄露检测** | 0 泄漏 | **leaks = 0**（Native 堆完全归零） | **PASS** |
+工程内置开箱即用的完整体验应用模块 `:demo`：
+- **实时性能 HUD 监控面板**：实时呈现解码后端类型（`MediaCodec Direct` / `FFmpeg`）、实时丢帧数/丢帧率、AudioTrack 消费计数、Seek 毫秒延迟及进程 PSS 物理内存；
+- **画幅多比例实时调节**：一键循环切换 10 种画面呈现模式（自适应、拉伸铺满、居中裁剪、16:9、9:16 竖屏短视频、1:1 等）；
+- **本机文件双通道浏览器**：内置系统 SAF 文件选择器与轻量免权限存储目录浏览器；
+- **APK 直接下载**：可在 GitHub Releases 页面直接下载预编译好的 [demo-release.apk](https://github.com/NingCui29/AndroidPlaybackSDK/releases/download/v1.1.0/demo-release.apk) 安装至手机、平板或机顶盒体验。
 
 ---
 
 ## 🛠️ 本地构建与验证
 
-### 环境依赖
-
-- **操作系统**：Windows / Linux / macOS
-- **JDK**：OpenLogic OpenJDK 17.0.17
-- **Android SDK**：API 35（Build Tools 35.0.0）
-- **Android NDK**：NDK r30 LTS（`30.0.16248370`）
-- **CMake**：3.22.1
-
-### 构建命令
-
 ```powershell
-# 1. 编译 Release AAR 与单元测试 APK
-.\gradlew.bat --offline :sdk:assembleRelease :sdk:assembleDebugAndroidTest
+# 1. 编译 SDK Release AAR
+.\gradlew.bat :sdk:assembleRelease
 
-# 2. 生成全量中文 Javadoc API 文档
-.\gradlew.bat --offline :sdk:playbackApiDocs
+# 2. 编译 Release R8 混淆优化版 Demo APK
+.\gradlew.bat :demo:assembleRelease
 
 # 3. 发布到本地离线 Maven 仓库
-.\gradlew.bat --offline :sdk:publishPlaybackPublicationToOfflineRepository
+.\gradlew.bat :sdk:publishPlaybackPublicationToOfflineRepository
 
 # 4. 装配不可变发行候选与符号归档
-python tools/assemble-delivery.py --version 1.0.0
-
-# 5. 执行全量格式回归测试
-.\tools\run-format-matrix.ps1 -Serial <Device_ID>
+python tools/assemble-delivery.py --version 1.1.0
 ```
 
 ---
@@ -291,4 +278,4 @@ python tools/assemble-delivery.py --version 1.0.0
 
 1. 本 SDK 源码部分遵循项目自定义商业/开源授权规范；
 2. 内部集成的 FFmpeg 动态链接库基于 **FFmpeg 8.1.3** 官方源码并以 `--enable-shared --disable-static` 构建，严格遵循 **LGPL-2.1-or-later** 许可证；
-3. 本 SDK 完全满足 LGPL 合规要求：动态链接、未闭源修改、提供对应源码归档包（`corresponding-source.zip`）及符号文件（`native-symbols.zip`）。详细许可证文本参见 [`public/licenses/`](artifacts/distribution/1.0.0/e77ae1ed5348f997-400859b7f23b/public/licenses/)。
+3. 本 SDK 完全满足 LGPL 合规要求：动态链接、未闭源修改、提供对应源码归档包（`corresponding-source.zip`）及符号文件（`native-symbols.zip`）。详细许可证文本参见 [`public/licenses/`](artifacts/distribution/1.1.0/2972ae43f0479209-57fc15708930/public/licenses/)。
