@@ -79,7 +79,7 @@ final class HardwareVideo implements AutoCloseable {
         }
     }
 
-    private final PlaybackOutput owner;
+    private volatile PlaybackOutput owner;
     private final CodecCalls calls;
     private final String mime;
     private int width, height, configuredWidth, configuredHeight;
@@ -98,6 +98,7 @@ final class HardwareVideo implements AutoCloseable {
     private String name = "";
     private volatile Fault bindingFault;
     private boolean closed;
+    private boolean sawFirstRender;
     private boolean sawOutput, firstPacket = true, eos, everQueued;
     private long firstQueuedMs, idleSince;
     private long acquisitionMs, acquisitionBytes;
@@ -196,6 +197,21 @@ final class HardwareVideo implements AutoCloseable {
         return f;
     }
 
+    private static volatile MediaCodecInfo[] cachedCodecInfos;
+
+    private static MediaCodecInfo[] getCodecInfos() {
+        MediaCodecInfo[] cached = cachedCodecInfos;
+        if (cached == null) {
+            synchronized (HardwareVideo.class) {
+                cached = cachedCodecInfos;
+                if (cached == null) {
+                    cached = cachedCodecInfos = new MediaCodecList(MediaCodecList.REGULAR_CODECS).getCodecInfos();
+                }
+            }
+        }
+        return cached;
+    }
+
     /**
      * 发现并筛选适合当前码流特征的可用硬件解码器候选列表。
      *
@@ -206,7 +222,7 @@ final class HardwareVideo implements AutoCloseable {
         List<String> selected = new ArrayList<>(2);
         List<String> trace = new ArrayList<>();
         trace.add(mime + " " + width + "x" + height + " fps=" + frameRate + " profile=" + profile + " level=" + level);
-        for (MediaCodecInfo component : new MediaCodecList(MediaCodecList.REGULAR_CODECS).getCodecInfos()) {
+        for (MediaCodecInfo component : getCodecInfos()) {
             String id = component.getName();
             if (component.isEncoder() || !java.util.Arrays.asList(component.getSupportedTypes()).contains(mime)) continue;
             if (selected.contains(id)) { trace.add(id + " duplicate"); continue; }
@@ -249,6 +265,46 @@ final class HardwareVideo implements AutoCloseable {
         return placeholder;
     }
 
+    /** 校验当前硬件解码器是否可以直接复用至新的渲染纪元。 */
+    synchronized boolean canReuse(Surface currentSurface) {
+        if (closed || codec == null || bindingFault != null) return false;
+        if (currentSurface != null && currentSurface.isValid()) {
+            return desired == currentSurface || active == currentSurface;
+        }
+        return true;
+    }
+
+    /** 将当前硬件解码器实例归属权移交给新渲染纪元。 */
+    synchronized void transferOwner(PlaybackOutput newOwner) {
+        this.owner = java.util.Objects.requireNonNull(newOwner);
+        this.closed = false;
+        this.bindingFault = null;
+    }
+
+    /** 冲刷硬件解码器队列并复位渲染时间戳状态（毫秒级 Seek 复位）。 */
+    synchronized void flush() {
+        if (closed) throw new IllegalStateException("HardwareVideo closed");
+        if (codec != null) {
+            try {
+                calls.flush(codec);
+            } catch (IllegalStateException broken) {
+                throw new Fault("hardwareFlush", name, broken);
+            }
+        }
+        durations.clear();
+        firstPacket = true;
+        sawOutput = false;
+        sawFirstRender = false;
+        eos = false;
+        firstQueuedMs = 0;
+        idleSince = 0;
+        pendingPicture = null;
+        pendingConfiguration = false;
+        prependConfiguration = false;
+        acquisitionMs = 0;
+        acquisitionBytes = 0;
+    }
+
     /**
      * 动态绑定新的输出渲染 Surface。
      * <p>
@@ -284,6 +340,7 @@ final class HardwareVideo implements AutoCloseable {
         MediaFormat f = format();
         f.setInteger(MediaFormat.KEY_ROTATION, rotation);
         f.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, NalAdapter.LIMIT);
+        try { f.setInteger(MediaFormat.KEY_PRIORITY, 0); } catch (Exception ignored) {}
         if (nal != null) {
             f.setByteBuffer("csd-0", nal.configuration(0));
             if (MediaFormat.MIMETYPE_VIDEO_AVC.equals(mime)) f.setByteBuffer("csd-1", nal.configuration(1));
@@ -402,7 +459,10 @@ final class HardwareVideo implements AutoCloseable {
         }
         firstPacket = false;
         prependConfiguration = false;
-        while (drainOne(0)) { /* 排空所有当前立即可用的输出画面 */ }
+        long timeoutUs = !sawOutput ? 2000 : 0;
+        while (drainOne(timeoutUs)) {
+            timeoutUs = 0;
+        }
     }
 
     /** 阻塞将数据包压入 MediaCodec 输入队列（带超时控制与重试循环）。 */
@@ -539,7 +599,12 @@ final class HardwareVideo implements AutoCloseable {
                 if (bindingFault != null) throw bindingFault;
                 if (codec != picture.codec) return;
                 if (selected != null && selected == active && selected.isValid()) {
-                    codec.releaseOutputBuffer(picture.index, System.nanoTime());
+                    if (!sawFirstRender) {
+                        sawFirstRender = true;
+                        codec.releaseOutputBuffer(picture.index, true);
+                    } else {
+                        codec.releaseOutputBuffer(picture.index, System.nanoTime());
+                    }
                     submitted = true;
                 } else codec.releaseOutputBuffer(picture.index, false);
             }

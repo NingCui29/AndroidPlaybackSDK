@@ -98,3 +98,6 @@ artifacts/consumers/
 artifacts/distribution/checks/
 
 
+artifacts/benchmark/
+artifacts/demo_screen*.png
+acceptance/benchmark/

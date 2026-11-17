@@ -656,9 +656,18 @@ public final class Player {
         PlaybackSession owner = session;
         int a = audio == null ? -1 : audio.index;
         int v = video == null ? -1 : video.index;
-        PlaybackOutput run = new PlaybackOutput(observer, a, video, target, seek,
-                intent, surface, muted ? 0 : volume, config, forceSoftware);
-        run.recoveryFrom(recoverFrom, target * 1000);
+        PlaybackOutput old = output;
+        PcmOutput reusedPcm = null;
+        HardwareVideo reusedHardware = null;
+        if (seek && old != null && recoverFrom == null) {
+            reusedPcm = old.detachPcm();
+            reusedHardware = old.detachHardware();
+        }
+        long renderTarget = (seek && config.fastSeek) ? 0 : target;
+        PlaybackOutput run = new PlaybackOutput(observer, a, video, renderTarget, seek,
+                intent, surface, muted ? 0 : volume, config, forceSoftware,
+                reusedPcm, reusedHardware);
+        run.recoveryFrom(recoverFrom, renderTarget * 1000);
         owner.replace(run);
         output = run;
         state = runningState();
@@ -675,7 +684,7 @@ public final class Player {
             int raw;
             try {
                 raw = seek ? input.seek(v >= 0 ? v : a, target) : 0;
-                if (raw >= 0) raw = input.render(a, v, target, run);
+                if (raw >= 0) raw = input.render(a, v, renderTarget, run);
             } finally {
                 run.close();
             }

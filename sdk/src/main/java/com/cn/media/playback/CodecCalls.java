@@ -55,6 +55,15 @@ class CodecCalls {
     }
 
     /**
+     * 冲刷硬件解码器队列并丢弃所有待处理缓冲。
+     *
+     * @param codec 待冲刷的解码器实例
+     */
+    void flush(MediaCodec codec) {
+        codec.flush();
+    }
+
+    /**
      * 将编码视频数据提交至解码器输入队列。
      *
      * @param codec 目标解码器实例

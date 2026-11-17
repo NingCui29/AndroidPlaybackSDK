@@ -5,7 +5,9 @@
 -keep class com.cn.media.playback.NativeInput { native <methods>; }
 -keepclassmembers class com.cn.media.playback.PcmOutput { int configure(int,int); int write(java.nio.ByteBuffer); }
 -keep class com.cn.media.playback.TrackInfo { <init>(...); }
+-keepclassmembers enum com.cn.media.playback.TrackInfo$Type { *; }
 -keep class com.cn.media.playback.MediaInfo { <init>(...); }
+-keepclassmembers enum com.cn.media.playback.MediaInfo$ProbeLimit { *; }
 -keepclassmembers class com.cn.media.playback.PlaybackOutput {
     int beginAudio(int,long,boolean);
     int selectedAudioIndex();

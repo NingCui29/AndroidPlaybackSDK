@@ -17,6 +17,9 @@ typedef struct VideoSink {
     RgbaRenderer renderer;
     AVRational sar;
     int rotation, posted, cancel_fd, geometry_set;
+    int window_w, window_h;
+    int buffer_w, buffer_h;
+    int frame_w, frame_h;
 } VideoSink;
 void video_stream_geometry(VideoSink *sink, const AVStream *stream);
 int audio_deliver(void *opaque, const AVFrame *frame);

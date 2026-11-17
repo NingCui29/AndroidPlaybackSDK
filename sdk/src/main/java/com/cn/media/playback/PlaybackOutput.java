@@ -228,8 +228,23 @@ final class PlaybackOutput implements AutoCloseable {
     PlaybackOutput(Observer observer, int audioIndex, TrackInfo videoTrack, long targetMs,
                    boolean preview, boolean playing, Surface surface, float gain, PlayerConfig policy,
                    boolean forceSoftware) {
+        this(observer, audioIndex, videoTrack, targetMs, preview, playing, surface, gain, policy, forceSoftware, null, null);
+    }
+
+    PlaybackOutput(Observer observer, int audioIndex, TrackInfo videoTrack, long targetMs,
+                   boolean preview, boolean playing, Surface surface, float gain, PlayerConfig policy,
+                   boolean forceSoftware, PcmOutput reusedPcm, HardwareVideo reusedHardware) {
         this.observer = observer;
-        pcm = new PcmOutput(policy.pcmCalls);
+        if (reusedPcm != null) {
+            this.pcm = reusedPcm;
+            this.pcm.flush();
+        } else {
+            this.pcm = new PcmOutput(policy.pcmCalls);
+        }
+        if (reusedHardware != null) {
+            this.hardware = reusedHardware;
+            this.hardware.transferOwner(this);
+        }
         this.audioIndex = audioIndex;
         this.audio = audioIndex >= 0;
         this.gain = gain;
@@ -406,7 +421,7 @@ final class PlaybackOutput implements AutoCloseable {
         if (!stopped) {
             frozenUs = clockUs();
             stopped = true;
-            pcm.cancel();
+            if (pcm != null) pcm.cancel();
             notifyAll();
         }
         // 新一代渲染纪元可能在上一代完成回收前就变成活跃代。
@@ -469,10 +484,42 @@ final class PlaybackOutput implements AutoCloseable {
      * @param extra 额外配置字节缓冲区（如 SPS/PPS）
      * @return 1 表示硬解创建成功，0 表示已自动退回软解，负数表示严重失败或已停止
      */
+    /** 分离并借出活跃的硬件解码器实例以供新纪元复用。 */
+    synchronized HardwareVideo detachHardware() {
+        HardwareVideo detached = hardware;
+        hardware = null;
+        return detached;
+    }
+
+    /** 分离并借出活跃的音频输出实例以供新纪元复用。 */
+    synchronized PcmOutput detachPcm() {
+        if (pcm == null) return null;
+        previousWritten += pcm.submitted();
+        previousConsumed += pcm.consumed();
+        PcmOutput detached = pcm;
+        pcm = null;
+        return detached;
+    }
+
     synchronized int initHardware(int profile, int level, int depth, float fps, ByteBuffer extra) {
         if (stopped) return -3;
         detachInvalidSurface();
         if (forceSoftware || policy.videoMode == PlayerConfig.VideoMode.SOFTWARE_ONLY) return 0;
+        if (hardware != null) {
+            if (hardware.canReuse(surface)) {
+                try {
+                    hardware.flush();
+                    backendSelected(hardware.component());
+                    return 1;
+                } catch (RuntimeException failure) {
+                    hardware.close();
+                    hardware = null;
+                }
+            } else {
+                hardware.close();
+                hardware = null;
+            }
+        }
         try {
             hardware = new HardwareVideo(this, videoTrack, surface, extra, profile, level, depth, fps, policy);
             return 1;
@@ -495,9 +542,11 @@ final class PlaybackOutput implements AutoCloseable {
      * @return 0 表示接收成功，1 表示硬解接收前退回软解，2 表示从当前位置恢复，负数表示终结错误或取消
      */
     int hardwarePacket(ByteBuffer packet, long ptsUs, long durationUs, boolean key, ByteBuffer extra) {
+        HardwareVideo active = hardware;
+        if (active == null) return stopped() ? -3 : 1;
         try {
-            if (packet == null) hardware.finish();
-            else hardware.submit(packet, ptsUs, durationUs, key, extra);
+            if (packet == null) active.finish();
+            else active.submit(packet, ptsUs, durationUs, key, extra);
             return stopped() ? -3 : 0;
         } catch (RuntimeException failure) {
             return hardwareError(failure, "hardwareDecode");
@@ -584,7 +633,7 @@ final class PlaybackOutput implements AutoCloseable {
             frozenUs = clockAnchor = clockUs();
             wallAnchor = nowUs();
             audio = false;
-            pcm.cancel();
+            if (pcm != null) pcm.cancel();
         }
         observer.trackLost(this, isVideo, reason);
         if (audio && audioAnchor >= 0) signalReady(audioAnchor);
@@ -603,7 +652,7 @@ final class PlaybackOutput implements AutoCloseable {
      */
     private long clockUs() {
         if (stopped || paused || (!audio && surface == null)) return frozenUs;
-        if (audio && !audioEnded && audioAnchor >= 0 && rate > 0) {
+        if (pcm != null && audio && !audioEnded && audioAnchor >= 0 && rate > 0) {
             long consumed = pcm.consumed();
             if (consumed > 0 && !firstAudio) {
                 firstAudio = true;
@@ -631,10 +680,15 @@ final class PlaybackOutput implements AutoCloseable {
     /** 获取当前播放会话的统计指标快照。 */
     synchronized PlaybackStats statistics() {
         if (finalStats != null) return finalStats;
-        long written = pcm.submitted();
-        return new PlaybackStats(previousWritten + written, previousConsumed + Math.min(written, pcm.consumed()), submitted, dropped,
+        long written = pcm != null ? pcm.submitted() : 0;
+        long consumed = pcm != null ? pcm.consumed() : 0;
+        int routeId = pcm != null ? pcm.routeId() : 0;
+        int routeType = pcm != null ? pcm.routeType() : 0;
+        int routeChanges = pcm != null ? pcm.routeChanges() : 0;
+        int recoveries = pcm != null ? pcm.recoveries() : 0;
+        return new PlaybackStats(previousWritten + written, previousConsumed + Math.min(written, consumed), submitted, dropped,
                 maxGapNs / 1000000, lastOffsetUs, softwareColor, softwarePeakBytes,
-                pcm.routeId(), pcm.routeType(), pcm.routeChanges(), pcm.recoveries(), hardwareFormat, hardwareSelection,
+                routeId, routeType, routeChanges, recoveries, hardwareFormat, hardwareSelection,
                 firstAudioNs, firstVideoNs, recovery, pcmTimeline.jumps);
     }
 
@@ -724,7 +778,9 @@ final class PlaybackOutput implements AutoCloseable {
      * @return 0 表示成功排空，-1 表示排空失败或纪元已停止
      */
     int endAudio() {
-        long consumed = pcm.drain();
+        PcmOutput active = pcm;
+        if (active == null) return -1;
+        long consumed = active.drain();
         synchronized (this) {
             if (consumed < 0 || stopped) return -1;
             clockAnchor = frozenUs = clockUs();
@@ -821,7 +877,7 @@ final class PlaybackOutput implements AutoCloseable {
             }
             if (!paused || preview) {
                 long ahead = videoAheadUs(pts);
-                if (ahead <= 0 || preview) break;
+                if (!firstVideo || ahead <= 0 || preview) break;
                 waitForChange(Math.min(20, (ahead + 999) / 1000));
             } else {
                 waitForChange(0);
@@ -913,7 +969,7 @@ final class PlaybackOutput implements AutoCloseable {
         if (!stopped) frozenUs = clockUs();
         finalStats = statistics();
         stopped = true;
-        pcm.close();
+        if (pcm != null) { pcm.close(); pcm = null; }
         if (hardware != null) { hardware.close(); hardware = null; }
         releaseCpuSurface();
         surface = null;

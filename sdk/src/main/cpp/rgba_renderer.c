@@ -184,7 +184,7 @@ int rgba_render(RgbaRenderer *r, const AVFrame *frame, AVRational stream_sar,
         memcpy(visible.linesize, lines, sizeof(lines));
     }
     r->scale = sws_getCachedContext(r->scale, visible.width, visible.height, visible.format,
-            l.w, l.h, AV_PIX_FMT_RGBA, SWS_BILINEAR, NULL, NULL, NULL);
+            l.w, l.h, AV_PIX_FMT_RGBA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
     if (!r->scale) return AVERROR(ENOMEM);
     ret = configure_color(r, frame, visible.height);
     if (ret < 0) return ret;

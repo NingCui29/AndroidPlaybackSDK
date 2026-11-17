@@ -23,7 +23,14 @@ jobs:
           OWNER: NingCui29
           REPO: AndroidPlaybackSDK
         run: |
-          ZIP_FILE="artifacts/distribution/1.0.0/e77ae1ed5348f997-400859b7f23b/public/offline-maven.zip"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          echo "Searching offline-maven.zip for version $TAG_VERSION ($GITHUB_REF_NAME)..."
+          ZIP_FILE=$(find artifacts/distribution/$TAG_VERSION -name "offline-maven.zip" 2>/dev/null | head -n 1)
+          if [ -z "$ZIP_FILE" ]; then
+            echo "Tag-specific path not found, falling back to latest under artifacts/distribution..."
+            ZIP_FILE=$(find artifacts/distribution -name "offline-maven.zip" | sort -V | tail -n 1)
+          fi
+          echo "Using release artifact: $ZIP_FILE"
           mkdir -p /tmp/maven-repo
           unzip "$ZIP_FILE" -d /tmp/maven-repo
           

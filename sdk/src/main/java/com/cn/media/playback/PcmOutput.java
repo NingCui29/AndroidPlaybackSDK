@@ -4,6 +4,7 @@ import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
+import android.os.Build;
 import android.os.SystemClock;
 import java.nio.ByteBuffer;
 
@@ -64,14 +65,20 @@ final class PcmOutput implements AutoCloseable {
         if (minimum <= 0) return false;
         int frames = Math.max((minimum + frameBytes - 1) / frameBytes, rate * 80 / 1000);
         try {
-            track = new AudioTrack.Builder()
+            AudioTrack.Builder builder = new AudioTrack.Builder()
                     .setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
                     .setAudioFormat(new AudioFormat.Builder().setSampleRate(rate).setChannelMask(mask)
                             .setEncoding(AudioFormat.ENCODING_PCM_16BIT).build())
-                    .setBufferSizeInBytes(frames * frameBytes).setTransferMode(AudioTrack.MODE_STREAM).build();
+                    .setBufferSizeInBytes(frames * frameBytes).setTransferMode(AudioTrack.MODE_STREAM);
+            if (Build.VERSION.SDK_INT >= 26) {
+                builder.setPerformanceMode(AudioTrack.PERFORMANCE_MODE_LOW_LATENCY);
+            }
+            track = builder.build();
             track.setVolume(gain);
-            if (!paused) track.play();
+            if (!paused) {
+                try { track.play(); } catch (IllegalStateException ignored) {}
+            }
             lastHeadAt = lastWriteAt = SystemClock.elapsedRealtime();
             nextRoutePoll = 0;
             return true;
@@ -83,6 +90,22 @@ final class PcmOutput implements AutoCloseable {
 
     private void releaseTrack() {
         if (track != null) { track.release(); track = null; }
+    }
+
+    /** 冲刷音频输出硬件队列并复位写入与已消费帧计数。 */
+    synchronized void flush() {
+        if (track != null) {
+            try {
+                track.pause();
+                track.flush();
+                if (!paused) track.play();
+            } catch (IllegalStateException ignored) {}
+        }
+        queued = written = maxWritten = played = headBase = lastHead = 0;
+        lastHeadAt = lastWriteAt = SystemClock.elapsedRealtime();
+        if (ring != null) ring.clear();
+        cancelled = false;
+        invalidOutput = false;
     }
 
     /** 立即取消音频输出，暂停并冲刷 AudioTrack 并唤醒所有阻塞等待。 */
@@ -100,10 +123,14 @@ final class PcmOutput implements AutoCloseable {
      * @param pause true 表示暂停，false 表示恢复
      */
     synchronized void setPaused(boolean pause) {
-        if (paused == pause || cancelled) return;
+        if (cancelled) return;
+        if (paused == pause && track != null && (pause || track.getPlayState() == AudioTrack.PLAYSTATE_PLAYING)) return;
         paused = pause;
         if (track != null) {
-            try { if (pause) track.pause(); else track.play(); }
+            try {
+                if (pause) track.pause();
+                else track.play();
+            }
             catch (IllegalStateException broken) { invalidOutput = true; }
         }
         lastHeadAt = lastWriteAt = SystemClock.elapsedRealtime();

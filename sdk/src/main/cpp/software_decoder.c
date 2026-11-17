@@ -33,7 +33,8 @@ int software_decoder_open_config(SoftwareDecoder *decoder, const AVStream *strea
             decoder->codec->pkt_timebase = stream->time_base;
             if (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
                 decoder->codec->apply_cropping = 0;
-                decoder->codec->thread_count = av_clip(av_cpu_count(), 1, 4);
+                decoder->codec->thread_type = FF_THREAD_FRAME | FF_THREAD_SLICE;
+                decoder->codec->thread_count = av_clip(av_cpu_count(), 1, 6);
             }
             ret = avcodec_open2(decoder->codec, codec, NULL);
         }
