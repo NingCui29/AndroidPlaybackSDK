@@ -8,7 +8,7 @@ on:
 
 permissions:
   packages: write
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -47,3 +47,25 @@ jobs:
               "$target_url" || echo "Warning: failed to upload $clean_path"
           done
           echo "Publish completed successfully."
+
+      - name: Create or Update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          TAG_VERSION="${TAG#v}"
+          echo "Checking release assets for $TAG ($TAG_VERSION)..."
+          AAR_FILE=$(find artifacts/distribution/$TAG_VERSION -name "*.aar" 2>/dev/null | head -n 1)
+          ZIP_FILE=$(find artifacts/distribution/$TAG_VERSION -name "offline-maven.zip" 2>/dev/null | head -n 1)
+          SRC_FILE=$(find artifacts/distribution/$TAG_VERSION -name "corresponding-source.zip" 2>/dev/null | head -n 1)
+          
+          ASSETS=()
+          [ -n "$AAR_FILE" ] && ASSETS+=("$AAR_FILE")
+          [ -n "$ZIP_FILE" ] && ASSETS+=("$ZIP_FILE")
+          [ -n "$SRC_FILE" ] && ASSETS+=("$SRC_FILE")
+          
+          echo "Creating GitHub Release with assets: ${ASSETS[*]}"
+          gh release create "$TAG" "${ASSETS[@]}" \
+            --title "AndroidPlaybackSDK $TAG" \
+            --notes-file CHANGELOG.md \
+            --latest || gh release upload "$TAG" "${ASSETS[@]}" --clobber || true
