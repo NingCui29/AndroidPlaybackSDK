@@ -3,6 +3,7 @@
 #include <stdatomic.h>
 
 typedef struct DecodeGroup DecodeGroup;
+
 typedef struct DecodeWorker {
     DecodeGroup *group;
     DecodeTarget target;
@@ -31,6 +32,15 @@ static void finish_all(DecodeGroup *group, int status) {
     }
     for (int i = 0; i < group->initialized; ++i)
         packet_queue_finish(&group->workers[i].queue, status);
+}
+
+void playback_abort_decode(PlaybackInput *input) {
+    if (!input) return;
+    pthread_mutex_lock(&input->group_lock);
+    if (input->active_group) {
+        finish_all(input->active_group, AVERROR_EXIT);
+    }
+    pthread_mutex_unlock(&input->group_lock);
 }
 
 static int track_result(DecodeWorker *worker, int ret) {
@@ -106,6 +116,9 @@ int playback_decode_tracks(PlaybackInput *input, const DecodeTarget *targets, in
         ret = -pthread_create(&worker->thread, NULL, consume, worker);
         if (!ret) started++;
     }
+    pthread_mutex_lock(&input->group_lock);
+    input->active_group = &group;
+    pthread_mutex_unlock(&input->group_lock);
     while (ret >= 0) {
         ret = av_read_frame(input->format, packet);
         if (ret < 0) break;
@@ -130,6 +143,9 @@ int playback_decode_tracks(PlaybackInput *input, const DecodeTarget *targets, in
         pthread_join(group.workers[i].thread, NULL);
         if ((ret >= 0 || ret == AVERROR_EXIT) && group.workers[i].result < 0) ret = group.workers[i].result;
     }
+    pthread_mutex_lock(&input->group_lock);
+    input->active_group = NULL;
+    pthread_mutex_unlock(&input->group_lock);
     for (int i = 0; i < group.initialized; ++i) {
         software_decoder_close(&group.workers[i].decoder);
         packet_queue_destroy(&group.workers[i].queue);

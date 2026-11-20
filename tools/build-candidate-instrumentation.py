@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = "com.cn.media.playback.test"
 RUNNER = "com.cn.media.playback.InputChecks"
 ANDROID = "{http://schemas.android.com/apk/res/android}"
+TARGET_SDK = 35
 
 
 def digest(data):
@@ -53,17 +54,37 @@ def pin_inputs(inputs, out):
     return inventory
 
 
-def verify_manifest(build, out):
+def candidate_min_sdk(candidate, aar_bytes):
+    with ZipFile(io.BytesIO(aar_bytes)) as archive:
+        manifest = ET.fromstring(archive.read("AndroidManifest.xml"))
+    sdk = manifest.find("uses-sdk")
+    declared = sdk.get(ANDROID + "minSdkVersion") if sdk is not None else None
+    minimum = candidate.get("minSdk")
+    if (not isinstance(minimum, int) or not 21 <= minimum <= TARGET_SDK or declared != str(minimum)
+            or candidate.get("abi") != ["arm64-v8a"]):
+        raise ValueError("Candidate minSdk or ABI does not match the arm64 instrumentation contract")
+    return minimum
+
+
+def verify_manifest(build, out, minimum):
     path, = (build / "intermediates/packaged_manifests/debugAndroidTest").rglob("AndroidManifest.xml")
     shutil.copyfile(path, out / "manifest.xml")
     manifest = ET.parse(path).getroot()
     runner, sdk, app = manifest.find("instrumentation"), manifest.find("uses-sdk"), manifest.find("application")
     if (manifest.get("package") != PACKAGE or runner.get(ANDROID + "targetPackage") != PACKAGE or
-            runner.get(ANDROID + "name") != RUNNER or sdk.get(ANDROID + "minSdkVersion") != "23" or
-            sdk.get(ANDROID + "targetSdkVersion") != "23" or app.get(ANDROID + "debuggable") != "true" or
+            runner.get(ANDROID + "name") != RUNNER or sdk.get(ANDROID + "minSdkVersion") != str(minimum) or
+            sdk.get(ANDROID + "targetSdkVersion") != str(TARGET_SDK) or app.get(ANDROID + "debuggable") != "true" or
             app.find("provider").get(ANDROID + "authorities") != PACKAGE + ".fixture" or
             app.find("activity").get(ANDROID + "name") != "com.cn.media.playback.DisplayActivity"):
         raise ValueError("Manifest does not match the existing device suite contract")
+
+
+def verify_apk_sdk(aapt, apk, minimum, report):
+    badging = log([aapt, "dump", "badging", apk], report)
+    for field, expected in (("minSdkVersion", minimum), ("targetSdkVersion", TARGET_SDK)):
+        values = re.findall(rf"(?m)^{field}:'(\d+)'\s*$", badging)
+        if values != [str(expected)]:
+            raise ValueError(f"Packaged APK {field} differs from {expected}: {values}")
 
 
 def inspect_dex(aar, apk, build, scratch, tool):
@@ -102,19 +123,22 @@ def build(candidate_path, out):
     candidate = json.loads(candidate_path.read_text(encoding="utf-8"))
     aar = candidate_path.with_name(candidate["aar"]["name"])
     sha = candidate["aar"]["sha256"]
-    if digest(aar.read_bytes()) != sha:
+    aar_bytes = aar.read_bytes()
+    if digest(aar_bytes) != sha:
         raise ValueError("Candidate digest and AAR do not match")
+    minimum = candidate_min_sdk(candidate, aar_bytes)
     tools = Path(os.environ["ANDROID_HOME"]) / "build-tools/35.0.0"
     win = os.name == "nt"
     with tempfile.TemporaryDirectory(prefix="playback-candidate-suite-") as temp:
         work = Path(temp)
         inventory = pin_inputs(work, out)
         pinned = work / aar.name
-        shutil.copyfile(aar, pinned)
+        pinned.write_bytes(aar_bytes)
         build_dir = work / "build"
         gradle = ROOT / ("gradlew.bat" if win else "gradlew")
         output = log([gradle, "--offline", "--no-build-cache", "-p", work / "host",
-                      "-PcandidateAar=" + str(pinned), "-PsuiteRoot=" + str(work / "suite"),
+                      "-PcandidateAar=" + str(pinned), f"-PcandidateMinSdk={minimum}",
+                      "-PsuiteRoot=" + str(work / "suite"),
                       "-PhostOutput=" + str(build_dir), "recordCandidate", "assembleDebugAndroidTest"],
                      out / "gradle.log", ROOT)
         if ("SDK_AAR " + str(pinned)) not in output.splitlines() or digest(pinned.read_bytes()) != sha:
@@ -122,7 +146,8 @@ def build(candidate_path, out):
         built, = (build_dir / "outputs/apk/androidTest/debug").glob("*.apk")
         apk = out / "test.apk"
         shutil.copyfile(built, apk)
-        verify_manifest(build_dir, out)
+        verify_manifest(build_dir, out, minimum)
+        verify_apk_sdk(tools / ("aapt2.exe" if win else "aapt2"), apk, minimum, out / "apk-badging.txt")
         signatures = log([tools / ("apksigner.bat" if win else "apksigner"), "verify", "--verbose",
                           "--print-certs", apk], out / "signatures.txt")
         signer, = re.findall(r"Signer #1 certificate SHA-256 digest: ([0-9a-f]{64})", signatures)
@@ -134,7 +159,8 @@ def build(candidate_path, out):
     report = {"coordinate": candidate["coordinate"], "aarSha256": sha, "apkSha256": digest(apk.read_bytes()),
               "testInputsSha256": digest((out / "instrumentation-inputs.zip").read_bytes()),
               "inputs": inventory, "package": PACKAGE, "targetPackage": PACKAGE, "runner": RUNNER,
-              "signerSha256": signer, "dex": dex, "native": native, "deviceRun": False}
+              "signerSha256": signer, "dex": dex, "native": native, "minSdk": minimum,
+              "targetSdk": TARGET_SDK, "deviceRun": False}
     (out / "provenance.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(apk)
 

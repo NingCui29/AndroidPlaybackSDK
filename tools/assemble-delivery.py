@@ -18,6 +18,7 @@ from assemble_elf import check, inspect
 ROOT = Path(__file__).resolve().parents[1]
 GROUP = "com.cn.media"
 ARTIFACT = "android-playback-sdk"
+ANDROID = "{http://schemas.android.com/apk/res/android}"
 FF_HASH = "7138d28c96d9d3e3af4ee3d8cad72741f8ffb40da90c1112235dea3ecd3178a3"
 SIGNER = "FCF986EA15E6E293A5644F10B4322F04D67658D8"
 PUBLIC_CLASSES = {"Player", "PlayerConfig", "MediaInfo", "TrackInfo", "MediaSource",
@@ -75,6 +76,7 @@ def verify_repo(path, version):
     check((field("groupId"), field("artifactId"), field("version"), field("packaging"))
           == (GROUP, ARTIFACT, version, "aar"), "POM coordinates or packaging mismatch")
     check(not pom.findall(".//{*}dependency") and not pom.findall(".//{*}repository"), "Unexpected POM dependency/repository")
+    pom_min_sdk = pom.findtext("{*}properties/{*}android.minSdk")
     module = json.loads(products[".module"].read_bytes())
     comp = module["component"]
     check((comp["group"], comp["module"], comp["version"]) == (GROUP, ARTIFACT, version), "Module coordinates mismatch")
@@ -94,7 +96,17 @@ def verify_repo(path, version):
           and variants.get("sources") == products["-sources.jar"].name, "Missing API, runtime or sources")
     with ZipFile(products["-javadoc.jar"]) as docs:
         check(all(f"com/cn/media/playback/{t}.html" in docs.namelist() for t in PUBLIC_CLASSES), "Incomplete Javadoc")
-    return products, included, variants, module["createdBy"]["gradle"]["version"]
+    return products, included, variants, module["createdBy"]["gradle"]["version"], pom_min_sdk
+
+
+def manifest_min_sdk(manifest, pom_min_sdk):
+    check(manifest.get("package") == "com.cn.media.playback", "Incorrect AAR namespace")
+    check([e.tag for e in manifest] == ["uses-sdk"], "Unexpected manifest components or permissions")
+    declared = manifest.find("uses-sdk").get(ANDROID + "minSdkVersion")
+    check(declared and re.fullmatch(r"[1-9][0-9]*", declared) and int(declared) >= 21,
+          "Invalid AAR minSdk for arm64-v8a")
+    check(declared == pom_min_sdk, f"POM minSdk {pom_min_sdk} differs from AAR minSdk {declared}")
+    return int(declared)
 
 
 def verify_signature(temp):
@@ -125,7 +137,7 @@ def verify_signature(temp):
 
 def assemble(args, stage, temp):
     base = Path(*GROUP.split(".")) / ARTIFACT / args.version
-    products, files, variants, gradle = verify_repo(args.repo / base, args.version)
+    products, files, variants, gradle, pom_min_sdk = verify_repo(args.repo / base, args.version)
     public, private = stage / "public", stage / "private"
     public.mkdir(parents=True)
     private.mkdir()
@@ -135,10 +147,7 @@ def assemble(args, stage, temp):
     source_inputs, signature_date = verify_signature(temp)
     with ZipFile(direct) as aar:
         manifest = ET.fromstring(aar.read("AndroidManifest.xml"))
-        check(manifest.get("package") == "com.cn.media.playback" and
-              manifest.find("uses-sdk").get("{http://schemas.android.com/apk/res/android}minSdkVersion") == "23",
-              "Incorrect namespace or minSdk")
-        check(list(e.tag for e in manifest) == ["uses-sdk"], "Unexpected manifest components or permissions")
+        minimum = manifest_min_sdk(manifest, pom_min_sdk)
         rules = aar.read("proguard.txt")
         check(b"com.cn.media.playback.NativeInput" in rules and b"com.cn.media.playback.PlaybackOutput" in rules,
               "Consumer rules missing JNI targets")
@@ -147,7 +156,7 @@ def assemble(args, stage, temp):
                   "Missing public entry points")
             licenses = {name: classes.read("META-INF/android-playback/" + name)
                         for name in ["FFmpeg-LGPL-2.1.txt", "FFmpeg-LICENSE.md", "NOTICE.txt"]}
-        native, originals = inspect(aar, temp, ROOT, args.ndk)
+        native, originals = inspect(aar, temp, ROOT, args.ndk, minimum)
 
     repo_zip = public / "offline-maven.zip"
     write_zip(repo_zip, {base.as_posix() + "/" + name: value for name, value in files.items()})
@@ -188,7 +197,7 @@ def assemble(args, stage, temp):
     write_zip(public / "corresponding-source.zip", src)
     metadata = {
         "coordinate": f"{GROUP}:{ARTIFACT}:{args.version}", "kind": "local-rehearsal",
-        "minSdk": 23, "abi": ["arm64-v8a"], "newPermissions": [], "externalRuntimeDependencies": [],
+        "minSdk": minimum, "abi": ["arm64-v8a"], "newPermissions": [], "externalRuntimeDependencies": [],
         "toolchain": {"gradle": gradle, "ndk": "30.0.16248370", "ffmpeg": "8.1.3"},
         "ffmpegSourceSha256": FF_HASH, "ffmpegPrimaryFingerprint": SIGNER,
         "ffmpegSignatureDate": signature_date, "ffmpegPatches": [],

@@ -75,4 +75,26 @@ class CodecCalls {
     void queue(MediaCodec codec, int index, int bytes, long pts, int flags) {
         codec.queueInputBuffer(index, 0, bytes, pts, flags);
     }
+
+    /**
+     * 释放输出缓冲区并按需请求呈现上屏。
+     *
+     * @param codec 目标解码器实例
+     * @param index 输出缓冲区索引
+     * @param render 是否请求渲染上屏
+     */
+    void releaseOutputBuffer(MediaCodec codec, int index, boolean render) {
+        codec.releaseOutputBuffer(index, render);
+    }
+
+    /**
+     * 释放输出缓冲区并指定纳秒时间戳请求呈现上屏。
+     *
+     * @param codec 目标解码器实例
+     * @param index 输出缓冲区索引
+     * @param renderNs 预期呈现的绝对单调纳秒时间戳
+     */
+    void releaseOutputBuffer(MediaCodec codec, int index, long renderNs) {
+        codec.releaseOutputBuffer(index, renderNs);
+    }
 }

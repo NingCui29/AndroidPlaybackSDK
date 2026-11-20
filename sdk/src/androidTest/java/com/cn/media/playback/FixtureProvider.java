@@ -9,10 +9,43 @@ import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public final class FixtureProvider extends ContentProvider {
+    private static volatile CleanupGate cleanupGate;
+
+    static final class CleanupGate implements AutoCloseable {
+        final CountDownLatch entered = new CountDownLatch(1);
+        final CountDownLatch allowReturn = new CountDownLatch(1);
+        final ParcelFileDescriptor read, write;
+
+        CleanupGate() throws IOException {
+            ParcelFileDescriptor[] pipe = ParcelFileDescriptor.createPipe();
+            read = pipe[0];
+            write = pipe[1];
+            cleanupGate = this;
+        }
+
+        AssetFileDescriptor open() throws FileNotFoundException {
+            entered.countDown();
+            try {
+                if (allowReturn.await(10, TimeUnit.SECONDS))
+                    return new AssetFileDescriptor(read, 0, AssetFileDescriptor.UNKNOWN_LENGTH);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            throw new FileNotFoundException("Cleanup fixture was not released");
+        }
+
+        @Override public void close() throws IOException {
+            cleanupGate = null;
+            allowReturn.countDown();
+            try { read.close(); } finally { write.close(); }
+        }
+    }
+
     static Uri uri(String operation, String file) {
         return new Uri.Builder().scheme("content").authority("com.cn.media.playback.test.fixture")
                 .appendPath(operation).appendPath(file).build();
@@ -29,6 +62,11 @@ public final class FixtureProvider extends ContentProvider {
         if (!"r".equals(mode) || uri.getPathSegments().size() != 2) throw new FileNotFoundException();
         String operation = uri.getPathSegments().get(0), name = uri.getLastPathSegment();
         if (!name.matches("[VAH][0-9A-Za-z.-]+")) throw new FileNotFoundException();
+        if ("cleanup".equals(operation)) {
+            CleanupGate gate = cleanupGate;
+            if (gate == null) throw new FileNotFoundException("No cleanup fixture");
+            return gate.open();
+        }
         if ("private".equals(operation))
             throw new SecurityException("Denied " + uri + " " + uri.getQueryParameter("credential"));
         if ("deny".equals(operation)) throw new SecurityException("Fixture denied");

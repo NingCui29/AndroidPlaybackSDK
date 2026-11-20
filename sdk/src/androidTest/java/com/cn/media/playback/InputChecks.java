@@ -34,6 +34,24 @@ public final class InputChecks extends Instrumentation {
     @Override public void onStart() {
         Bundle result = new Bundle();
         try {
+            if ("providerCleanup".equals(suite)) {
+                ProviderCleanupChecks.run(getTargetContext(), result);
+                finish(Activity.RESULT_OK, result);
+                return;
+            }
+            if ("transferFault".equals(suite) || "surfaceBarrier".equals(suite)) {
+                android.content.Intent intent = new android.content.Intent(getTargetContext(), DisplayActivity.class)
+                        .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+                DisplayActivity display = (DisplayActivity)startActivitySync(intent);
+                try {
+                    PlayerChecks checks = new PlayerChecks(this, result);
+                    if ("surfaceBarrier".equals(suite)) checks.surfaceBarrier(display);
+                    else checks.seekTransferFault(display);
+                }
+                finally { runOnMainSync(display::finish); }
+                finish(Activity.RESULT_OK, result);
+                return;
+            }
             if ("diagnostics".equals(suite)) {
                 new PlayerChecks(this, result).diagnostics();
                 finish(Activity.RESULT_OK, result);

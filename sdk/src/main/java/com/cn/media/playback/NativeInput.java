@@ -59,9 +59,10 @@ final class NativeInput implements Closeable {
      *
      * @param index 流索引
      * @param ms    目标毫秒时间戳
+     * @param exact 是否预滚至目标帧并按显示时间判定落点
      * @return 原生定位执行结果状态码
      */
-    int seek(int index, long ms) { return seek(handle, index, ms); }
+    int seek(int index, long ms, boolean exact) { return seek(handle, index, ms, exact); }
 
     /**
      * 创建用于异步音轨切换准备的轻量原生探测器。
@@ -88,7 +89,7 @@ final class NativeInput implements Closeable {
         return render(handle, audio, video, targetMs, output);
     }
     private static native void rearm(long handle);
-    private static native int seek(long handle, int index, long ms);
+    private static native int seek(long handle, int index, long ms, boolean exact);
     private static native int render(long handle, int audio, int video, long targetMs, PlaybackOutput output);
     static native int category(int status, boolean probing);
     static native boolean recoverHardware(int status);

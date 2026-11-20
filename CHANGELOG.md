@@ -4,6 +4,32 @@
 
 ---
 
+## [v1.2.0] - 2026-11-20
+
+### 🛡️ 核心并发与生命周期加固 (Core Concurrency & Lifecycle Hardening)
+- **硬解移交并发竞争保护与死锁消除 (P1)**：
+  - 修复 `HardwareVideo.transferOwner` 与解码线程 `drainOne`/`flushPicture` 并发竞争导致的暂存帧二次释放（Double-Free）隐患，引入原子取出与释放幂等守卫。
+  - 增加硬解移交异常时的兜底回收路径，防止 MediaCodec 实例挂起泄漏。
+  - 将 `PlaybackOutput.paused` 访问改造为 `volatile` 无锁读写，消除持有硬件锁调用输出锁的循环等待死锁。
+  - 引入 Surface 空闲等待看门狗超时机制（1 秒超时保护），防止旧任务异常未完成渲染导致控制线程无限期阻塞。
+- **JNI 符号与平台错误码规范化对齐**：
+  - 补齐导出 JNI 符号 `Java_com_cn_media_playback_NativeInput_category`，彻底消除 `UnsatisfiedLinkError`。
+  - 统一跨平台与 JNI 错误码契约：超时正确映射为 `INPUT_TIMEOUT (2003)`，内存/缓冲区耗尽映射为 `RESOURCE_EXHAUSTED (5002)`。
+- **高可用控制与队列健壮性**：
+  - `CallbackQueue` 健壮性增强：捕获线程池拒绝异常并安全复位 draining 状态，保护在途回调不被整队丢弃。
+  - 故障自动恢复模式强制传入 `exact=true`，避免不可定位媒体或自动重试误走 FastSeek。
+
+### 📱 播放演示器 (Demo) 交互鲁棒性重构
+- **快速连续拖拽防卡死**：增加 `wasPlayingBeforeDrag` 周期保护守卫，防止定位在途期间被 `PAUSED` 状态快照错误冲刷，松手后稳健恢复播放。
+- **切文件上下文安全复位**：新增 `resetSeekAndDragState()`，切换源时清理待排队任务并丢弃废弃的在途 Seek 目标，防止旧进度窜入新文件。
+- **播放器多代重建防串扰**：引入 `playerGeneration` 世代代数与 `GenerationListener` 拦截器，彻底杜绝跨实例请求序号（`requestId`）冒领碰撞。
+- **交互与错误引导优化**：纯硬解模式打开无硬件解码器的格式（如 WMV）时提供明确的中文指引；错误状态下支持播放按钮直接重试恢复。
+
+### ⚙️ CI/CD 发布流水线加固
+- `.github/workflows/publish-package.yml` 引入严苛错误退出模式（`set -euo pipefail`），移除版本回退逻辑，严格校验 Maven 产物一致性与 GitHub Release 创建流程。
+
+---
+
 ## [v1.1.0] - 2026-11-17
 
 ### 🚀 新特性 (New Features)

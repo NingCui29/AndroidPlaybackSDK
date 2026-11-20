@@ -14,8 +14,11 @@ public final class SurfaceBarrierChecks implements PlaybackOutput.Observer {
     }
 
     private Surface lost;
+    private long landingMs = -1;
+    private int missedLandings;
     private void check(boolean ok, String why) { if (!ok) throw new AssertionError(why); }
-    public void ready(PlaybackOutput o, long at) {}
+    public void ready(PlaybackOutput o, long at) { landingMs = at; }
+    public void missedSeekTarget(PlaybackOutput o) { missedLandings++; }
     public void firstAudio(PlaybackOutput o) {}
     public void firstVideo(PlaybackOutput o) {}
     public void backend(PlaybackOutput o, String name) {}
@@ -25,8 +28,13 @@ public final class SurfaceBarrierChecks implements PlaybackOutput.Observer {
     public void surfaceLost(PlaybackOutput o, Surface invalid) { lost = invalid; }
 
     private PlaybackOutput output(Surface surface) {
+        return output(surface, -1, false);
+    }
+
+    private PlaybackOutput output(Surface surface, long landingMs, boolean exact) {
         PlayerConfig config = new PlayerConfig.Builder().setCallbackExecutor(Runnable::run).build();
-        return new PlaybackOutput(this, 0, null, 0, true, true, surface, 1f, config, false);
+        return new PlaybackOutput(this, 0, null, exact ? landingMs : 0, true, landingMs, exact,
+                true, surface, 1f, config, false, null, null);
     }
 
     private static Thread call(Runnable task) {
@@ -76,10 +84,32 @@ public final class SurfaceBarrierChecks implements PlaybackOutput.Observer {
         }
     }
 
+    private void seekLanding() {
+        HostSurface surface = new HostSurface();
+        landingMs = -1;
+        try (PlaybackOutput out = output(surface, 42, false)) {
+            check(out.acquireVideo(43000, 40000) == null, "Fast seek accepted a frame after the target");
+            check(out.acquireVideo(83000, 40000) == null, "Output continued after a missed landing");
+            check(missedLandings == 1 && landingMs == -1, "Miss must have a single failure and no success");
+        }
+        try (PlaybackOutput out = output(surface, 42, true)) {
+            check(out.acquireVideo(43000, 40000) == surface, "Exact seek rejected a frame within one interval");
+            out.finishVideo(43000, true);
+            check(landingMs == 43 && missedLandings == 1, "Incorrect exact landing");
+        }
+        try (PlaybackOutput out = output(surface, 43, false)) {
+            landingMs = -1;
+            check(out.acquireVideo(43000, 40000) == surface, "Fast seek rejected the target keyframe");
+            out.finishVideo(43000, true);
+            check(landingMs == 43 && missedLandings == 1, "Incorrect fast landing");
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         SurfaceBarrierChecks test = new SurfaceBarrierChecks();
         test.repeatedStop();
         test.invalidSurface();
-        System.out.println("PASS concurrent stop waits for lease, late init cancelled, invalid binding revoked and replaced");
+        test.seekLanding();
+        System.out.println("PASS Surface ownership, invalid binding, fast and exact seek landing");
     }
 }

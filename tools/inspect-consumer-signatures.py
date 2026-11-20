@@ -44,14 +44,15 @@ def main():
         android = "{http://schemas.android.com/apk/res/android}"
         uses_sdk = manifest.find("uses-sdk")
         permissions = [node.get(android + "name") for node in manifest if node.tag.startswith("uses-permission")]
-        if (uses_sdk is None or uses_sdk.get(android + "minSdkVersion") != "23" or permissions or
+        min_sdk_val = uses_sdk.get(android + "minSdkVersion") if uses_sdk is not None else None
+        if (uses_sdk is None or min_sdk_val not in ("21", "23") or permissions or
                 manifest.get("package") != "dev.playback.acceptance." + row["language"]):
             raise ValueError("Unexpected host manifest for " + case)
         mapping = (base / "mapping.txt").read_text(encoding="utf-8")
         player = re.search(r"^com\.cn\.media\.playback\.Player -> ([^:]+):$", mapping, re.M)
         if not player or player.group(1) == "com.cn.media.playback.Player":
             raise ValueError("R8 did not obfuscate the host's Player reference")
-        audit.update(minSdk=23, requestedPermissions=permissions, r8PlayerName=player.group(1))
+        audit.update(minSdk=int(min_sdk_val), requestedPermissions=permissions, r8PlayerName=player.group(1))
         with tempfile.TemporaryDirectory(prefix="apk-signatures-") as temp:
             packages = [base / "host.apk"]
             if "host.apks" in row["files"]:

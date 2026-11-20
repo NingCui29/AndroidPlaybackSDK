@@ -1,8 +1,11 @@
 #pragma once
 #include <libavformat/avformat.h>
+#include <pthread.h>
 
 #define PLAYBACK_HW_INIT FFERRTAG('H','W','I','N')
 #define PLAYBACK_HW_RUNTIME FFERRTAG('H','W','R','T')
+
+struct DecodeGroup;
 
 // Single demux thread. Signal cancel_fd from the control thread, then join
 // before destroying this object. Both descriptors are borrowed.
@@ -20,6 +23,8 @@ typedef struct PlaybackInput {
     struct AudioHistory *audio_history;
     AVIOContext *io;
     AVFormatContext *format;
+    pthread_mutex_t group_lock;
+    struct DecodeGroup *active_group;
 } PlaybackInput;
 
 int playback_probe(PlaybackInput *input);

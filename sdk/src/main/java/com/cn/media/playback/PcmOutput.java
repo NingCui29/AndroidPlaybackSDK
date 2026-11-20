@@ -3,6 +3,7 @@ package com.cn.media.playback;
 import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Build;
 import android.os.SystemClock;
@@ -65,16 +66,24 @@ final class PcmOutput implements AutoCloseable {
         if (minimum <= 0) return false;
         int frames = Math.max((minimum + frameBytes - 1) / frameBytes, rate * 80 / 1000);
         try {
-            AudioTrack.Builder builder = new AudioTrack.Builder()
-                    .setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
-                    .setAudioFormat(new AudioFormat.Builder().setSampleRate(rate).setChannelMask(mask)
-                            .setEncoding(AudioFormat.ENCODING_PCM_16BIT).build())
-                    .setBufferSizeInBytes(frames * frameBytes).setTransferMode(AudioTrack.MODE_STREAM);
-            if (Build.VERSION.SDK_INT >= 26) {
-                builder.setPerformanceMode(AudioTrack.PERFORMANCE_MODE_LOW_LATENCY);
+            AudioAttributes attributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
+            AudioFormat format = new AudioFormat.Builder().setSampleRate(rate).setChannelMask(mask)
+                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT).build();
+            int bufferSizeInBytes = frames * frameBytes;
+            if (Build.VERSION.SDK_INT >= 23) {
+                AudioTrack.Builder builder = new AudioTrack.Builder()
+                        .setAudioAttributes(attributes)
+                        .setAudioFormat(format)
+                        .setBufferSizeInBytes(bufferSizeInBytes).setTransferMode(AudioTrack.MODE_STREAM);
+                if (Build.VERSION.SDK_INT >= 26) {
+                    builder.setPerformanceMode(AudioTrack.PERFORMANCE_MODE_LOW_LATENCY);
+                }
+                track = builder.build();
+            } else {
+                track = new AudioTrack(attributes, format, bufferSizeInBytes,
+                        AudioTrack.MODE_STREAM, AudioManager.AUDIO_SESSION_ID_GENERATE);
             }
-            track = builder.build();
             track.setVolume(gain);
             if (!paused) {
                 try { track.play(); } catch (IllegalStateException ignored) {}
@@ -172,11 +181,13 @@ final class PcmOutput implements AutoCloseable {
             long progress = Math.min(written, headBase + raw);
             if (progress > played) { played = progress; lastHeadAt = now; }
             if (!paused && now >= nextRoutePoll) {
-                AudioDeviceInfo device = track.getRoutedDevice();
-                int id = device == null ? 0 : device.getId();
-                if (id != routeId && routeId != 0 && id != 0) routeChanges++;
-                routeId = id;
-                routeType = device == null ? 0 : device.getType();
+                if (Build.VERSION.SDK_INT >= 23) {
+                    AudioDeviceInfo device = track.getRoutedDevice();
+                    int id = device == null ? 0 : device.getId();
+                    if (id != routeId && routeId != 0 && id != 0) routeChanges++;
+                    routeId = id;
+                    routeType = device == null ? 0 : device.getType();
+                }
                 nextRoutePoll = now + 100;
             }
         } catch (IllegalStateException broken) { invalidOutput = true; }

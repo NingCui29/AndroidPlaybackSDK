@@ -20,12 +20,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /** Process-local measurements. Device monotonic time; recorded separately from external optical/acoustic evidence. */
 final class Q04Trace implements Closeable {
+    private static final String[] PSS_GROUPS = {
+            "java-heap", "native-heap", "code", "stack", "graphics", "private-other", "system"
+    };
+    private static final String[] NO_ENTRIES = new String[0];
     final File dir;
     final AtomicInteger codecs = new AtomicInteger();
     volatile Player player;
@@ -38,6 +43,8 @@ final class Q04Trace implements Closeable {
     private final HandlerThread renderThread = new HandlerThread("q04-render");
     private final Handler render;
     private final PowerManager power;
+    private final boolean releaseOnly;
+    private final Debug.MemoryInfo memory = new Debug.MemoryInfo();
     private volatile boolean stopped;
     private volatile Throwable failure;
     private long lastCpu, lastWall;
@@ -50,12 +57,15 @@ final class Q04Trace implements Closeable {
         return out;
     }
 
-    Q04Trace(Context context) throws IOException {
+    Q04Trace(Context context, boolean releaseOnly) throws IOException {
+        this.releaseOnly = releaseOnly;
         dir = new File(context.getCacheDir(), "q04-" + System.currentTimeMillis());
         if (!dir.mkdir()) throw new IOException("Cannot create evidence directory");
         power = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
         String tag = "group,round,cycle,phase,monoMs,";
-        samples = writer(dir, "samples.csv", tag + "kind,cpuPct,pssKiB,nativeBytes,processFd,fixtureOrPipeFd,nativeInputFd,processThreads,sdkNamedThreads,liveCodecs,thermal,cpu0KHz,cpu4KHz,cpu6KHz,state,mediaId,timeline,positionMs,audioConsumed,videoSubmitted,videoDropped,maxSubmitGapMs,backend,routeId,routeType");
+        StringBuilder memoryColumns = new StringBuilder(",javaUsedBytes");
+        for (String group : PSS_GROUPS) memoryColumns.append(",pss-").append(group).append("-KiB");
+        samples = writer(dir, "samples.csv", tag + "kind,cpuPct,pssKiB,nativeBytes,processFd,fixtureOrPipeFd,nativeInputFd,processThreads,sdkNamedThreads,liveCodecs,thermal,cpu0KHz,cpu4KHz,cpu6KHz,state,mediaId,timeline,positionMs,audioConsumed,videoSubmitted,videoDropped,maxSubmitGapMs,backend,routeId,routeType" + memoryColumns);
         frames = writer(dir, "rendered.csv", tag + "ptsUs,renderNs,callbackNs");
         events = writer(dir, "events.csv", tag + "event,number,value,detail");
         inventory = writer(dir, "inventory.tsv", "mark\tmonoMs\tkind\tid\ttargetOrName");
@@ -122,7 +132,12 @@ final class Q04Trace implements Closeable {
 
     private static String freq(int cpu) {
         String value = read(new File("/sys/devices/system/cpu/cpu" + cpu + "/cpufreq/scaling_cur_freq"));
-        return value.matches("[0-9]+") ? value : "-1";
+        if (value.isEmpty()) return "-1";
+        for (int i = 0; i < value.length(); i++) {
+            char digit = value.charAt(i);
+            if (digit < '0' || digit > '9') return "-1";
+        }
+        return value;
     }
 
     private void sampleLoop() {
@@ -154,7 +169,11 @@ final class Q04Trace implements Closeable {
             lastWall = wall;
             lastCpu = cpu;
         }
-        String[] fds = new File("/proc/self/fd").list(), tids = new File("/proc/self/task").list();
+        // Release gates use the explicit baseline, active, and post-idle resource samples.
+        // Keep the release run's periodic memory trace free of file and thread inventory allocations.
+        boolean collectResources = !releaseOnly || !"tick".equals(kind);
+        String[] fds = collectResources ? new File("/proc/self/fd").list() : NO_ENTRIES;
+        String[] tids = collectResources ? new File("/proc/self/task").list() : NO_ENTRIES;
         if (fds == null || tids == null) throw new IOException("Cannot enumerate process resources");
         int open = 0, mediaFds = 0, sdkThreads = 0;
         for (String fd : fds) {
@@ -178,8 +197,9 @@ final class Q04Trace implements Closeable {
             if (name.startsWith("playback-")) sdkThreads++;
             if (keepInventory) inventory.write(mark + "\t" + wall + "\tthread\t" + tid + "\t" + name + "\n");
         }
-        Debug.MemoryInfo memory = new Debug.MemoryInfo();
         Debug.getMemoryInfo(memory);
+        Runtime runtime = Runtime.getRuntime();
+        long javaUsed = runtime.totalMemory() - runtime.freeMemory();
         Player current = player;
         PlayerSnapshot shot = current == null ? null : current.getSnapshot();
         String activity = "idle,0,0,0,0,0,0,0,,0,0";
@@ -191,9 +211,22 @@ final class Q04Trace implements Closeable {
         }
         int thermal = Build.VERSION.SDK_INT >= 29 ? power.getCurrentThermalStatus() : -1;
         samples.write(mark + "," + wall + "," + kind + "," + pct + "," + memory.getTotalPss() + "," +
-                Debug.getNativeHeapAllocatedSize() + "," + open + "," + mediaFds + "," + NativeInput.liveInputFds() + "," +
-                tids.length + "," + sdkThreads + "," + codecs.get() + "," + thermal + "," + freq(0) + "," +
-                freq(4) + "," + freq(6) + "," + activity);
+                Debug.getNativeHeapAllocatedSize() + ",");
+        if (collectResources) {
+            samples.write(open + "," + mediaFds + "," + NativeInput.liveInputFds() + "," +
+                    tids.length + "," + sdkThreads + "," + codecs.get() + "," + thermal + "," +
+                    freq(0) + "," + freq(4) + "," + freq(6) + ",");
+        } else {
+            samples.write(",," + NativeInput.liveInputFds() + ",,," + codecs.get() + "," + thermal + ",,,,");
+        }
+        samples.write(activity + "," + javaUsed);
+        Map<String,String> categories = Build.VERSION.SDK_INT >= 23 && !"tick".equals(kind) ?
+                memory.getMemoryStats() : java.util.Collections.emptyMap();
+        for (String group : PSS_GROUPS) {
+            samples.write(",");
+            String value = categories.get("summary." + group);
+            if (value != null) samples.write(value);
+        }
         samples.newLine();
         samples.flush();
         if (keepInventory) inventory.flush();

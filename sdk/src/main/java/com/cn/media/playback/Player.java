@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.cn.media.playback.CommandResult.Status;
 import static com.cn.media.playback.PlayerError.Code;
@@ -72,6 +73,7 @@ public final class Player {
     // Accessed by the control queue only, except the volatile published snapshot.
     private PlaybackSession session;
     private PlaybackOutput output;
+    PlaybackOutput activeOutput() { return output; }
     private State state = State.IDLE;
     private MediaInfo media;
     private TrackInfo audio, video;
@@ -164,7 +166,18 @@ public final class Player {
      * @param positionMs 目标时间（毫秒），必须为非负数
      * @return 本次命令的请求编号
      */
-    public long seekTo(long positionMs) { return accept(id -> seek(id, positionMs)); }
+    public long seekTo(long positionMs) { return seekTo(positionMs, !config.fastSeek); }
+
+    /**
+     * 请求定位到指定的媒体时间位置。
+     *
+     * @param positionMs 目标时间（毫秒），必须为非负数
+     * @param exact true 按目标时间预滚，false 快速定位。本次选择优先于配置的默认模式。
+     *              对 ASF 或 MPEG-TS 视频快速定位到正数位置时，若最早可用关键帧已越过目标，
+     *              命令结果为 {@link PlayerError.Code#SEEK_UNAVAILABLE}。快速回到零点可呈现首个视频帧。
+     * @return 本次命令的请求编号
+     */
+    public long seekTo(long positionMs, boolean exact) { return accept(id -> seek(id, positionMs, exact)); }
 
     /**
      * 选择并切换当前播放的音轨。
@@ -306,12 +319,18 @@ public final class Player {
     public long setVideoSurface(@Nullable Surface replacement) {
         return accept(id -> {
             if (replacement != null && !replacement.isValid()) { reject(id, Code.OUTPUT_LOST, "surface"); return; }
-            if (surface != replacement) surfaceVersion++;
+            boolean surfaceChanged = (surface != replacement);
+            if (surfaceChanged) surfaceVersion++;
             surface = replacement;
             surfaceRebuilt = false;
             if (output != null) output.bind(replacement);
             if (video != null && audio == null && (state == State.PLAYING || state == State.PAUSED)) {
                 state = intent && surface != null ? State.PLAYING : State.PAUSED;
+            }
+            if (surfaceChanged && replacement != null && video != null && media != null && media.seekable &&
+                    (state == State.PAUSED || state == State.READY) && !intent) {
+                long resumePos = currentPosition();
+                startRun(resumePos, true, 0, true, null);
             }
             publish(false);
             success(id);
@@ -636,17 +655,17 @@ public final class Player {
         return intent && (audio != null || surface != null) ? State.PLAYING : State.PAUSED;
     }
 
-    private void seek(long id, long ms) {
+    private void seek(long id, long ms, boolean exact) {
         if (media == null || state == State.ERROR) { reject(id, Code.INVALID_STATE, "seek"); return; }
         if (!media.seekable) { reject(id, Code.SEEK_UNAVAILABLE, "seek"); return; }
-        startRun(Math.min(clamp(ms), Long.MAX_VALUE / 1000), true, id);
+        startRun(Math.min(clamp(ms), Long.MAX_VALUE / 1000), true, id, exact, null);
     }
 
     private void startRun(long target, boolean seek, long request) {
-        startRun(target, seek, request, null);
+        startRun(target, seek, request, !config.fastSeek, null);
     }
 
-    private void startRun(long target, boolean seek, long request, HardwareVideo.Fault recoverFrom) {
+    private void startRun(long target, boolean seek, long request, boolean exact, HardwareVideo.Fault recoverFrom) {
         cancelChange(Status.SUPERSEDED);
         complete(pendingTimeline, Status.SUPERSEDED, null);
         clearSeekDeadline();
@@ -657,17 +676,40 @@ public final class Player {
         int a = audio == null ? -1 : audio.index;
         int v = video == null ? -1 : video.index;
         PlaybackOutput old = output;
-        PcmOutput reusedPcm = null;
         HardwareVideo reusedHardware = null;
         if (seek && old != null && recoverFrom == null) {
-            reusedPcm = old.detachPcm();
             reusedHardware = old.detachHardware();
         }
-        long renderTarget = (seek && config.fastSeek) ? 0 : target;
-        PlaybackOutput run = new PlaybackOutput(observer, a, video, renderTarget, seek,
-                intent, surface, muted ? 0 : volume, config, forceSoftware,
-                reusedPcm, reusedHardware);
-        run.recoveryFrom(recoverFrom, renderTarget * 1000);
+        boolean exactSeek = seek && exact;
+        long renderTarget = seek && !exactSeek ? 0 : target;
+        long landingTarget = request != 0 && (exactSeek || target > 0) ? target : -1;
+        PlaybackOutput run;
+        try {
+            run = new PlaybackOutput(observer, a, video, renderTarget, seek, landingTarget, exactSeek,
+                    intent, surface, muted ? 0 : volume, config, forceSoftware,
+                    null, reusedHardware);
+        } catch (Throwable failed) {
+            if (reusedHardware != null) {
+                try {
+                    reusedHardware.close();
+                } catch (Throwable ignored) {}
+            }
+            long failId = request != 0 ? request : pendingTimeline;
+            pendingTimeline = 0;
+            clearSeekDeadline();
+            Code code = Code.DECODER_RUNTIME;
+            String stage = "hardwareTransfer";
+            int raw = -1;
+            if (failed instanceof HardwareVideo.Fault) {
+                HardwareVideo.Fault f = (HardwareVideo.Fault) failed;
+                code = f.runtime ? Code.DECODER_RUNTIME : Code.DECODER_INIT;
+                if (f.stage != null) stage = f.stage;
+                raw = f.platformCode;
+            }
+            fail(failId, code, stage, raw);
+            return;
+        }
+        run.recoveryFrom(recoverFrom, target * 1000);
         owner.replace(run);
         output = run;
         state = runningState();
@@ -683,7 +725,7 @@ public final class Player {
             if (input == null) { run.close(); return; }
             int raw;
             try {
-                raw = seek ? input.seek(v >= 0 ? v : a, target) : 0;
+                raw = seek ? input.seek(v >= 0 ? v : a, target, exactSeek) : 0;
                 if (raw >= 0) raw = input.render(a, v, renderTarget, run);
             } finally {
                 run.close();
@@ -694,6 +736,12 @@ public final class Player {
     }
 
     private final PlaybackOutput.Observer observer = new PlaybackOutput.Observer() {
+        @Override public void missedSeekTarget(PlaybackOutput run) {
+            control.execute(() -> {
+                if (output == run && pendingTimeline != 0)
+                    fail(pendingTimeline, Code.SEEK_UNAVAILABLE, "seekLanding", 0);
+            });
+        }
         @Override public void audioSwitchResult(PlaybackOutput run, long id, int raw, long actualMs) {
             control.execute(() -> {
                 if (output != run || change == null || change.id != id) return;
@@ -792,11 +840,12 @@ public final class Player {
                 pendingTimeline = 0;
                 HardwareVideo.Fault fault = rebuild ? null : run.hardwareFailure();
                 long restore = request != 0 ? position : fault != null ? Math.max(0,fault.positionUs / 1000) : at;
-                startRun(restore, true, request, fault);
+                startRun(restore, true, request, request == 0 || run.exactSeek, fault);
                 return;
             }
             position = at;
-            fail(pendingTimeline, category, "render", raw);
+            fail(pendingTimeline, category,
+                    pendingTimeline != 0 && category == Code.SEEK_UNAVAILABLE ? "seekLanding" : "render", raw);
             return;
         }
         state = State.ENDED;
@@ -806,7 +855,7 @@ public final class Player {
         pendingTimeline = 0;
         clearSeekDeadline();
         publish(false);
-        success(id);
+        if (id != 0) reject(id, Code.SEEK_UNAVAILABLE, "seekEndOfStream");
     }
 
     private void fail(long request, Code code, String stage, int raw) {
@@ -850,18 +899,30 @@ public final class Player {
         error = null;
         state = release ? State.RELEASING : State.STOPPING;
         publish(false);
-        Runnable fence = () -> io.execute(() -> providers.afterOutstanding(() -> control.execute(() -> {
-            if (session == null && timeline == generation) {
-                state = release ? State.RELEASED : State.IDLE;
-                if (release) {
-                    surface = null;
-                    synchronized (history) { history.clear(); }
-                }
-                publish(false);
-            }
-            success(id);
-            if (release) { io.shutdown(); control.shutdown(); }
-        })));
+        if (release) providers.abandonAll();
+        AtomicBoolean providerTimedOut = new AtomicBoolean();
+        Runnable fence = () -> io.execute(() -> providers.afterOutstanding(
+                release ? 500 : 2000, control,
+                () -> {
+                    providerTimedOut.set(true);
+                    PlayerError failure = new PlayerError(Code.INPUT_TIMEOUT, Scope.REQUEST, 0, generation,
+                            id, release ? "releaseProvider" : "stopProvider", "", 0, -1);
+                    rememberFailure(failure);
+                    report(failure);
+                    complete(id, Status.FAILED, failure);
+                },
+                () -> control.execute(() -> {
+                    if (session == null && timeline == generation) {
+                        state = release ? State.RELEASED : State.IDLE;
+                        if (release) {
+                            surface = null;
+                            synchronized (history) { history.clear(); }
+                        }
+                        publish(false);
+                    }
+                    if (!providerTimedOut.get()) success(id);
+                    if (release) { io.shutdown(); control.shutdown(); }
+                })));
         if (usedTrackWorker) audioPreparation.execute(fence);
         else fence.run();
         if (release) audioPreparation.shutdown();

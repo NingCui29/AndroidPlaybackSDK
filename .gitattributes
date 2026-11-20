@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Release manifests cover the exact bytes stored in the distribution.
+artifacts/distribution/** -text

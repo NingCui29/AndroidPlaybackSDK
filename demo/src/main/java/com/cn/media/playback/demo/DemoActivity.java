@@ -121,9 +121,12 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
     private boolean autoOpenPending = true;
 
     // 状态与指标
+    private volatile int playerGeneration = 0;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean activityStarted;
     private boolean isDraggingSeek = false;
     private boolean wasPlayingBeforeDrag = false;
+    private boolean isSeekInFlight = false;
     private long lastDragSeekTimeMs = 0;
     private long pendingDragSeekMs = -1;
     private static final long DRAG_SEEK_INTERVAL_MS = 30; // 30ms 节流，实现拖拽跟手画面实时刷新
@@ -136,10 +139,22 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
     private long lastSeekCommandId = -1;
     private long lastSeekStartTimeNs = 0;
     private long lastSeekLatencyMs = -1;
+    private boolean seekRequestExact;
+    private boolean lastSuccessfulSeekExact;
     private int pssRefreshCounter = 0;
     private double lastProcessPssMb = 0.0;
 
     private final Runnable hideControlsTask = () -> setControlsVisibility(false);
+
+    private void resetSeekAndDragState() {
+        mainHandler.removeCallbacks(dragSeekTask);
+        mainHandler.removeCallbacks(seekWatchdogTask);
+        isDraggingSeek = false;
+        isSeekInFlight = false;
+        pendingDragSeekMs = -1;
+        lastSeekCommandId = -1;
+        wasPlayingBeforeDrag = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +165,18 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         initViews();
         setupListeners();
         initPlayer();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String path = intent.getStringExtra("path");
+        if (path == null || path.trim().isEmpty()) return;
+        selectMediaPath(path.trim());
+        editPath.setText(currentFilePath);
+        autoOpenPending = false;
+        openCurrentMedia(0, true);
     }
 
     private void checkAndRequestStoragePermissions() {
@@ -164,7 +191,7 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
                     startActivity(intent);
                 }
             }
-        } else {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(new String[]{
                     android.Manifest.permission.READ_EXTERNAL_STORAGE,
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -202,7 +229,13 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         if (touchOverlay != null) {
             touchOverlay.setOnClickListener(v -> toggleControlsVisibility());
         }
-        editPath.setText(DEFAULT_SAMPLE_PATH);
+        String customPath = getIntent() != null ? getIntent().getStringExtra("path") : null;
+        if (customPath != null && !customPath.trim().isEmpty()) {
+            selectMediaPath(customPath.trim());
+            editPath.setText(currentFilePath);
+        } else {
+            editPath.setText(DEFAULT_SAMPLE_PATH);
+        }
         updateFastSeekButtonState();
         updateDecodeModeButtonState();
     }
@@ -222,15 +255,8 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
                 Toast.makeText(this, "请输入有效的媒体路径或点击选择文件", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (path.startsWith("content://")) {
-                currentContentUri = Uri.parse(path);
-                currentFilePath = path;
-                openMediaUri(currentContentUri, "已选视频", 0, true);
-            } else {
-                currentContentUri = null;
-                currentFilePath = path;
-                openMedia(currentFilePath, 0, true);
-            }
+            selectMediaPath(path);
+            openCurrentMedia(0, true);
         });
 
         // HUD 开关
@@ -246,11 +272,12 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         btnPlayPause.setOnClickListener(v -> {
             resetControlsTimeout();
             if (player == null) return;
+            wasPlayingBeforeDrag = false;
             PlayerSnapshot snapshot = player.getSnapshot();
             if (snapshot.state == PlayerSnapshot.State.PLAYING) {
                 player.pause();
-            } else if (snapshot.state == PlayerSnapshot.State.ENDED || snapshot.state == PlayerSnapshot.State.IDLE) {
-                openMedia(currentFilePath, 0, true);
+            } else if (snapshot.state == PlayerSnapshot.State.ENDED || snapshot.state == PlayerSnapshot.State.IDLE || snapshot.state == PlayerSnapshot.State.ERROR) {
+                openCurrentMedia(0, true);
             } else {
                 player.play();
             }
@@ -259,6 +286,7 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         // 停止
         btnStop.setOnClickListener(v -> {
             resetControlsTimeout();
+            resetSeekAndDragState();
             pendingSeekPositionMs = -1;
             if (player != null) player.stop();
         });
@@ -269,16 +297,17 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
             if (player == null) return;
             long targetMs = Math.max(0, player.getSnapshot().positionMs - 10000);
             android.util.Log.i("DemoActivity", "btnStepBack clicked, target=" + targetMs);
-            executeSeek(targetMs);
+            executeSeek(targetMs, true);
         });
 
         // 步进 10 秒
         btnStepForward.setOnClickListener(v -> {
             resetControlsTimeout();
             if (player == null) return;
-            long targetMs = Math.min(currentDurationMs, player.getSnapshot().positionMs + 10000);
+            long targetMs = player.getSnapshot().positionMs + 10000;
+            if (currentDurationMs > 0) targetMs = Math.min(currentDurationMs, targetMs);
             android.util.Log.i("DemoActivity", "btnStepForward clicked, current=" + player.getSnapshot().positionMs + " target=" + targetMs);
-            executeSeek(targetMs);
+            executeSeek(targetMs, true);
         });
 
         // FastSeek 切换
@@ -334,72 +363,135 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser && currentDurationMs > 0) {
+                if (fromUser && canDragSeek()) {
                     resetControlsTimeout();
                     long targetMs = (long) (currentDurationMs * (progress / 1000.0));
                     tvCurrentTime.setText(formatTime(targetMs));
-                    scheduleDragSeek(targetMs);
+                    if (isDraggingSeek) {
+                        scheduleDragSeek(targetMs);
+                    } else {
+                        executeSeek(targetMs, true);
+                    }
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                if (!canDragSeek()) return;
                 isDraggingSeek = true;
+                pendingDragSeekMs = -1;
                 mainHandler.removeCallbacks(hideControlsTask);
                 mainHandler.removeCallbacks(dragSeekTask);
-                wasPlayingBeforeDrag = (player != null && player.getSnapshot().state == PlayerSnapshot.State.PLAYING);
-                if (wasPlayingBeforeDrag && player != null) {
+                if (!wasPlayingBeforeDrag) {
+                    wasPlayingBeforeDrag = (player != null && player.getSnapshot().state == PlayerSnapshot.State.PLAYING);
+                }
+                android.util.Log.i("DemoActivity", "onStartTrackingTouch wasPlayingBeforeDrag=" + wasPlayingBeforeDrag + " state=" + (player != null ? player.getSnapshot().state : "null"));
+                if (wasPlayingBeforeDrag && player != null && player.getSnapshot().state == PlayerSnapshot.State.PLAYING) {
                     player.pause();
                 }
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if (!isDraggingSeek) return;
                 isDraggingSeek = false;
                 mainHandler.removeCallbacks(dragSeekTask);
-                pendingDragSeekMs = -1;
                 resetControlsTimeout();
-                if (currentDurationMs > 0) {
-                    long targetMs = (long) (currentDurationMs * (seekBar.getProgress() / 1000.0));
-                    android.util.Log.i("DemoActivity", "seekBar onStopTrackingTouch target=" + targetMs);
-                    executeSeek(targetMs);
-                }
-                if (wasPlayingBeforeDrag && player != null) {
-                    player.play();
+                long targetMs = canDragSeek()
+                        ? (long) (currentDurationMs * (seekBar.getProgress() / 1000.0)) : -1;
+                android.util.Log.i("DemoActivity", "seekBar onStopTrackingTouch target=" + targetMs + " inFlight=" + isSeekInFlight + " wasPlaying=" + wasPlayingBeforeDrag);
+                if (targetMs >= 0) {
+                    if (isSeekInFlight) {
+                        pendingDragSeekMs = targetMs;
+                    } else {
+                        pendingDragSeekMs = -1;
+                        executeSeek(targetMs, true);
+                    }
+                } else if (!isSeekInFlight) {
+                    resumeAfterDrag();
                 }
             }
         });
     }
 
     private final Runnable dragSeekTask = this::executeDragSeek;
+    private final Runnable seekWatchdogTask = () -> {
+        if (isSeekInFlight) {
+            android.util.Log.w("DemoActivity", "Seek watchdog triggered, resetting isSeekInFlight");
+            isSeekInFlight = false;
+            lastSeekCommandId = -1;
+            finishDragSeek();
+        }
+    };
 
     private void scheduleDragSeek(long targetMs) {
         if (player == null) return;
         pendingDragSeekMs = targetMs;
-        long now = SystemClock.uptimeMillis();
-        long elapsed = now - lastDragSeekTimeMs;
-        if (elapsed >= DRAG_SEEK_INTERVAL_MS) {
-            mainHandler.removeCallbacks(dragSeekTask);
-            executeDragSeek();
-        } else {
-            mainHandler.removeCallbacks(dragSeekTask);
-            mainHandler.postDelayed(dragSeekTask, DRAG_SEEK_INTERVAL_MS - elapsed);
+        // 关键机制：如果当前正在解码一帧画面，坚决不中途打断前一次 Seek，保证当前帧顺利解码渲染上屏。
+        // 上屏后在 onCommandResult 中无缝衔接执行最新的 pendingDragSeekMs！
+        if (isSeekInFlight) {
+            return;
         }
+        mainHandler.removeCallbacks(dragSeekTask);
+        executeDragSeek();
     }
 
     private void executeDragSeek() {
         if (player == null || pendingDragSeekMs < 0) return;
         long targetMs = pendingDragSeekMs;
         pendingDragSeekMs = -1;
-        lastDragSeekTimeMs = SystemClock.uptimeMillis();
-        executeSeek(targetMs);
+        executeSeek(targetMs, !isDraggingSeek);
     }
 
     private void executeSeek(long targetMs) {
-        if (player == null) return;
+        executeSeek(targetMs, true);
+    }
+
+    private boolean canSeekCurrentMedia() {
+        if (player == null || lastOpenCommandId >= 0) return false;
+        PlayerSnapshot snapshot = player.getSnapshot();
+        return snapshot.media != null && snapshot.media.seekable && snapshot.state != PlayerSnapshot.State.ERROR;
+    }
+
+    private boolean canDragSeek() {
+        return activityStarted && currentDurationMs > 0 && canSeekCurrentMedia();
+    }
+
+    private void updateSeekBarEnabled() {
+        seekBar.setEnabled(canDragSeek());
+    }
+
+    private void finishDragSeek() {
+        if (pendingDragSeekMs >= 0 && canDragSeek()) {
+            executeDragSeek();
+            return;
+        }
+        pendingDragSeekMs = -1;
+        if (!isDraggingSeek && player != null) {
+            onSnapshot(player.getSnapshot());
+            resumeAfterDrag();
+        }
+    }
+
+    private void resumeAfterDrag() {
+        boolean resume = wasPlayingBeforeDrag;
+        wasPlayingBeforeDrag = false;
+        android.util.Log.i("DemoActivity", "resumeAfterDrag resume=" + resume + " player=" + (player != null));
+        if (!resume || !activityStarted || player == null) return;
+        PlayerSnapshot.State state = player.getSnapshot().state;
+        if (state == PlayerSnapshot.State.PAUSED || state == PlayerSnapshot.State.READY) player.play();
+    }
+
+    private void executeSeek(long targetMs, boolean exact) {
+        if (!canSeekCurrentMedia()) return;
+        isSeekInFlight = true;
+        mainHandler.removeCallbacks(seekWatchdogTask);
+        // 让 SDK 的定位预滚超时先返回命令终态。
+        mainHandler.postDelayed(seekWatchdogTask, 3500);
         lastSeekStartTimeNs = SystemClock.elapsedRealtimeNanos();
-        lastSeekCommandId = player.seekTo(targetMs);
-        android.util.Log.i("DemoActivity", "executeSeek target=" + targetMs + " commandId=" + lastSeekCommandId);
+        seekRequestExact = exact || !fastSeekEnabled;
+        lastSeekCommandId = player.seekTo(targetMs, exact);
+        android.util.Log.i("DemoActivity", "executeSeek target=" + targetMs + " exact=" + exact + " commandId=" + lastSeekCommandId);
     }
 
     private void updateFastSeekButtonState() {
@@ -561,6 +653,11 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
     }
 
     private synchronized void initPlayer() {
+        playerGeneration++;
+        resetSeekAndDragState();
+        lastOpenCommandId = -1;
+        pendingSeekPositionMs = -1;
+
         if (player != null) {
             player.release();
             player = null;
@@ -572,7 +669,9 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
                 .setFastSeek(fastSeekEnabled)
                 .build();
 
-        player = new Player(this, config, this);
+        player = new Player(this, config, new GenerationListener(playerGeneration));
+        lastSeekLatencyMs = -1;
+        updateSeekBarEnabled();
         if (currentSurface != null && currentSurface.isValid()) {
             player.setVideoSurface(currentSurface);
         }
@@ -588,10 +687,19 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
             player.stop();
         }
         initPlayer();
+        openCurrentMedia(resumePos, resumePlay);
+    }
+
+    private void selectMediaPath(String path) {
+        currentFilePath = path;
+        currentContentUri = path.startsWith("content://") ? Uri.parse(path) : null;
+    }
+
+    private void openCurrentMedia(long startPositionMs, boolean playWhenReady) {
         if (currentContentUri != null) {
-            openMediaUri(currentContentUri, "已选视频", resumePos, resumePlay);
+            openMediaUri(currentContentUri, "已选视频", startPositionMs, playWhenReady);
         } else {
-            openMedia(currentFilePath, resumePos, resumePlay);
+            openMedia(currentFilePath, startPositionMs, playWhenReady);
         }
     }
 
@@ -603,9 +711,12 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         }
 
         try {
+            resetSeekAndDragState();
             loadingProgress.setVisibility(View.VISIBLE);
             pendingSeekPositionMs = startPositionMs;
             lastOpenCommandId = player.open(MediaSource.fromFile(file));
+            lastSeekLatencyMs = -1;
+            updateSeekBarEnabled();
             if (playWhenReady) {
                 player.play();
             }
@@ -618,9 +729,12 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
 
     private void openMediaUri(Uri uri, String title, long startPositionMs, boolean playWhenReady) {
         try {
+            resetSeekAndDragState();
             loadingProgress.setVisibility(View.VISIBLE);
             pendingSeekPositionMs = startPositionMs;
             lastOpenCommandId = player.open(MediaSource.fromUri(uri));
+            lastSeekLatencyMs = -1;
+            updateSeekBarEnabled();
             if (playWhenReady) {
                 player.play();
             }
@@ -791,8 +905,11 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         String lower = name.toLowerCase(Locale.US);
         return lower.endsWith(".mp4") || lower.endsWith(".mkv") || lower.endsWith(".flv") ||
                 lower.endsWith(".ts") || lower.endsWith(".mov") || lower.endsWith(".avi") ||
-                lower.endsWith(".webm") || lower.endsWith(".m4v") || lower.endsWith(".mp3") ||
-                lower.endsWith(".aac") || lower.endsWith(".flac");
+                lower.endsWith(".webm") || lower.endsWith(".m4v") || lower.endsWith(".wmv") ||
+                lower.endsWith(".asf") || lower.endsWith(".mp3") || lower.endsWith(".aac") ||
+                lower.endsWith(".flac") || lower.endsWith(".wav") || lower.endsWith(".ogg") ||
+                lower.endsWith(".m4a") || lower.endsWith(".wma") || lower.endsWith(".3gp") ||
+                lower.endsWith(".mpg") || lower.endsWith(".mpeg");
     }
 
     @Override
@@ -864,8 +981,8 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         if (autoOpenPending) {
             autoOpenPending = false;
             File defaultFile = new File(currentFilePath);
-            if (defaultFile.exists() && defaultFile.canRead()) {
-                openMedia(currentFilePath, 0, true);
+            if (currentContentUri != null || (defaultFile.exists() && defaultFile.canRead())) {
+                openCurrentMedia(0, true);
             }
         }
     }
@@ -924,11 +1041,12 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
             currentDurationMs = 0;
             tvDuration.setText("00:00");
         }
+        updateSeekBarEnabled();
 
-        if (!isDraggingSeek) {
+        if (!isDraggingSeek && !isSeekInFlight && pendingDragSeekMs < 0) {
             tvCurrentTime.setText(formatTime(snapshot.positionMs));
             if (currentDurationMs > 0) {
-                int progress = (int) (snapshot.positionMs * 1000 / currentDurationMs);
+                int progress = (int) Math.round(snapshot.positionMs * 1000.0 / currentDurationMs);
                 seekBar.setProgress(Math.min(1000, Math.max(0, progress)));
             } else {
                 seekBar.setProgress(0);
@@ -949,15 +1067,7 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
             }
         }
 
-        // 4. 待处理 Seek（媒体已就绪且有待恢复位置）
-        if (pendingSeekPositionMs > 0 && snapshot.media != null &&
-                (snapshot.state == PlayerSnapshot.State.READY || snapshot.state == PlayerSnapshot.State.PLAYING)) {
-            long target = pendingSeekPositionMs;
-            pendingSeekPositionMs = -1;
-            executeSeek(target);
-        }
-
-        // 5. 实时诊断 HUD 刷新
+        // 4. 实时诊断 HUD 刷新
         updateDiagnosticsHud(snapshot);
     }
 
@@ -973,7 +1083,7 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         long totalFrames = submitted + dropped;
         double dropRate = totalFrames > 0 ? (dropped * 100.0 / totalFrames) : 0.0;
 
-        String seekStr = lastSeekLatencyMs >= 0 ? (lastSeekLatencyMs + " ms (" + (fastSeekEnabled ? "FastSeek" : "ExactSeek") + ")") : "-";
+        String seekStr = lastSeekLatencyMs >= 0 ? (lastSeekLatencyMs + " ms (" + (lastSuccessfulSeekExact ? "ExactSeek" : "FastSeek") + ")") : "-";
         double pssMb = getProcessPssMb();
 
         String backendDisplay;
@@ -1014,19 +1124,25 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         android.util.Log.i("DemoActivity", "onCommandResult id=" + result.requestId + " status=" + result.status + " actualPos=" + result.actualPositionMs + " lastSeekId=" + lastSeekCommandId);
         if (result.requestId == lastOpenCommandId) {
             lastOpenCommandId = -1;
+            updateSeekBarEnabled();
             if (result.status == CommandResult.Status.SUCCESS && pendingSeekPositionMs > 0) {
                 long target = pendingSeekPositionMs;
                 pendingSeekPositionMs = -1;
                 executeSeek(target);
+            } else if (result.status != CommandResult.Status.SUCCESS) {
+                pendingSeekPositionMs = -1;
+                loadingProgress.setVisibility(View.GONE);
             }
-        } else if (result.requestId == lastSeekCommandId || (lastSeekCommandId != -1 && result.actualPositionMs != null)) {
-            long latencyNs = SystemClock.elapsedRealtimeNanos() - lastSeekStartTimeNs;
-            lastSeekLatencyMs = latencyNs / 1_000_000;
-            android.util.Log.i("DemoActivity", "Seek completed! latency=" + lastSeekLatencyMs + " ms");
+        } else if (result.requestId == lastSeekCommandId) {
+            mainHandler.removeCallbacks(seekWatchdogTask);
+            isSeekInFlight = false;
             lastSeekCommandId = -1;
-            if (player != null) {
-                updateDiagnosticsHud(player.getSnapshot());
+            if (result.status == CommandResult.Status.SUCCESS && result.actualPositionMs != null) {
+                lastSeekLatencyMs = (SystemClock.elapsedRealtimeNanos() - lastSeekStartTimeNs) / 1_000_000;
+                lastSuccessfulSeekExact = seekRequestExact;
+                if (player != null) updateDiagnosticsHud(player.getSnapshot());
             }
+            finishDragSeek();
         }
     }
 
@@ -1035,7 +1151,11 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         if (error.scope == PlayerError.Scope.SESSION) {
             pendingSeekPositionMs = -1;
         }
-        Toast.makeText(this, "播放错误: [" + error.code + "] " + error.stage, Toast.LENGTH_LONG).show();
+        String hint = "";
+        if ("hardwareMime".equals(error.stage) || (error.code == PlayerError.Code.DECODER_INIT && videoMode == PlayerConfig.VideoMode.HARDWARE_ONLY)) {
+            hint = "\n（当前为纯硬解模式，该媒体无硬件解码器，请切为AUTO或纯软解）";
+        }
+        Toast.makeText(this, "播放错误: [" + error.code + "] " + error.stage + hint, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -1046,6 +1166,8 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
     @Override
     protected void onStart() {
         super.onStart();
+        activityStarted = true;
+        updateSeekBarEnabled();
         if (player != null && currentSurface != null && currentSurface.isValid()) {
             player.setVideoSurface(currentSurface);
         }
@@ -1054,6 +1176,9 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
     @Override
     protected void onStop() {
         super.onStop();
+        activityStarted = false;
+        resetSeekAndDragState();
+        updateSeekBarEnabled();
         if (player != null) {
             player.pause();
         }
@@ -1062,10 +1187,54 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        playerGeneration++;
+        resetSeekAndDragState();
         mainHandler.removeCallbacksAndMessages(null);
         if (player != null) {
             player.release();
             player = null;
+        }
+    }
+
+    private final class GenerationListener implements PlayerListener {
+        private final int generation;
+
+        GenerationListener(int generation) {
+            this.generation = generation;
+        }
+
+        private boolean isStale() {
+            return generation != playerGeneration;
+        }
+
+        @Override
+        public void onSnapshot(PlayerSnapshot snapshot) {
+            if (isStale()) return;
+            DemoActivity.this.onSnapshot(snapshot);
+        }
+
+        @Override
+        public void onCommandResult(CommandResult result) {
+            if (isStale()) return;
+            DemoActivity.this.onCommandResult(result);
+        }
+
+        @Override
+        public void onError(PlayerError error, PlayerSnapshot snapshot) {
+            if (isStale()) return;
+            DemoActivity.this.onError(error, snapshot);
+        }
+
+        @Override
+        public void onFirstAudioConsumption(PlayerSnapshot snapshot) {
+            if (isStale()) return;
+            DemoActivity.this.onFirstAudioConsumption(snapshot);
+        }
+
+        @Override
+        public void onFirstVideoSubmission(PlayerSnapshot snapshot) {
+            if (isStale()) return;
+            DemoActivity.this.onFirstVideoSubmission(snapshot);
         }
     }
 }

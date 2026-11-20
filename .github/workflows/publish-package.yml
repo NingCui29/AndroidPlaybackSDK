@@ -1,71 +1,158 @@
-name: Publish to GitHub Packages
+name: Verify or publish a sealed release
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
+    inputs:
+      tag:
+        description: 'Exact Git tag (also select this tag as the workflow ref)'
+        type: string
+        required: true
+      candidate_id:
+        description: 'Candidate directory name under artifacts/distribution/<version>/'
+        type: string
+        required: true
+      manifest_sha256:
+        description: 'Approved full SHA-256 of the candidate public/SHA256SUMS'
+        type: string
+        required: true
+      publish:
+        description: 'Publish this reviewed candidate to GitHub Packages and Releases'
+        type: boolean
+        default: false
 
 permissions:
-  packages: write
-  contents: write
+  contents: read
 
 jobs:
-  publish:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Extract Offline Maven Repo & Upload to GitHub Packages
+      - name: Check tag ref
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER: NingCui29
-          REPO: AndroidPlaybackSDK
+          TAG: ${{ inputs.tag }}
         run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          echo "Searching offline-maven.zip for version $TAG_VERSION ($GITHUB_REF_NAME)..."
-          ZIP_FILE=$(find artifacts/distribution/$TAG_VERSION -name "offline-maven.zip" 2>/dev/null | head -n 1)
-          if [ -z "$ZIP_FILE" ]; then
-            echo "Tag-specific path not found, falling back to latest under artifacts/distribution..."
-            ZIP_FILE=$(find artifacts/distribution -name "offline-maven.zip" | sort -V | tail -n 1)
+          if [[ "$GITHUB_REF_TYPE" != tag || "$GITHUB_REF_NAME" != "$TAG" ]]; then
+            echo "Select the exact requested tag as the workflow ref." >&2
+            exit 1
           fi
-          echo "Using release artifact: $ZIP_FILE"
-          mkdir -p /tmp/maven-repo
-          unzip "$ZIP_FILE" -d /tmp/maven-repo
-          
-          echo "Uploading Maven artifacts to GitHub Packages..."
-          cd /tmp/maven-repo
-          find . -type f | while read -r file; do
-            clean_path=$(echo "$file" | sed 's|^\./||')
-            target_url="https://maven.pkg.github.com/${OWNER}/${REPO}/${clean_path}"
-            echo "Uploading: $clean_path -> $target_url"
-            curl -s -f -X PUT \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -H "User-Agent: GitHub-Actions" \
-              -T "$file" \
-              "$target_url" || echo "Warning: failed to upload $clean_path"
-          done
-          echo "Publish completed successfully."
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Verify the sealed candidate locally
+        env:
+          TAG: ${{ inputs.tag }}
+          CANDIDATE_ID: ${{ inputs.candidate_id }}
+          MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
+        run: |
+          python3 tools/verify-release-candidate.py --tag "$TAG" \
+            --candidate-id "$CANDIDATE_ID" --manifest-sha256 "$MANIFEST_SHA256"
 
-      - name: Create or Update GitHub Release
+  publish:
+    needs: verify
+    if: ${{ inputs.publish }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: playback-release-${{ github.ref }}
+      cancel-in-progress: false
+    permissions:
+      packages: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Stage only verified assets
+        env:
+          TAG: ${{ inputs.tag }}
+          CANDIDATE_ID: ${{ inputs.candidate_id }}
+          MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
+        run: |
+          python3 tools/verify-release-candidate.py --tag "$TAG" \
+            --candidate-id "$CANDIDATE_ID" --manifest-sha256 "$MANIFEST_SHA256" \
+            --output "$RUNNER_TEMP/playback-release"
+      - name: Check destination and upload Maven payloads
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ inputs.tag }}
         run: |
-          TAG_VERSION="${TAG#v}"
-          echo "Checking release assets for $TAG ($TAG_VERSION)..."
-          AAR_FILE=$(find artifacts/distribution/$TAG_VERSION -name "*.aar" 2>/dev/null | head -n 1)
-          ZIP_FILE=$(find artifacts/distribution/$TAG_VERSION -name "offline-maven.zip" 2>/dev/null | head -n 1)
-          SRC_FILE=$(find artifacts/distribution/$TAG_VERSION -name "corresponding-source.zip" 2>/dev/null | head -n 1)
-          
-          ASSETS=()
-          [ -n "$AAR_FILE" ] && ASSETS+=("$AAR_FILE")
-          [ -n "$ZIP_FILE" ] && ASSETS+=("$ZIP_FILE")
-          [ -n "$SRC_FILE" ] && ASSETS+=("$SRC_FILE")
-          
-          echo "Creating GitHub Release with assets: ${ASSETS[*]}"
-          gh release create "$TAG" "${ASSETS[@]}" \
-            --title "AndroidPlaybackSDK $TAG" \
-            --notes-file CHANGELOG.md \
-            --latest || gh release upload "$TAG" "${ASSETS[@]}" --clobber || true
+          set -euo pipefail
+          stage="$RUNNER_TEMP/playback-release"
+          repository="https://maven.pkg.github.com/${GITHUB_REPOSITORY,,}"
+          remote_commit=$(gh api "repos/$GITHUB_REPOSITORY/commits/$TAG" --jq .sha)
+          if [[ "$remote_commit" != "$(git rev-parse HEAD)" ]]; then
+            echo "The release tag moved after verification." >&2
+            exit 1
+          fi
+          status=$(curl --silent --show-error --max-time 30 --output /dev/null --write-out '%{http_code}' \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/tags/$TAG")
+          if [[ "$status" != 404 ]]; then
+            echo "Expected an unoccupied release tag, got HTTP $status." >&2
+            exit 1
+          fi
+          cd "$stage/maven"
+          shopt -s nullglob
+          files=(com/cn/media/android-playback-sdk/"${TAG#v}"/*)
+          if (( ${#files[@]} != 5 )); then
+            echo "Expected five verified Maven payloads." >&2
+            exit 1
+          fi
+          pending=()
+          for file in "${files[@]}"; do
+            status=$(curl --silent --show-error --max-time 30 --output "$stage/remote-file" \
+              --write-out '%{http_code}' --user "$GITHUB_ACTOR:$GH_TOKEN" "$repository/$file")
+            case "$status" in
+              200)
+                if ! cmp --silent "$file" "$stage/remote-file"; then
+                  echo "Existing Maven payload differs: $file" >&2
+                  exit 1
+                fi
+                ;;
+              404) pending+=("$file");;
+              *)
+                echo "Unable to check Maven payload $file (HTTP $status)." >&2
+                exit 1
+                ;;
+            esac
+          done
+          for file in "${pending[@]}"; do
+            status=$(curl --silent --show-error --max-time 120 --output /dev/null --write-out '%{http_code}' \
+              --user "$GITHUB_ACTOR:$GH_TOKEN" --upload-file "$file" "$repository/$file")
+            if [[ "$status" != 2[0-9][0-9] ]]; then
+              echo "Unable to upload Maven payload $file (HTTP $status)." >&2
+              exit 1
+            fi
+          done
+      - name: Read back Maven payloads
+        env:
+          PLAYBACK_MAVEN_USER: ${{ github.actor }}
+          PLAYBACK_MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 tools/verify-maven-readback.py \
+            --candidate "$RUNNER_TEMP/playback-release/release/candidate.json" \
+            --repository "https://maven.pkg.github.com/${GITHUB_REPOSITORY,,}" \
+            --channel published --output "$RUNNER_TEMP/playback-maven-readback"
+      - name: Archive Maven readback result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-readback
+          path: ${{ runner.temp }}/playback-maven-readback/*/readback.json
+          if-no-files-found: ignore
+      - name: Create release for the existing tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          remote_commit=$(gh api "repos/$GITHUB_REPOSITORY/commits/$TAG" --jq .sha)
+          if [[ "$remote_commit" != "$(git rev-parse HEAD)" ]]; then
+            echo "The release tag moved before Release creation." >&2
+            exit 1
+          fi
+          assets="$RUNNER_TEMP/playback-release/release"
+          gh release create "$TAG" --verify-tag --repo "$GITHUB_REPOSITORY" \
+            --title "AndroidPlaybackSDK $TAG" --notes-file CHANGELOG.md \
+            "$assets/android-playback-sdk-${TAG#v}.aar" "$assets/offline-maven.zip" "$assets/corresponding-source.zip"

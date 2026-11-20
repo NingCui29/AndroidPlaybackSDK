@@ -1,4 +1,4 @@
-"""Summarize Q04 device CSVs without treating SDK submission as physical presentation."""
+"""Summarize Q04 device CSVs. q04Release exits 0 when measured, 1 on failure, 2 for pending evidence."""
 
 import argparse
 from collections import defaultdict
@@ -12,6 +12,17 @@ from statistics import median
 from tempfile import NamedTemporaryFile
 from q04_capture import evaluate
 from summarize_q04_io import text_file as read
+
+
+def memory_deltas(before, after, keys):
+    result = {}
+    for key in keys:
+        old = [int(sample[key]) for sample in before if sample.get(key)]
+        new = [int(sample[key]) for sample in after if sample.get(key)]
+        if old and new:
+            divisor = 1048576 if key.endswith("Bytes") else 1024
+            result[key] = (median(new) - median(old)) / divisor
+    return result
 
 
 def rows(path):
@@ -87,13 +98,40 @@ def main():
     check(all(int(r["pssKiB"]) > 0 and int(r["nativeBytes"]) > 0 for r in samples), "invalid memory samples")
 
     if suite == "q04Release":
+        if ticks:
+            check(int(ticks[0]["monoMs"]) - int(samples[0]["monoMs"]) <= 2000 and
+                  int(samples[-1]["monoMs"]) - int(ticks[-1]["monoMs"]) <= 2000,
+                  "1 Hz telemetry does not cover the release run")
         baseline = [r for r in samples if r["kind"] == "baseline"]
         check(len(baseline) == 10, "missing warm idle baseline")
         counters = ("fixtureOrPipeFd", "nativeInputFd", "sdkNamedThreads", "liveCodecs")
         base = {key: median([int(r[key]) for r in baseline]) for key in
                 (*counters, "pssKiB", "nativeBytes", "processFd", "processThreads")} if baseline else {}
         report["baseline"] = base
-        for group in ("normalStop", "normalRelease", "stalledStop", "stalledRelease"):
+        memory_keys = ("pssKiB", "nativeBytes", "javaUsedBytes", "pss-java-heap-KiB",
+                       "pss-native-heap-KiB", "pss-code-KiB", "pss-stack-KiB",
+                       "pss-graphics-KiB", "pss-private-other-KiB", "pss-system-KiB")
+        release_groups = ("normalStop", "normalRelease", "stalledStop", "stalledRelease")
+        before_warmup = [r for r in samples if r["kind"] == "coldIdle"]
+        resource_reference = base
+        if not before_warmup:
+            pending.append("missing pre-warmup idle resource sample")
+        elif len(before_warmup) != 1:
+            failures.append("duplicate pre-warmup idle resource samples")
+        else:
+            resource_reference = {key: int(before_warmup[0][key]) for key in counters}
+            report["coldIdleResources"] = resource_reference
+            report["coldToWarmIdleMiB"] = memory_deltas(before_warmup, baseline, memory_keys)
+            warmup_groups = {"warmup" + group[0].upper() + group[1:] for group in release_groups}
+            warmup_idle = [s for s in samples if s["group"] in warmup_groups and s["kind"] == "postIdle"]
+            check(len(warmup_idle) == len(warmup_groups) and {s["group"] for s in warmup_idle} == warmup_groups,
+                  "missing or duplicate warmup post-idle samples")
+            for sample in [*warmup_idle, *baseline]:
+                for key in counters:
+                    if int(sample[key]) != resource_reference[key]:
+                        failures.append(f"{sample['group']} {sample['kind']} at {sample['monoMs']} ms: "
+                                        f"{key}={sample[key]}, cold idle={resource_reference[key]}")
+        for group in release_groups:
             duration = [e for e in events if e["group"] == group and e["event"] == "operationUs"]
             idle = [s for s in samples if s["group"] == group and s["kind"] == "postIdle"]
             active = [s for s in samples if s["group"] == group and s["kind"] == "active"]
@@ -112,15 +150,17 @@ def main():
                 is_stop = group.endswith("Stop")
                 check(stat["p95"] <= (250 if is_stop else 500) and stat["max"] <= (1000 if is_stop else 2000),
                       group + ": K08 latency exceeded")
-            if base and idle:
+            if resource_reference:
                 for key in counters:
-                    check(all(int(r[key]) == base[key] for r in idle), group + ": idle mismatch " + key)
+                    check(all(int(r[key]) == resource_reference[key] for r in idle), group + ": idle mismatch " + key)
                 for key in ("nativeInputFd", "fixtureOrPipeFd"):
-                    check(all(int(r[key]) > base[key] for r in active), group + ": missing active observation " + key)
+                    check(all(int(r[key]) > resource_reference[key] for r in active), group + ": missing active observation " + key)
+            if base and idle:
                 tail = sorted(idle, key=lambda x: int(x["round"]))[-10:]
                 pss = (median([int(r["pssKiB"]) for r in tail])-base["pssKiB"]) / 1024
                 heap = (median([int(r["nativeBytes"]) for r in tail])-base["nativeBytes"]) / 1048576
                 out.update(lastIdleCount=len(tail), pssMedianDeltaMiB=pss, heapMedianDeltaMiB=heap)
+                out["memoryBreakdownDeltaMiB"] = memory_deltas(baseline, tail, memory_keys)
                 if len(tail) >= 10: check(pss <= 8 and heap <= 4, group + ": idle memory growth")
     else:
         grouped, per_round = by_round(events), by_round(samples)
@@ -247,7 +287,9 @@ def main():
     print(d/"summary.json")
     for item in failures: print("FAILED:", item)
     for item in pending: print("PENDING:", item)
-    return 1 if failures else 0
+    if failures:
+        return 1
+    return 2 if suite == "q04Release" and pending else 0
 
 
 if __name__ == "__main__":

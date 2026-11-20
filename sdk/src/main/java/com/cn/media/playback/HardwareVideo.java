@@ -61,7 +61,7 @@ final class HardwareVideo implements AutoCloseable {
             super(stage, cause);
             this.stage = stage;
             this.component = component == null ? "" : component;
-            this.platformCode = cause instanceof MediaCodec.CodecException ?
+            this.platformCode = (Build.VERSION.SDK_INT >= 23 && cause instanceof MediaCodec.CodecException) ?
                     ((MediaCodec.CodecException)cause).getErrorCode() : 0;
         }
 
@@ -111,8 +111,24 @@ final class HardwareVideo implements AutoCloseable {
      */
     private static final class Picture {
         final MediaCodec codec; final int index; final long pts, duration;
+        boolean released;
         Picture(MediaCodec codec, int index, long pts, long duration) {
             this.codec = codec; this.index = index; this.pts = pts; this.duration = duration;
+        }
+    }
+
+    /** 检查当前视频编码是否具备 Android 原生硬件解码器支持。 */
+    static boolean isSupportedCodec(String codec) {
+        if (codec == null) return false;
+        switch (codec) {
+            case "h264":
+            case "hevc":
+            case "vp8":
+            case "vp9":
+            case "mpeg4":
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -276,6 +292,16 @@ final class HardwareVideo implements AutoCloseable {
 
     /** 将当前硬件解码器实例归属权移交给新渲染纪元。 */
     synchronized void transferOwner(PlaybackOutput newOwner) {
+        Picture held = pendingPicture;
+        pendingPicture = null;
+        if (held != null) {
+            try {
+                release(held, null, this.owner);
+            } catch (Throwable fault) {
+                close();
+                throw fault;
+            }
+        }
         this.owner = java.util.Objects.requireNonNull(newOwner);
         this.closed = false;
         this.bindingFault = null;
@@ -298,7 +324,11 @@ final class HardwareVideo implements AutoCloseable {
         eos = false;
         firstQueuedMs = 0;
         idleSince = 0;
+        Picture held = pendingPicture;
         pendingPicture = null;
+        if (held != null) {
+            release(held, null, this.owner);
+        }
         pendingConfiguration = false;
         prependConfiguration = false;
         acquisitionMs = 0;
@@ -321,8 +351,13 @@ final class HardwareVideo implements AutoCloseable {
         try {
             Surface replacement = target();
             if (active != replacement) {
-                codec.setOutputSurface(replacement);
-                active = replacement;
+                if (Build.VERSION.SDK_INT >= 23) {
+                    codec.setOutputSurface(replacement);
+                    active = replacement;
+                    sawFirstRender = false;
+                } else {
+                    releaseCodec();
+                }
             }
         } catch (RuntimeException failed) {
             bindingFault = new Fault("hardwareSurface", name, failed);
@@ -394,7 +429,8 @@ final class HardwareVideo implements AutoCloseable {
      * @param key 是否为关键帧
      * @param extra 额外配置头
      */
-    void submit(ByteBuffer packet, long pts, long duration, boolean key, ByteBuffer extra) {
+    void submit(PlaybackOutput caller, ByteBuffer packet, long pts, long duration, boolean key, ByteBuffer extra) {
+        if (caller != this.owner || caller.stopped()) return;
         if (bindingFault != null) throw bindingFault;
         synchronized (this) {
             if (idleSince != 0) {
@@ -436,7 +472,7 @@ final class HardwareVideo implements AutoCloseable {
                     adaptiveChanges++;
                 } else {
                     // 在废除上一代解码器索引之前，必须先将上一代滞留的画面全部排空递送完毕。
-                    finish();
+                    finish(caller);
                     synchronized (this) { releaseCodec(); }
                     durations.clear();
                     firstPacket = true; sawOutput = eos = false;
@@ -452,7 +488,7 @@ final class HardwareVideo implements AutoCloseable {
             pendingConfiguration = false;
         }
         if (pts == Long.MIN_VALUE) throw new Fault("hardwareTimestamp", name, null);
-        queue(packet, pts, key, false);
+        queue(caller, packet, pts, key, false);
         if (duration > 0) {
             if (durations.size() >= 256) durations.remove(durations.keySet().iterator().next());
             durations.put(pts, duration);
@@ -460,15 +496,15 @@ final class HardwareVideo implements AutoCloseable {
         firstPacket = false;
         prependConfiguration = false;
         long timeoutUs = !sawOutput ? 2000 : 0;
-        while (drainOne(timeoutUs)) {
+        while (drainOne(caller, timeoutUs)) {
             timeoutUs = 0;
         }
     }
 
     /** 阻塞将数据包压入 MediaCodec 输入队列（带超时控制与重试循环）。 */
-    private void queue(ByteBuffer packet, long pts, boolean key, boolean end) {
+    private void queue(PlaybackOutput caller, ByteBuffer packet, long pts, boolean key, boolean end) {
         long began = SystemClock.elapsedRealtime();
-        while (!owner.stopped()) {
+        while (!caller.stopped() && caller == this.owner) {
             if (bindingFault != null) throw bindingFault;
             synchronized (this) {
                 if (codec == null) throw new Fault("hardwareLost", name, null);
@@ -495,15 +531,17 @@ final class HardwareVideo implements AutoCloseable {
                     return;
                 }
             }
-            if (drainOne(0)) began = SystemClock.elapsedRealtime();
-            else flushPicture();
+            if (drainOne(caller, 0)) began = SystemClock.elapsedRealtime();
+            else flushPicture(caller);
             if (SystemClock.elapsedRealtime() - began > 2000) throw new Fault("hardwareInputTimeout", name, null);
         }
+        if (caller != this.owner || caller.stopped()) return;
         throw new Fault("hardwareCancelled", name, null);
     }
 
     /** 从解码器拉取单个输出缓冲区并处理格式变更与音视频同步丢帧判定。 */
-    private boolean drainOne(long timeoutUs) {
+    private boolean drainOne(PlaybackOutput caller, long timeoutUs) {
+        if (caller != this.owner || caller.stopped()) return false;
         int index;
         MediaCodec instance;
         synchronized (this) {
@@ -518,7 +556,7 @@ final class HardwareVideo implements AutoCloseable {
                 int right = integer(f,"crop-right",w-1), bottom = integer(f,"crop-bottom",h-1);
                 if (left < 0 || top < 0 || right < left || right >= w || bottom < top || bottom >= h)
                     throw new Fault("hardwareCrop", name, null);
-                owner.hardwareFormat(new HardwareOutputInfo(name, w, h, left, top, right, bottom,
+                caller.hardwareFormat(new HardwareOutputInfo(name, w, h, left, top, right, bottom,
                         Math.max(1,integer(f,"sar-width",1)), Math.max(1,integer(f,"sar-height",1)),
                         rotation, configurationVersion, ++formatChanges, adaptiveChanges, rebuilds));
                 instance.setVideoScalingMode(MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
@@ -526,7 +564,7 @@ final class HardwareVideo implements AutoCloseable {
             }
         }
         if (index < 0) {
-            if (!sawOutput && owner.expectsVideoProgress()) {
+            if (!sawOutput && caller.expectsVideoProgress()) {
                 synchronized (this) {
                     if (!sawOutput && firstQueuedMs != 0 && SystemClock.elapsedRealtime() - firstQueuedMs > 2000)
                         throw new Fault("hardwareFirstOutput", name, null);
@@ -539,19 +577,35 @@ final class HardwareVideo implements AutoCloseable {
         long pts = info.presentationTimeUs;
         Long duration = durations.remove(pts);
         Picture current = new Picture(instance, index, pts, duration == null ? 0 : duration);
-        Picture held = pendingPicture;
+        Picture held = pollPendingPicture();
         if (held != null) {
-            pendingPicture = null;
-            if (picture && owner.lateVideo(held.pts, held.duration, pts) == 1) release(held, null);
-            else present(held);
+            if (picture && caller.lateVideo(held.pts, held.duration, pts) == 1) release(held, null, caller);
+            else present(held, caller);
         }
-        if (!picture) release(current, null);
+        if (!picture) release(current, null, caller);
         else {
             sawOutput = true;
-            if (!eos && owner.lateVideo(pts, current.duration, Long.MIN_VALUE) == 1) pendingPicture = current;
-            else present(current);
+            if (!eos && caller.lateVideo(pts, current.duration, Long.MIN_VALUE) == 1) {
+                if (!setPendingPicture(current, caller)) {
+                    release(current, null, caller);
+                }
+            } else present(current, caller);
         }
         return true;
+    }
+
+    private synchronized Picture pollPendingPicture() {
+        Picture held = pendingPicture;
+        pendingPicture = null;
+        return held;
+    }
+
+    private synchronized boolean setPendingPicture(Picture picture, PlaybackOutput caller) {
+        if (caller == this.owner && !caller.stopped()) {
+            pendingPicture = picture;
+            return true;
+        }
+        return false;
     }
 
     /** 从 MediaFormat 安全读取整型配置值。 */
@@ -560,19 +614,33 @@ final class HardwareVideo implements AutoCloseable {
     }
 
     /** 将暂存的待呈现画面立即发布渲染。 */
+    void flushPicture(PlaybackOutput caller) {
+        Picture held = pollPendingPicture();
+        if (held != null) {
+            if (caller != this.owner || caller.stopped()) {
+                release(held, null, caller);
+            } else {
+                present(held, caller);
+            }
+        }
+    }
+
     void flushPicture() {
-        Picture held = pendingPicture;
-        pendingPicture = null;
-        if (held != null) present(held);
+        flushPicture(this.owner);
     }
 
     /** 在输入阻塞等待之前排空挂起画面并更新空闲时钟。 */
-    void beforeInputWait() {
-        flushPicture();
+    void beforeInputWait(PlaybackOutput caller) {
+        if (caller != this.owner || caller.stopped()) return;
+        flushPicture(caller);
         if (configurationWaitMs() == 0) throw new Fault("hardwareRandomAccess", name, null);
         synchronized (this) {
             if (idleSince == 0) idleSince = SystemClock.elapsedRealtime();
         }
+    }
+
+    void beforeInputWait() {
+        beforeInputWait(this.owner);
     }
 
     /** 获取等待配置就绪的剩余可用毫秒数（最多 2 秒超时）。 */
@@ -589,42 +657,65 @@ final class HardwareVideo implements AutoCloseable {
     }
 
     /** 请求渲染当前画面并释放缓冲区。 */
-    private void present(Picture picture) { release(picture, owner.acquireVideo(picture.pts, picture.duration)); }
+    private void present(Picture picture, PlaybackOutput caller) {
+        if (caller != this.owner || caller.stopped()) {
+            release(picture, null, caller);
+            return;
+        }
+        Surface selected = caller.acquireVideo(picture.pts, picture.duration);
+        release(picture, selected, caller);
+    }
 
     /** 将输出缓冲区交还给解码器，并视绑定的 Surface 状态决定是否渲染上屏。 */
-    private void release(Picture picture, Surface selected) {
+    private void release(Picture picture, Surface selected, PlaybackOutput renderOwner) {
+        if (picture == null) return;
         boolean submitted = false;
+        boolean paused = renderOwner != null ? renderOwner.paused() : owner.paused();
         try {
             synchronized (this) {
+                if (picture.released) return;
+                picture.released = true;
                 if (bindingFault != null) throw bindingFault;
                 if (codec != picture.codec) return;
                 if (selected != null && selected == active && selected.isValid()) {
-                    if (!sawFirstRender) {
+                    if (!sawFirstRender || paused) {
                         sawFirstRender = true;
-                        codec.releaseOutputBuffer(picture.index, true);
+                        calls.releaseOutputBuffer(codec, picture.index, true);
                     } else {
-                        codec.releaseOutputBuffer(picture.index, System.nanoTime());
+                        calls.releaseOutputBuffer(codec, picture.index, System.nanoTime());
                     }
                     submitted = true;
-                } else codec.releaseOutputBuffer(picture.index, false);
+                } else calls.releaseOutputBuffer(codec, picture.index, false);
             }
         } finally {
-            if (selected != null) owner.finishVideo(picture.pts, submitted);
+            if (selected != null && renderOwner != null) renderOwner.finishVideo(picture.pts, submitted);
         }
     }
 
     /**
      * 发送流结束标记（EOS）并阻塞排空硬件解码器中的所有积压画面。
      */
-    void finish() {
+    void finish(PlaybackOutput caller) {
+        if (caller != this.owner || caller.stopped()) return;
         if (codec == null) throw new Fault("hardwareMissingConfiguration", name, null);
-        queue(null, 0, false, true);
+        queue(caller, null, 0, false, true);
         long progress = SystemClock.elapsedRealtime();
-        while (!eos && !owner.stopped()) {
-            if (drainOne(5000)) progress = SystemClock.elapsedRealtime();
+        while (!eos && !caller.stopped() && caller == this.owner) {
+            if (drainOne(caller, 5000)) progress = SystemClock.elapsedRealtime();
             else if (SystemClock.elapsedRealtime() - progress > 2000) throw new Fault("hardwareDrain", name, null);
         }
-        flushPicture();
+        flushPicture(caller);
+    }
+
+    void finish() {
+        finish(this.owner);
+    }
+
+    /** 测试用：若当前无暂存帧，则基于当前解码器构造一个暂存帧以测试移交归还异常路径。 */
+    synchronized void stagePendingPictureForTest() {
+        if (pendingPicture == null && codec != null) {
+            pendingPicture = new Picture(codec, 0, 1000, 33);
+        }
     }
 
     /** 检查是否已实际向硬件解码器入队过数据帧。 */

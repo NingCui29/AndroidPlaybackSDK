@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -49,16 +52,33 @@ final class ProviderOpener {
         return request;
     }
 
+    /** 放弃当前所有未决的打开请求。 */
+    synchronized void abandonAll() {
+        for (Request request : new ArrayList<>(active)) {
+            request.abandon();
+        }
+    }
+
     /**
      * 设置同步屏障，等待在此调用前已发起的全部未决打开请求完全退出后执行操作。
      *
-     * @param action 屏障解除后的后续任务
+     * @param timeoutMs 通知等待超时的毫秒数
+     * @param scheduler 超时调度器
+     * @param onTimeout 等待超时后的通知
+     * @param onComplete 全部请求退出后的清理任务，即使此前已经超时也会执行
      */
-    synchronized void afterOutstanding(Runnable action) {
-        if (active.isEmpty()) { action.run(); return; }
+    synchronized void afterOutstanding(long timeoutMs, ScheduledExecutorService scheduler,
+                                       Runnable onTimeout, Runnable onComplete) {
+        if (active.isEmpty()) { onComplete.run(); return; }
         AtomicInteger remaining = new AtomicInteger(active.size());
+        ScheduledFuture<?> timeout = scheduler.schedule(() -> {
+            if (remaining.get() != 0) onTimeout.run();
+        }, timeoutMs, TimeUnit.MILLISECONDS);
         for (Request request : active) request.barriers.add(() -> {
-            if (remaining.decrementAndGet() == 0) action.run();
+            if (remaining.decrementAndGet() == 0) {
+                timeout.cancel(false);
+                onComplete.run();
+            }
         });
     }
 

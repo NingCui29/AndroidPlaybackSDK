@@ -35,7 +35,7 @@ final class Q04Checks {
     void run(String suite, int rounds, String policy) throws Exception {
         require(rounds >= 1 && rounds <= 50, "Invalid round count");
         mode = PlayerConfig.VideoMode.valueOf(policy);
-        try (Q04Trace capture = new Q04Trace(context)) {
+        try (Q04Trace capture = new Q04Trace(context, suite.equals("q04Release"))) {
             trace = capture;
             results.putString("trace", trace.dir.getName());
             // Report the raw path immediately. It can be pulled after a crash or cancellation.
@@ -218,15 +218,14 @@ final class Q04Checks {
 
     private void releaseGroups(int rounds) throws Exception {
         File file = sample("V01.mp4");
-        trace.mark("warmup", 0, 0, "playing");
-        try (Session s = new Session()) {
-            s.attachDisplay();
-            s.ok(s.player.open(MediaSource.fromFile(file)));
-            s.ok(s.player.play());
-            s.awaitOutput(true);
-        }
-        trace.mark("warmup", 0, 0, "settle");
-        SystemClock.sleep(5000);
+        trace.mark("warmup", 0, 0, "coldIdle");
+        trace.sample("coldIdle", true);
+        // Initialize both teardown routes for each input type before measuring the
+        // warm idle baseline. Keep each first-run measurement in the raw trace.
+        releaseCase("warmupNormalStop", 0, file, false, true);
+        releaseCase("warmupNormalRelease", 0, file, false, false);
+        releaseCase("warmupStalledStop", 0, file, true, true);
+        releaseCase("warmupStalledRelease", 0, file, true, false);
         trace.mark("warmup", 0, 0, "baseline");
         for (int i = 0; i < 10; i++) {
             trace.sample("baseline", i == 9);

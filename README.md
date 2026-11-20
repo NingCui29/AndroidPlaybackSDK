@@ -1,8 +1,8 @@
 # AndroidPlaybackSDK
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Release-v1.1.0-brightgreen.svg" alt="Release">
-  <img src="https://img.shields.io/badge/Android%20API-23+-blue.svg" alt="API">
+  <img src="https://img.shields.io/badge/Release-v1.2.0-brightgreen.svg" alt="Release">
+  <img src="https://img.shields.io/badge/Android%20API-21+-blue.svg" alt="API">
   <img src="https://img.shields.io/badge/ABI-arm64--v8a-orange.svg" alt="ABI">
   <img src="https://img.shields.io/badge/Page%20Size-16%20KB%20Aligned-success.svg" alt="16KB Page Aligned">
   <img src="https://img.shields.io/badge/FFmpeg-8.1.3-blueviolet.svg" alt="FFmpeg">
@@ -13,7 +13,7 @@
 
 ---
 
-## 🌟 核心特性 (v1.1.0)
+## 🌟 核心特性 (v1.2.0)
 
 - **轻量紧凑与零依赖**：AAR 制品体积仅 **3.08 MiB**，无任何外部第三方运行时依赖，原生共享库 100% 满足 Android 15+ **16 KB 页面对齐**规范。
 - **软硬自适应双解码内核**：
@@ -112,7 +112,7 @@ flowchart TD
 
 ### 1. Maven 依赖接入（推荐）
 
-SDK 最新发布坐标为 `com.cn.media:android-playback-sdk:1.1.0`。
+SDK 最新发布坐标为 `com.cn.media:android-playback-sdk:1.2.0`。
 
 #### ① 通过 GitHub Packages 接入
 
@@ -138,7 +138,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.cn.media:android-playback-sdk:1.1.0")
+    implementation("com.cn.media:android-playback-sdk:1.2.0")
 }
 ```
 
@@ -161,11 +161,11 @@ dependencyResolutionManagement {
 
 ### 2. AAR 直接集成
 
-直接将 `android-playback-sdk-1.1.0.aar` 拷贝到应用模块的 `libs/` 目录下：
+直接将 `android-playback-sdk-1.2.0.aar` 拷贝到应用模块的 `libs/` 目录下：
 
 ```kotlin
 dependencies {
-    implementation(files("libs/android-playback-sdk-1.1.0.aar"))
+    implementation(files("libs/android-playback-sdk-1.2.0.aar"))
 }
 ```
 
@@ -252,7 +252,7 @@ player.release(); // 彻底释放底座资源
 - **实时性能 HUD 监控面板**：实时呈现解码后端类型（`MediaCodec Direct` / `FFmpeg`）、实时丢帧数/丢帧率、AudioTrack 消费计数、Seek 毫秒延迟及进程 PSS 物理内存；
 - **画幅多比例实时调节**：一键循环切换 10 种画面呈现模式（自适应、拉伸铺满、居中裁剪、16:9、9:16 竖屏短视频、1:1 等）；
 - **本机文件双通道浏览器**：内置系统 SAF 文件选择器与轻量免权限存储目录浏览器；
-- **APK 直接下载**：可在 GitHub Releases 页面直接下载预编译好的 [demo-release.apk](https://github.com/NingCui29/AndroidPlaybackSDK/releases/download/v1.1.0/demo-release.apk) 安装至手机、平板或机顶盒体验。
+- **APK 直接下载**：可在 GitHub Releases 页面直接下载预编译好的 [demo-release.apk](https://github.com/NingCui29/AndroidPlaybackSDK/releases/download/v1.2.0/demo-release.apk) 安装至手机、平板或机顶盒体验。
 
 ---
 
@@ -269,7 +269,7 @@ player.release(); // 彻底释放底座资源
 .\gradlew.bat :sdk:publishPlaybackPublicationToOfflineRepository
 
 # 4. 装配不可变发行候选与符号归档
-python tools/assemble-delivery.py --version 1.1.0
+python tools/assemble-delivery.py --version 1.2.0
 ```
 
 ---

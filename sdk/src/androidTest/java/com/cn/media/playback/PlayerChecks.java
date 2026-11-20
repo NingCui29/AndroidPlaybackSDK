@@ -801,7 +801,10 @@ final class PlayerChecks implements PlayerListener {
             check(jumped, "Public position did not follow PCM jump");
             if (!pipe) {
                 long target = forward ? 9000 : 5500;
-                CommandResult seek = ok(player.seekTo(target));
+                CommandResult fast = ok(player.seekTo(target, false));
+                check(fast.actualPositionMs != null && fast.actualPositionMs <= target,
+                        "Fast TS seek passed target: " + fast.actualPositionMs);
+                CommandResult seek = ok(player.seekTo(target, true));
                 check(seek.actualPositionMs != null && Math.abs(seek.actualPositionMs - target) <= 40,
                         "TS seek after discontinuity " + seek.actualPositionMs);
             }
@@ -816,9 +819,9 @@ final class PlayerChecks implements PlayerListener {
     }
 
     void timings(DisplayActivity display, String name, String operation, int rounds) throws Exception {
-        boolean wantsVideo = name.startsWith("V");
+        boolean wantsVideo = name.startsWith("V") || name.endsWith(".wmv");
         player = new Player(context, new PlayerConfig.Builder().setVideoMode(PlayerConfig.VideoMode.SOFTWARE_ONLY)
-                .setProgressIntervalMs(100).build(), this);
+                .setFastSeek(!name.equals("V09a.wmv")).setProgressIntervalMs(100).build(), this);
         try {
             if (wantsVideo) ok(player.setVideoSurface(display.awaitSurface()));
             MediaSource source = MediaSource.fromFile(new File(context.getCacheDir(), name));
@@ -831,16 +834,42 @@ final class PlayerChecks implements PlayerListener {
                     long target = duration * (forward ? 60 + (i/2)%20 : 20 + (i/2)%15) / 100;
                     if (name.equals("V11.mp4") && i == 0) target = 12350;
                     long start = SystemClock.elapsedRealtimeNanos();
-                    CommandResult landed = ok(player.seekTo(target));
+                    CommandResult landed = ok(player.seekTo(target, true));
                     check(landed.actualPositionMs != null, "Missing actual seek landing");
                     long firstNs = wantsVideo ? landed.snapshot.stats.firstVideoSubmissionNs :
                             landed.snapshot.stats.firstAudioConsumptionNs;
                     check(firstNs >= start, "Missing output timestamp for seek " + target);
-                    long interval = name.equals("V11.mp4") && target >= 10000 && target < 20000 ? 67 : 34;
+                    long interval = name.equals("3.wmv") ? 40 :
+                            name.equals("V11.mp4") && target >= 10000 && target < 20000 ? 67 : 34;
                     long error = landed.actualPositionMs - target;
                     evidence.putString("sample-" + i, (forward ? "forward" : "backward") + "," +
                             (firstNs - start) / 1000000.0 + "," + target + "," + landed.actualPositionMs + "," + error);
                     check(Math.abs(error) <= (wantsVideo ? interval : 20), "Seek error " + error);
+                }
+                if (name.equals("3.wmv")) {
+                    long target = duration * 60 / 100;
+                    CommandResult fast = ok(player.seekTo(target, false));
+                    check(fast.actualPositionMs != null && fast.actualPositionMs <= target,
+                            "Fast WMV seek passed target: " + fast.actualPositionMs);
+                    evidence.putString("fast", target + "," + fast.actualPositionMs);
+                } else if (name.equals("V09a.wmv") || name.equals("V10.ts")) {
+                    // First video PTS relative to the audio-led format origin: 43 ms / 21.333 ms.
+                    long firstUs = name.equals("V09a.wmv") ? 43000 : 21333;
+                    long atOrAfterKey = (firstUs + 999) / 1000;
+                    long beforeKey = atOrAfterKey - 1;
+                    for (long target : new long[]{0, atOrAfterKey, beforeKey}) {
+                        CommandResult first = ok(player.seekTo(target, target == beforeKey));
+                        check(Long.valueOf(firstUs / 1000).equals(first.actualPositionMs), "Wrong first frame");
+                    }
+                    CommandResult early = await(player.seekTo(beforeKey, false), CommandResult.Status.FAILED);
+                    check(early.actualPositionMs == null && early.error.code == PlayerError.Code.SEEK_UNAVAILABLE,
+                            "Fast seek before the first key must report no landing");
+                    evidence.putString("firstKey", "firstUs=" + firstUs + " fastBefore=SEEK_UNAVAILABLE");
+                } else if (name.equals("V01.mp4")) {
+                    CommandResult eof = await(player.seekTo(duration, true), CommandResult.Status.FAILED);
+                    check(eof.actualPositionMs == null && eof.error.code == PlayerError.Code.SEEK_UNAVAILABLE &&
+                            "seekEndOfStream".equals(eof.error.stage), "EOF seek must fail without a landing");
+                    evidence.putString("seekAtEnd", "PASS no frame or PCM at the requested end position");
                 }
             } else {
                 if ("warm".equals(operation)) {
@@ -1215,5 +1244,135 @@ final class PlayerChecks implements PlayerListener {
             evidence.putString(name, "PASS " + kind + " " + mode + " video=" + backend +
                     " finalVideo=" + stats.videoFramesSubmitted + " finalPCM=" + stats.audioFramesConsumed);
         } finally { ok(player.release()); }
+    }
+
+    void surfaceBarrier(DisplayActivity display) throws Exception {
+        TrackInfo video = new TrackInfo(1, 0, TrackInfo.Type.VIDEO.ordinal(), "h264", "", true,
+                false, true, 1920, 1080, 0, 0, 0, new byte[0], 1, 1000, 1, 1, 0);
+        PlayerConfig config = new PlayerConfig.Builder()
+                .setVideoMode(PlayerConfig.VideoMode.SOFTWARE_ONLY).build();
+        java.util.concurrent.CountDownLatch entered = new java.util.concurrent.CountDownLatch(1);
+        try (PlaybackOutput output = new PlaybackOutput(null, -1, video, 0,
+                false, -1, false, true, display.awaitSurface(), 1, config, true, null, null)) {
+            check(output.acquireVideo(0, 33000) != null, "No frame ownership to retire");
+            java.util.concurrent.FutureTask<Void> detach = new java.util.concurrent.FutureTask<>(() -> {
+                entered.countDown();
+                output.bind(null);
+                return null;
+            });
+            new Thread(detach, "surface-barrier-test").start();
+            try {
+                check(entered.await(1, java.util.concurrent.TimeUnit.SECONDS), "No detach attempt");
+                try {
+                    detach.get(1300, java.util.concurrent.TimeUnit.MILLISECONDS);
+                    throw new AssertionError("Detach completed before in-flight frame was returned");
+                } catch (java.util.concurrent.TimeoutException waitingForFrame) {
+                    // Still waiting beyond the former one-second forced completion.
+                }
+            } finally {
+                output.finishVideo(0, false);
+            }
+            detach.get(2, java.util.concurrent.TimeUnit.SECONDS);
+        }
+        evidence.putString("surfaceBarrier", "PASS detach waited for the held frame");
+    }
+
+    void seekTransferFault(DisplayActivity display) throws Exception {
+        final java.util.concurrent.atomic.AtomicBoolean injectReleaseFault = new java.util.concurrent.atomic.AtomicBoolean(false);
+        final java.util.concurrent.atomic.AtomicInteger releaseCodecCount = new java.util.concurrent.atomic.AtomicInteger(0);
+        final java.util.concurrent.atomic.AtomicInteger discardCount = new java.util.concurrent.atomic.AtomicInteger(0);
+
+        CodecCalls customCalls = new CodecCalls() {
+            @Override
+            void releaseOutputBuffer(android.media.MediaCodec codec, int index, boolean render) {
+                if (!render) {
+                    discardCount.incrementAndGet();
+                    if (injectReleaseFault.get()) {
+                        throw new IllegalStateException("Injected releaseOutputBuffer fault during discard");
+                    }
+                }
+                super.releaseOutputBuffer(codec, index, render);
+            }
+
+            @Override
+            void release(android.media.MediaCodec codec) {
+                releaseCodecCount.incrementAndGet();
+                super.release(codec);
+            }
+        };
+
+        PlayerConfig.Builder builder = new PlayerConfig.Builder()
+                .setVideoMode(PlayerConfig.VideoMode.HARDWARE_ONLY)
+                .setProgressIntervalMs(100);
+        builder.codecCalls = customCalls;
+        player = new Player(context, builder.build(), this);
+
+        android.view.Surface surface = display.awaitSurface();
+        File videoFile = new File(context.getCacheDir(), "V11.mp4");
+        if (!videoFile.exists()) {
+            videoFile = new File(context.getCacheDir(), "V01.mp4");
+        }
+
+        try {
+            ok(player.setVideoSurface(surface));
+            ok(player.open(MediaSource.fromFile(videoFile)));
+            ok(player.play());
+            awaitOutput(0, 1);
+            Thread.sleep(400);
+            ok(player.pause());
+            Thread.sleep(100);
+
+            // Stage a pending picture to guarantee non-null pendingPicture during transfer
+            instrumentation.runOnMainSync(() -> {
+                if (player.activeOutput() != null && player.activeOutput().hardware() != null) {
+                    player.activeOutput().hardware().stagePendingPictureForTest();
+                }
+            });
+
+            // 1. Enable fault injection: during seek transfer, returning held pendingPicture throws
+            injectReleaseFault.set(true);
+            int releaseBefore = releaseCodecCount.get();
+
+            long seekId = player.seekTo(5000);
+            CommandResult result = await(seekId, CommandResult.Status.FAILED);
+            check(result.error != null, "Missing error in failed seek result");
+            check(result.error.code == PlayerError.Code.DECODER_RUNTIME, "Expected DECODER_RUNTIME, got " + result.error.code);
+            check("hardwareTransfer".equals(result.error.stage), "Expected hardwareTransfer stage, got " + result.error.stage);
+
+            // 2. Check that the old hardware decoder was recycled via calls.release(codec)
+            check(releaseCodecCount.get() > releaseBefore, "Old hardware decoder was not released/recycled");
+
+            // 3. Check that player state transitioned to ERROR
+            check(player.getSnapshot().state == PlayerSnapshot.State.ERROR, "Player should be in ERROR state");
+
+            // 4. Verify player can subsequently stop() and return to IDLE
+            ok(player.stop());
+            check(player.getSnapshot().state == PlayerSnapshot.State.IDLE, "Player should be in IDLE state after stop");
+
+            // 5. Disable fault injection and verify player can open new media and play
+            injectReleaseFault.set(false);
+            ok(player.open(MediaSource.fromFile(videoFile)));
+            check(player.getSnapshot().state == PlayerSnapshot.State.READY, "Player should be in READY state after open");
+            ok(player.play());
+            awaitOutput(0, 1);
+            ok(player.stop());
+        } finally {
+            try { ok(player.release()); } catch (Exception ignored) {}
+        }
+
+        // 6. Verify CallbackQueue rejection preserves queued events without clearing
+        final java.util.concurrent.atomic.AtomicBoolean rejectNext = new java.util.concurrent.atomic.AtomicBoolean(true);
+        final java.util.concurrent.CountDownLatch delivered = new java.util.concurrent.CountDownLatch(1);
+        CallbackQueue cbQueue = new CallbackQueue(runnable -> {
+            if (rejectNext.getAndSet(false)) {
+                throw new java.util.concurrent.RejectedExecutionException("Simulated queue saturation");
+            }
+            runnable.run();
+        });
+        cbQueue.add(false, delivered::countDown);
+        check(delivered.await(2, java.util.concurrent.TimeUnit.SECONDS),
+                "Last event should be delivered after executor recovery without another enqueue");
+
+        evidence.putString("seekTransferFault", "PASS: 1 terminal result, old decoder recycled, stop/reopen and callback queue retention succeeded");
     }
 }

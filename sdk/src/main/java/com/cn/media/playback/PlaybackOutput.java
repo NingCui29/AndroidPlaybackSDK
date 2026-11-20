@@ -37,6 +37,8 @@ final class PlaybackOutput implements AutoCloseable {
          */
         void ready(PlaybackOutput output, long actualMs);
 
+        void missedSeekTarget(PlaybackOutput output);
+
         /**
          * 首次实际向系统音频输出设备提交音频样本通知。
          *
@@ -119,13 +121,13 @@ final class PlaybackOutput implements AutoCloseable {
     /** 是否包含视频轨道。 */
     private boolean video;
     /** 播放暂停状态。 */
-    private boolean paused;
+    private volatile boolean paused;
     /** 渲染纪元已停止。 */
-    private boolean stopped;
+    private volatile boolean stopped;
     /** 是否处于首帧预览（Seek 暂停态渲染首帧）模式。 */
     private boolean preview;
-    /** 是否已触发首帧就绪通知。 */
-    private boolean ready;
+    private enum Landing { PENDING, READY, MISSED }
+    private Landing landing = Landing.PENDING;
     /** 是否已完成首帧音频输出。 */
     private boolean firstAudio;
     /** 是否已完成首帧视频画面上屏。 */
@@ -142,6 +144,8 @@ final class PlaybackOutput implements AutoCloseable {
     private boolean switching;
     /** 目标定位时间戳（微秒）。 */
     private final long targetUs;
+    private final long landingTargetUs;
+    final boolean exactSeek;
     /** 视频轨道元数据信息。 */
     private final TrackInfo videoTrack;
     /** 播放器全局配置策略。 */
@@ -219,6 +223,8 @@ final class PlaybackOutput implements AutoCloseable {
      * @param videoTrack 视频轨道信息，为 {@code null} 表示纯音频播放
      * @param targetMs 起始定位的目标媒体时间（毫秒）
      * @param preview 是否处于首帧定位预览状态（暂停且仅渲染第一帧）
+     * @param landingTargetMs 用于核对首个提交视频帧的请求位置，负数表示无需核对
+     * @param exactSeek 精准定位允许目标后一个帧间隔，快速定位只接受目标处或之前的帧
      * @param playing 是否初始处于播放状态
      * @param surface 视频渲染输出 Surface，可为 {@code null}
      * @param gain 初始音频输出增益（0.0f ~ 1.0f）
@@ -226,13 +232,7 @@ final class PlaybackOutput implements AutoCloseable {
      * @param forceSoftware 是否强制禁用硬件加速直出
      */
     PlaybackOutput(Observer observer, int audioIndex, TrackInfo videoTrack, long targetMs,
-                   boolean preview, boolean playing, Surface surface, float gain, PlayerConfig policy,
-                   boolean forceSoftware) {
-        this(observer, audioIndex, videoTrack, targetMs, preview, playing, surface, gain, policy, forceSoftware, null, null);
-    }
-
-    PlaybackOutput(Observer observer, int audioIndex, TrackInfo videoTrack, long targetMs,
-                   boolean preview, boolean playing, Surface surface, float gain, PlayerConfig policy,
+                   boolean preview, long landingTargetMs, boolean exactSeek, boolean playing, Surface surface, float gain, PlayerConfig policy,
                    boolean forceSoftware, PcmOutput reusedPcm, HardwareVideo reusedHardware) {
         this.observer = observer;
         if (reusedPcm != null) {
@@ -243,7 +243,15 @@ final class PlaybackOutput implements AutoCloseable {
         }
         if (reusedHardware != null) {
             this.hardware = reusedHardware;
-            this.hardware.transferOwner(this);
+            try {
+                this.hardware.transferOwner(this);
+            } catch (Throwable fault) {
+                try {
+                    this.hardware.close();
+                } catch (Throwable ignored) {}
+                this.hardware = null;
+                throw fault;
+            }
         }
         this.audioIndex = audioIndex;
         this.audio = audioIndex >= 0;
@@ -253,8 +261,11 @@ final class PlaybackOutput implements AutoCloseable {
         this.video = videoTrack != null;
         this.policy = policy;
         this.forceSoftware = forceSoftware;
-        backend = video && (forceSoftware || policy.videoMode == PlayerConfig.VideoMode.SOFTWARE_ONLY) ? "ffmpeg" : "";
+        backend = video && (forceSoftware || policy.videoMode == PlayerConfig.VideoMode.SOFTWARE_ONLY
+                || !HardwareVideo.isSupportedCodec(videoTrack != null ? videoTrack.codec : null)) ? "ffmpeg" : "";
         this.targetUs = targetMs * 1000;
+        this.landingTargetUs = landingTargetMs * 1000;
+        this.exactSeek = exactSeek;
         this.preview = preview;
         this.surface = surface;
         paused = !playing;
@@ -450,7 +461,11 @@ final class PlaybackOutput implements AutoCloseable {
     }
 
     /** 检查纪元是否已停止。 */
-    synchronized boolean stopped() { return stopped; }
+    boolean stopped() { return stopped; }
+    /** 检查纪元是否处于暂停态。 */
+    boolean paused() { return paused; }
+    /** 获取当前活跃的硬件视频解码控制器实例。 */
+    HardwareVideo hardware() { return hardware; }
     /** 检查当前状态是否预期视频应有画面推进。 */
     synchronized boolean expectsVideoProgress() { return !stopped && (!paused || preview) && surface != null; }
 
@@ -486,6 +501,13 @@ final class PlaybackOutput implements AutoCloseable {
      */
     /** 分离并借出活跃的硬件解码器实例以供新纪元复用。 */
     synchronized HardwareVideo detachHardware() {
+        if (!stopped) {
+            frozenUs = clockUs();
+            stopped = true;
+            if (pcm != null) pcm.cancel();
+            notifyAll();
+        }
+        awaitSurfaceIdle();
         HardwareVideo detached = hardware;
         hardware = null;
         return detached;
@@ -496,6 +518,7 @@ final class PlaybackOutput implements AutoCloseable {
         if (pcm == null) return null;
         previousWritten += pcm.submitted();
         previousConsumed += pcm.consumed();
+        pcm.cancel();
         PcmOutput detached = pcm;
         pcm = null;
         return detached;
@@ -505,6 +528,16 @@ final class PlaybackOutput implements AutoCloseable {
         if (stopped) return -3;
         detachInvalidSurface();
         if (forceSoftware || policy.videoMode == PlayerConfig.VideoMode.SOFTWARE_ONLY) return 0;
+        if (!HardwareVideo.isSupportedCodec(videoTrack != null ? videoTrack.codec : null)) {
+            if (policy.videoMode == PlayerConfig.VideoMode.HARDWARE_ONLY) {
+                HardwareVideo.Fault fault = new HardwareVideo.Fault("hardwareMime", "", null);
+                fault.runtime = false;
+                backendFault(fault);
+                return -1;
+            }
+            softwareFallback();
+            return 0;
+        }
         if (hardware != null) {
             if (hardware.canReuse(surface)) {
                 try {
@@ -542,11 +575,12 @@ final class PlaybackOutput implements AutoCloseable {
      * @return 0 表示接收成功，1 表示硬解接收前退回软解，2 表示从当前位置恢复，负数表示终结错误或取消
      */
     int hardwarePacket(ByteBuffer packet, long ptsUs, long durationUs, boolean key, ByteBuffer extra) {
+        if (stopped()) return -3;
         HardwareVideo active = hardware;
-        if (active == null) return stopped() ? -3 : 1;
+        if (active == null) return -3;
         try {
-            if (packet == null) active.finish();
-            else active.submit(packet, ptsUs, durationUs, key, extra);
+            if (packet == null) active.finish(this);
+            else active.submit(this, packet, ptsUs, durationUs, key, extra);
             return stopped() ? -3 : 0;
         } catch (RuntimeException failure) {
             return hardwareError(failure, "hardwareDecode");
@@ -560,7 +594,7 @@ final class PlaybackOutput implements AutoCloseable {
      */
     int flushHardwarePicture() {
         try {
-            if (hardware != null) hardware.beforeInputWait();
+            if (hardware != null && !stopped()) hardware.beforeInputWait(this);
             return 0;
         } catch (RuntimeException failure) { return hardwareError(failure, "hardwareOutput"); }
     }
@@ -700,8 +734,8 @@ final class PlaybackOutput implements AutoCloseable {
 
     /** 触发首帧渲染就绪信号。 */
     private void signalReady(long ptsUs) {
-        if (ready) return;
-        ready = true;
+        if (landing != Landing.PENDING) return;
+        landing = Landing.READY;
         observer.ready(this, Math.max(0, ptsUs / 1000));
     }
 
@@ -847,6 +881,13 @@ final class PlaybackOutput implements AutoCloseable {
         long pts = ptsUs >= 0 ? ptsUs : nextVideo >= 0 ? nextVideo : targetUs;
         updateInterval(pts, durationUs);
         if (lastVideo < 0 && pts + intervalUs <= targetUs) return null;
+        if (landing == Landing.MISSED) return null;
+        if (landing == Landing.PENDING && landingTargetUs >= 0 &&
+                pts - landingTargetUs > (exactSeek ? intervalUs : 0) && surface != null && surface.isValid()) {
+            landing = Landing.MISSED;
+            observer.missedSeekTarget(this);
+            return null;
+        }
         boolean reset = lastVideo < 0 || (nextVideo >= 0 && Math.abs(pts - nextVideo) > 500000);
         if (reset && lastVideo >= 0) {
             videoShiftUs += pts - nextVideo;

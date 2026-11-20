@@ -24,3 +24,4 @@ typedef struct DecodeTarget {
 // Called by the demux worker. Each target callback runs on its own worker.
 // Targets and input must remain valid until the function joins all workers.
 int playback_decode_tracks(PlaybackInput *input, const DecodeTarget *targets, int count);
+void playback_abort_decode(PlaybackInput *input);

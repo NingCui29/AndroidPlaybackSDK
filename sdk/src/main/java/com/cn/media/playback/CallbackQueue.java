@@ -1,5 +1,7 @@
 package com.cn.media.playback;
 
+import android.os.Handler;
+import android.os.Looper;
 import java.util.ArrayDeque;
 import java.util.concurrent.Executor;
 
@@ -11,6 +13,7 @@ import java.util.concurrent.Executor;
  * 同时对高频连续的进度通知进行节流合并（若队尾已存在未消费的进度通知，则丢弃旧的以保留最新进度）。
  */
 final class CallbackQueue {
+    private static final int MAX_RETRIES = 3;
     /** 队列项封装。 */
     private static final class Entry {
         /** 是否为周期性播放进度快照回调。 */
@@ -22,6 +25,7 @@ final class CallbackQueue {
     private final Executor executor;
     private final ArrayDeque<Entry> queue = new ArrayDeque<>();
     private boolean draining;
+    private int retries;
 
     /**
      * 构造回调队列。
@@ -42,8 +46,24 @@ final class CallbackQueue {
             queue.addLast(new Entry(progress, callback));
             if (draining) return;
             draining = true;
+            retries = 0;
         }
-        executor.execute(this::drain);
+        dispatch();
+    }
+
+    private void dispatch() {
+        try {
+            executor.execute(this::drain);
+        } catch (RuntimeException rejected) {
+            android.util.Log.w("PlaybackSDK", "Callback executor rejected execution: " + rejected.getMessage());
+            synchronized (queue) {
+                if (retries < MAX_RETRIES &&
+                        new Handler(Looper.getMainLooper()).postDelayed(this::dispatch, 50L << retries++)) {
+                    return;
+                }
+                draining = false;
+            }
+        }
     }
 
     /** 串行循环排空队内所有待执行的回调任务。 */
@@ -56,7 +76,7 @@ final class CallbackQueue {
             }
             try {
                 entry.callback.run();
-            } catch (RuntimeException failure) {
+            } catch (Throwable failure) {
                 android.util.Log.e("PlaybackSDK", "Listener failed: " + failure.getClass().getSimpleName());
             }
         }

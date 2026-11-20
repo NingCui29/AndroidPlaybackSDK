@@ -19,6 +19,7 @@ from apk_native import check_apk, libs_and_alignment
 ROOT = Path(__file__).resolve().parents[1]
 HOST = ROOT / "acceptance/consumer"
 VERSION = "1.0.0-rc.1"
+D06_SPEC = {"sdkVersion": 35, "supportedAbis": ["arm64-v8a"], "supportedLocales": ["en"], "screenDensity": 320}
 CASES = ("aar-java", "aar-kotlin", "offline-java", "offline-kotlin",
          "http-module-java", "http-pom-kotlin", "missing-aar", "native-collision", "http-401", "http-404", "http-malformed")
 
@@ -103,7 +104,7 @@ def serve_repo(repo, log):
         thread.join()
 
 
-def archive_build(out, build, aar, split):
+def archive_build(out, build, aar, d06_splits):
     expected = {k: v[0] for k, v in libs_and_alignment(aar, "jni/").items()}
     apk, = (build / "outputs/apk/release").glob("*.apk")
     native = check_apk(apk, expected)
@@ -111,32 +112,34 @@ def archive_build(out, build, aar, split):
     manifest, = (build / "intermediates/merged_manifest/release").rglob("AndroidManifest.xml")
     files["merged-manifest.xml"] = manifest
     split_entries = []
-    if split:
+    if d06_splits is not None:
         bundle, = (build / "outputs/bundle/release").glob("*.aab")
         archive = build / "host.apks"
         files.update({"host.aab": bundle, "host.apks": archive})
         with zipfile.ZipFile(archive) as splits:
-            # This host declares no locale resources, density variants or optional features.
-            for name in sorted(splits.namelist()):
-                if name.startswith("splits/") and name.endswith(".apk"):
-                    split_entries.append(name)
-            # Inspect the named ABI split itself. A correctly named but empty split
-            # cannot load the SDK even if the separate, universal APK is complete.
-            arm64_splits = [row for row in split_entries if "arm64_v8a" in row]
-            if len(arm64_splits) != 1 or not any("master" in row for row in split_entries):
-                raise ValueError(f"Missing required base/ABI splits: {split_entries}")
-            split_native = check_apk(io.BytesIO(splits.read(arm64_splits[0])), expected)
-            for name in split_entries:
-                if name != arm64_splits[0] and libs_and_alignment(io.BytesIO(splits.read(name)), "lib/"):
-                    raise ValueError("Unexpected native libraries outside the arm64 ABI split: " + name)
+            split_entries = sorted(n for n in splits.namelist() if n.startswith("splits/") and n.endswith(".apk"))
+            selected = {p.name: p for p in d06_splits.rglob("*.apk")}
+            d06_paths = [n for n in split_entries if Path(n).name in selected]
+            check_names = {Path(n).name for n in d06_paths}
+            if not selected or check_names != selected.keys():
+                raise ValueError(f"API 35 arm64 extraction differs from the archived APK set: {d06_paths}")
+            native_entries = {}
+            for name in d06_paths:
+                data = splits.read(name)
+                if selected[Path(name).name].read_bytes() != data:
+                    raise ValueError("Extracted split differs from the archived APK: " + name)
+                if libs_and_alignment(io.BytesIO(data), "lib/"):
+                    native_entries[name] = check_apk(io.BytesIO(data), expected)
+            if len(native_entries) != 1 or not any("master" in n for n in d06_paths):
+                raise ValueError(f"Missing a unique native split and base for the API 35 arm64 spec: {d06_paths}")
     digests = {}
     for name, origin in files.items():
         dest = out / name
         shutil.copyfile(origin, dest)
         digests[name] = sha(dest)
     result = {"files": digests, "native": native, "aabSplits": split_entries}
-    if split:
-        result["aabSplitNative"] = {arm64_splits[0]: split_native}
+    if d06_splits is not None:
+        result.update(aabSplitNative=native_entries, aab16kDeviceSpec=D06_SPEC, aab16kSplits=d06_paths)
     return result
 
 
@@ -187,10 +190,15 @@ def run_case(case, gradle, host, cache, work, out, repo, aar, version, endpoint,
             native = "jni/arm64-v8a/libavutil.so"
             other.writestr(native, archive.read(native) + b"other-sdk-conflict-fixture")
         cmd += ["-PcollisionAar=" + str(fixture), "mergeReleaseNativeLibs"]
+    d06_splits = None
     if not negative:
         cmd += ["assembleRelease"]
         if http:
-            cmd += ["buildAcceptanceApks"]
+            spec = out / "bundletool-api35-arm64.json"
+            d06_splits = work / "api35-arm64-splits"
+            write_json(spec, D06_SPEC)
+            cmd += ["-PspecOutput=" + str(spec), "-PselectedDir=" + str(d06_splits),
+                    "-PapksArchive=" + str(build / "host.apks"), "buildAcceptanceApks", "selectAcceptanceSplits"]
     write_json(out / "gradle-command.json", cmd)
     env = {**env, "GRADLE_RO_DEP_CACHE": str(cache)}
     with (out / "gradle.log").open("w", encoding="utf-8") as stream:
@@ -217,7 +225,7 @@ def run_case(case, gradle, host, cache, work, out, repo, aar, version, endpoint,
         if metadata == "pom" and any(path.endswith(".module") for path in gets):
             raise ValueError("POM-only protocol fetched Gradle module metadata")
     return {"outcome": "PASS", "language": lang, "sdkSha256": sha(aar), "source": str(aar) if direct else url,
-            "releaseMinified": True, **archive_build(out, build, aar, split=http)}
+            "releaseMinified": True, **archive_build(out, build, aar, d06_splits)}
 
 
 def main():

@@ -1,4 +1,4 @@
-"""Inspect the actual AAR's binaries against their private symbols and API 23 stubs."""
+"""Inspect the actual AAR's binaries against their private symbols and minSdk stubs."""
 
 from functools import lru_cache
 from hashlib import sha256
@@ -22,12 +22,13 @@ def check(condition, message):
         raise ValueError(message)
 
 
-def inspect(aar, temp, root, ndk):
+def inspect(aar, temp, root, ndk, min_sdk):
     prebuilt = ndk / "toolchains/llvm/prebuilt"
     tool, = [d for d in prebuilt.iterdir() if (d / "bin").is_dir()]
     revision = (ndk / "source.properties").read_text()
     check(re.search(r"(?m)^Pkg\.Revision\s*=\s*30\.0\.16248370\s*$", revision), "Unexpected NDK")
-    stubs = tool / "sysroot/usr/lib/aarch64-linux-android/23"
+    stubs = tool / "sysroot/usr/lib/aarch64-linux-android" / str(min_sdk)
+    check(stubs.is_dir(), f"Missing arm64 NDK stubs for declared minSdk {min_sdk}")
 
     def llvm(program, *args):
         return subprocess.check_output([str(tool / "bin" / program), *map(str, args)],
@@ -80,10 +81,10 @@ def inspect(aar, temp, root, ndk):
         exports = set()
         for dep in needed:
             dependency = copies.get(dep, stubs / dep)
-            check(dependency.is_file(), f"{name}: {dep} absent from AAR and API 23 stubs")
+            check(dependency.is_file(), f"{name}: {dep} absent from AAR and API {min_sdk} stubs")
             exports.update(symbols(dependency)[0])
         _, imports, weak = symbols(path)
-        check(not imports - exports, f"{name}: unresolved imports {sorted(imports - exports)}")
+        check(not imports - exports, f"{name}: unresolved imports at API {min_sdk}: {sorted(imports - exports)}")
         identity = build_id(path)
         if name == "libplayback.so":
             choices = (root / "sdk/build/intermediates/cxx/RelWithDebInfo").glob("*/obj/arm64-v8a/" + name)
@@ -105,7 +106,7 @@ def inspect(aar, temp, root, ndk):
             "buildId": identity, "bytes": path.stat().st_size, "sha256": sha256(path.read_bytes()).hexdigest(),
             "symbolBytes": original.stat().st_size, "symbolSha256": sha256(original.read_bytes()).hexdigest(),
             "machine": "AArch64", "soname": name, "loadAlignments": alignments,
-            "needed": needed, "api23PlatformLibraries": platform, "resolvedStrongImports": len(imports),
+            "needed": needed, "platformApi": min_sdk, "platformLibraries": platform, "resolvedStrongImports": len(imports),
             "optionalWeakImports": sorted(weak), "symbolication": [matches[0], fn, Path(loc).name],
         }
         originals["arm64-v8a/" + identity + "/" + name] = original

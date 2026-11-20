@@ -8,10 +8,17 @@ android {
     compileSdk 35
     ndkVersion '30.0.16248370'
     defaultConfig {
-        minSdk 23
+        minSdk 21
         testInstrumentationRunner 'com.cn.media.playback.InputChecks'
         ndk { abiFilters 'arm64-v8a' }
         consumerProguardFiles 'consumer-rules.pro'
+    }
+    testOptions {
+        targetSdk = 35
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     externalNativeBuild {
         cmake {
@@ -71,11 +78,11 @@ afterEvaluate {
                 artifact apiDocsJar
                 groupId = 'com.cn.media'
                 artifactId = 'android-playback-sdk'
-                version = '1.1.0'
+                version = '1.2.0'
                 pom {
                     name = 'Android Playback SDK'
                     description = 'Android multi-format player with FFmpeg and MediaCodec; bundled FFmpeg libraries are LGPL-2.1-or-later.'
-                    properties = ['ffmpeg.version':'8.1.3', 'android.minSdk':'23', 'android.abis':'arm64-v8a']
+                    properties = ['ffmpeg.version':'8.1.3', 'android.minSdk':'21', 'android.abis':'arm64-v8a']
                 }
             }
         }

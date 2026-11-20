@@ -1,0 +1,242 @@
+{
+  "aar": {
+    "bytes": 3260304,
+    "meets12MiBTarget": true,
+    "name": "android-playback-sdk-1.2.0.aar",
+    "sha256": "aab1e88ad3a0ab43f3b86476ee0f42de5cd1453b9035ea408655b61f345e145b"
+  },
+  "abi": [
+    "arm64-v8a"
+  ],
+  "coordinate": "com.cn.media:android-playback-sdk:1.2.0",
+  "correspondingSourceSha256": "c97fcf6c62fe666a28562c8d758eed5ed20cef45dd7ec12c34829a088af8ee79",
+  "externalRuntimeDependencies": [],
+  "ffmpegPatches": [],
+  "ffmpegPrimaryFingerprint": "FCF986EA15E6E293A5644F10B4322F04D67658D8",
+  "ffmpegSignatureDate": "2026-09-21",
+  "ffmpegSourceSha256": "7138d28c96d9d3e3af4ee3d8cad72741f8ffb40da90c1112235dea3ecd3178a3",
+  "gradleVariantFiles": {
+    "java-api": "android-playback-sdk-1.2.0.aar",
+    "java-runtime": "android-playback-sdk-1.2.0.aar",
+    "sources": "android-playback-sdk-1.2.0-sources.jar"
+  },
+  "kind": "local-rehearsal",
+  "maven": {
+    "android-playback-sdk-1.2.0-javadoc.jar": "e99af244d32c855008dbb365861e14e79a88a70ccd90174e03116f5699814566",
+    "android-playback-sdk-1.2.0-sources.jar": "3a9b8c343c52834c71cf8c5544dc4bcf71419918afaad1b8424e477e621b9f91",
+    "android-playback-sdk-1.2.0.aar": "aab1e88ad3a0ab43f3b86476ee0f42de5cd1453b9035ea408655b61f345e145b",
+    "android-playback-sdk-1.2.0.module": "51cbce768ed1d945a66a9d9dd6ac5f40136be02dd8f6009364287d652cf714b1",
+    "android-playback-sdk-1.2.0.pom": "da71328f4132414923477537cae0026d9d5b51b96842d6073b34fe03d80a8d63"
+  },
+  "minSdk": 21,
+  "nativeLibraries": {
+    "libavcodec.so": {
+      "buildId": "e8b935832ddedf8bb05080becf9ed792e868f7ec",
+      "bytes": 4461976,
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "machine": "AArch64",
+      "needed": [
+        "libswresample.so",
+        "libavutil.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "optionalWeakImports": [
+        "memfd_create"
+      ],
+      "platformApi": 21,
+      "platformLibraries": [
+        "libc.so",
+        "libm.so"
+      ],
+      "resolvedStrongImports": 244,
+      "sha256": "a5866590fa45f348085c6cccb53238d012942962b3e2c2cf9ace0dba5c77ba5c",
+      "soname": "libavcodec.so",
+      "symbolBytes": 20395160,
+      "symbolSha256": "5e61f9aa5eeab51b2707a2f9be2d0afa0d015d8e33d70065b6ecb480d06923e2",
+      "symbolication": [
+        "0000000000137260",
+        "avcodec_send_packet",
+        "decode.c:718"
+      ]
+    },
+    "libavformat.so": {
+      "buildId": "331692465bcc12301cf8f7e31cd8779d4f9f2f2a",
+      "bytes": 610472,
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "machine": "AArch64",
+      "needed": [
+        "libavcodec.so",
+        "libavutil.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "optionalWeakImports": [],
+      "platformApi": 21,
+      "platformLibraries": [
+        "libc.so",
+        "libm.so"
+      ],
+      "resolvedStrongImports": 289,
+      "sha256": "69b8aef043549c6eb2cc9b587ec882a7b90be14d6590da7c63813c7433e46022",
+      "soname": "libavformat.so",
+      "symbolBytes": 3124392,
+      "symbolSha256": "67376eee9a404248f0dde0421aa60e7bff73427003ac1a117179d8566b91d91d",
+      "symbolication": [
+        "0000000000040f14",
+        "av_read_frame",
+        "demux.c:1589"
+      ]
+    },
+    "libavutil.so": {
+      "buildId": "240af151898e54eb147ee4482460f0638f845c3c",
+      "bytes": 726472,
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "machine": "AArch64",
+      "needed": [
+        "libm.so",
+        "libc.so"
+      ],
+      "optionalWeakImports": [
+        "memfd_create"
+      ],
+      "platformApi": 21,
+      "platformLibraries": [
+        "libc.so",
+        "libm.so"
+      ],
+      "resolvedStrongImports": 90,
+      "sha256": "8dbd6b79d34b291c82b713bb1dfeb49aff508e5ba41f7b48243893b6312d381c",
+      "soname": "libavutil.so",
+      "symbolBytes": 2787920,
+      "symbolSha256": "109d140509f871125a92540838d62ff947e5febff041b40e32f50d1dc14c7697",
+      "symbolication": [
+        "000000000005531c",
+        "av_frame_alloc",
+        "frame.c:53"
+      ]
+    },
+    "libplayback.so": {
+      "buildId": "66a9aa209396274555d2b47b91a8b4a3fb82ef31",
+      "bytes": 64824,
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "machine": "AArch64",
+      "needed": [
+        "libavformat.so",
+        "libavcodec.so",
+        "libavutil.so",
+        "libswresample.so",
+        "libswscale.so",
+        "libandroid.so",
+        "libm.so",
+        "libdl.so",
+        "libc.so"
+      ],
+      "optionalWeakImports": [],
+      "platformApi": 21,
+      "platformLibraries": [
+        "libandroid.so",
+        "libc.so",
+        "libdl.so",
+        "libm.so"
+      ],
+      "resolvedStrongImports": 125,
+      "sha256": "4d921e700855611fc679309da312170a4ffa28ca0f7afccbea085b0bf7b62134",
+      "soname": "libplayback.so",
+      "symbolBytes": 538744,
+      "symbolSha256": "6c43d73432ce8677c11539de30c25566b38291a5f453d63a726c0d8296d89b40",
+      "symbolication": [
+        "0000000000009204",
+        "Java_com_cn_media_playback_NativeInput_render",
+        "session_output.c:376"
+      ]
+    },
+    "libswresample.so": {
+      "buildId": "59d14c6ceb7a681c8b63e95efeed358b7413c4e5",
+      "bytes": 98440,
+      "loadAlignments": [
+        16384,
+        16384
+      ],
+      "machine": "AArch64",
+      "needed": [
+        "libavutil.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "optionalWeakImports": [],
+      "platformApi": 21,
+      "platformLibraries": [
+        "libc.so",
+        "libm.so"
+      ],
+      "resolvedStrongImports": 39,
+      "sha256": "d889759434afa258e1976542c1a8607dbe42d9385677e6a939637399dca9dd1b",
+      "soname": "libswresample.so",
+      "symbolBytes": 337336,
+      "symbolSha256": "121f27f8c6b678fa0fa533016fa8ea4fd372fee279f0e4e3d7d9a8fcb36297f2",
+      "symbolication": [
+        "0000000000012730",
+        "swr_convert",
+        "swresample.c:728"
+      ]
+    },
+    "libswscale.so": {
+      "buildId": "e79efe8e2395f9cf5cf0d225526acbdb006de6fd",
+      "bytes": 1155344,
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "machine": "AArch64",
+      "needed": [
+        "libavutil.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "optionalWeakImports": [
+        "memfd_create"
+      ],
+      "platformApi": 21,
+      "platformLibraries": [
+        "libc.so",
+        "libm.so"
+      ],
+      "resolvedStrongImports": 76,
+      "sha256": "69023f9651b07cd3b6a7f5b2266e21a6c37252299a74c3d10d84232ea1507dae",
+      "soname": "libswscale.so",
+      "symbolBytes": 4588216,
+      "symbolSha256": "cb6f26c35fdbd79ec32f3850ff37b59ada5e5a6bde2a7296e78053ad859239f2",
+      "symbolication": [
+        "00000000000d5460",
+        "sws_scale",
+        "swscale.c:1537"
+      ]
+    }
+  },
+  "newPermissions": [],
+  "releaseApproval": "pending",
+  "sourceBootstrapFromCheckout": [],
+  "toolchain": {
+    "ffmpeg": "8.1.3",
+    "gradle": "8.13",
+    "ndk": "30.0.16248370"
+  }
+}

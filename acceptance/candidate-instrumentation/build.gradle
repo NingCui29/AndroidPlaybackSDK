@@ -13,11 +13,14 @@ android {
     testNamespace 'com.cn.media.playback.test'
     compileSdk 35
     defaultConfig {
-        minSdk 23
-        targetSdk 23
+        minSdk providers.gradleProperty('candidateMinSdk').get().toInteger()
+        targetSdk 35
         testApplicationId 'com.cn.media.playback.test'
         testInstrumentationRunner 'com.cn.media.playback.InputChecks'
         ndk { abiFilters 'arm64-v8a' }
+    }
+    packaging {
+        jniLibs { useLegacyPackaging = false }
     }
     sourceSets.androidTest {
         java.srcDirs = [new File(suite, 'java')]

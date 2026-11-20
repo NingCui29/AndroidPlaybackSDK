@@ -2,6 +2,8 @@
 # A Java-only consumer may have neither annotation on its runtime classpath.
 -dontwarn org.jetbrains.annotations.NotNull
 -dontwarn org.jetbrains.annotations.Nullable
+-keep enum com.cn.media.playback.** { *; }
+-keepclassmembers enum com.cn.media.playback.** { *; }
 -keep class com.cn.media.playback.NativeInput { native <methods>; }
 -keepclassmembers class com.cn.media.playback.PcmOutput { int configure(int,int); int write(java.nio.ByteBuffer); }
 -keep class com.cn.media.playback.TrackInfo { <init>(...); }

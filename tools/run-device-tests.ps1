@@ -1,7 +1,7 @@
 ﻿[CmdletBinding()]
 param(
     [Parameter(Mandatory)][string] $Serial,
-    [ValidateSet('player','full','input','ranges','hardware','formats','faults','content','diagnostics','progress','degrade','geometry','dynamic','audioRecovery','pcmWrites','audioTracks','timestamps','surface','q01','q03','q04Realtime','q04V01','q04A03','q04Pilot','q04Release')][string] $Suite = 'player',
+    [ValidateSet('player','full','input','ranges','hardware','formats','faults','content','diagnostics','progress','degrade','geometry','dynamic','audioRecovery','pcmWrites','audioTracks','timestamps','surface','surfaceBarrier','transferFault','providerCleanup','q01','q03','q04Realtime','q04V01','q04A03','q04Pilot','q04Release')][string] $Suite = 'player',
     [string] $AndroidSdk = $env:ANDROID_HOME,
     [switch] $SkipBuild,
     [string] $ApkPath = 'sdk/build/outputs/apk/androidTest/debug/sdk-debug-androidTest.apk',
@@ -73,6 +73,8 @@ try {
             'audioRecovery' { 'A04.wav' }
             'pcmWrites' { 'A04.wav','A02.m4a' }
             'audioTracks' { 'V05.mkv','L01-delayed.mkv' }
+            'transferFault' { 'V11.mp4' }
+            { $_ -in 'surfaceBarrier','providerCleanup' } { break }
             'q01' { 'V01.mp4','V11.mp4','A02.m4a' }
             'q03' { 'V05.mkv','V01.mp4','A04.wav' }
             'degrade' { 'bad-audio.mov','bad-video.mov','bad-both.mov','A02.m4a' }
@@ -144,7 +146,7 @@ try {
                 if ($LASTEXITCODE -ne 0) { throw "Trace read failed: $traceDir/$name" }
             }
             & python (Join-Path $repo 'tools/summarize-q04.py') $dir
-            if ($LASTEXITCODE -ne 0) { throw "Q04 measured gate or evidence failure: $dir" }
+            $scoreStatus = $LASTEXITCODE
         } else { throw "Q04 process did not report its trace directory: $dir" }
         if ($adbStatus -ne 0) { throw "ADB instrumentation connection terminated: $dir" }
     } else {
@@ -157,6 +159,13 @@ try {
     $result
     if (($result -join [Environment]::NewLine) -notmatch 'INSTRUMENTATION_CODE: -1') {
         throw "Failed device test. See $dir"
+    }
+    if ($Suite -like 'q04*' -and $scoreStatus -ne 0) {
+        if ($Suite -eq 'q04Release' -and $scoreStatus -eq 2 -and (Test-Path -LiteralPath (Join-Path $dir 'summary.json'))) {
+            Write-Warning "Q04 release evidence is incomplete. See $dir/summary.json"
+            exit 2
+        }
+        throw "Q04 measured gate or evidence failure: $dir"
     }
     if ($Suite -eq 'faults') {
         & python (Join-Path $repo 'tools/score-h04-faults.py') $dir --rounds $Rounds

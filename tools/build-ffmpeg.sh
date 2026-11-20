@@ -28,15 +28,15 @@ mkdir "$work/objects"
 cd "$work/objects"
 "$work/ffmpeg-8.1.3/configure" \
     --target-os=android --arch=aarch64 --enable-cross-compile \
-    --cc="$toolchain/clang --target=aarch64-linux-android23" \
-    --cxx="$toolchain/clang++ --target=aarch64-linux-android23" \
+    --cc="$toolchain/clang --target=aarch64-linux-android21" \
+    --cxx="$toolchain/clang++ --target=aarch64-linux-android21" \
     --ar="$toolchain/llvm-ar" --nm="$toolchain/llvm-nm" \
     --ranlib="$toolchain/llvm-ranlib" --strip="$toolchain/llvm-strip" \
     --extra-ldflags=-Wl,--build-id=sha1 \
     --disable-everything --disable-autodetect --disable-programs --disable-doc --disable-network \
     --disable-avfilter --disable-avdevice --disable-static --enable-shared --enable-pic \
     --enable-demuxer=mov,matroska,avi,asf,mpegts,mp3,flac,wav,ogg \
-    --enable-decoder=h264,hevc,vp8,vp9,mpeg4,wmv3,vc1,mp3float,aac,flac,vorbis,opus,wmav2,pcm_u8,pcm_s16le,pcm_s24le,pcm_s32le \
+    --enable-decoder=h264,hevc,vp8,vp9,mpeg4,wmv1,wmv2,wmv3,vc1,msmpeg4v1,msmpeg4v2,msmpeg4v3,mp3float,aac,flac,vorbis,opus,wmav1,wmav2,pcm_u8,pcm_s16le,pcm_s24le,pcm_s32le \
     --enable-parser=aac,flac,h264,hevc,mpeg4video,mpegaudio,opus,vc1,vorbis,vp8,vp9 \
     --enable-bsf=h264_mp4toannexb,hevc_mp4toannexb | tee "$work/configure-summary.txt"
 make -j"${JOBS:-4}"
