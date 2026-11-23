@@ -306,7 +306,10 @@ final class PlaybackOutput implements AutoCloseable {
      *
      * @param gain 音量增益（0.0f ~ 1.0f）
      */
-    synchronized void setGain(float gain) { this.gain = gain; pcm.setGain(gain); }
+    synchronized void setGain(float gain) {
+        this.gain = gain;
+        if (pcm != null) pcm.setGain(gain);
+    }
 
     /** 获取当前选中的音频流索引。 */
     synchronized int selectedAudioIndex() { return audioIndex; }
@@ -372,7 +375,7 @@ final class PlaybackOutput implements AutoCloseable {
 
     /** 放弃当前选中的音频流通道。 */
     synchronized void abandonAudio(int index) {
-        if (audioIndex != index) return;
+        if (stopped || audioIndex != index) return;
         frozenUs = clockAnchor = clockUs();
         wallAnchor = nowUs();
         pcm.cancel();
@@ -422,21 +425,19 @@ final class PlaybackOutput implements AutoCloseable {
         notifyAll();
     }
 
-    /**
-     * 停止渲染纪元。
-     * <p>
-     * 冻结时钟、取消 PCM 输出并等待在途的视频绘制任务结束，最后释放硬件解码器与 CPU 渲染表面。
-     * </p>
-     */
-    synchronized void stop() {
+    /** 停止接收新帧并唤醒输出线程，在途画面仍由渲染线程归还。 */
+    synchronized void requestStop() {
         if (!stopped) {
             frozenUs = clockUs();
             stopped = true;
             if (pcm != null) pcm.cancel();
             notifyAll();
         }
-        // 新一代渲染纪元可能在上一代完成回收前就变成活跃代。
-        // 绝不允许旧 Surface 的写入操作跨越此交接点。
+    }
+
+    /** 停止渲染纪元，等待在途画面归还并释放渲染资源。 */
+    synchronized void stop() {
+        requestStop();
         awaitSurfaceIdle();
         // 处于组件发现和 codec.configure 之间的解码工作线程可能仍然持有解码器。
         // 即便当前纪元已注销，close() 也会阻断其配置执行。
@@ -499,15 +500,10 @@ final class PlaybackOutput implements AutoCloseable {
      * @param extra 额外配置字节缓冲区（如 SPS/PPS）
      * @return 1 表示硬解创建成功，0 表示已自动退回软解，负数表示严重失败或已停止
      */
-    /** 分离并借出活跃的硬件解码器实例以供新纪元复用。 */
-    synchronized HardwareVideo detachHardware() {
-        if (!stopped) {
-            frozenUs = clockUs();
-            stopped = true;
-            if (pcm != null) pcm.cancel();
-            notifyAll();
-        }
-        awaitSurfaceIdle();
+    /** 仅在没有在途画面时借出硬件解码器供新纪元复用。 */
+    synchronized HardwareVideo detachHardwareIfIdle() {
+        requestStop();
+        if (videoBusy) return null;
         HardwareVideo detached = hardware;
         hardware = null;
         return detached;
@@ -882,12 +878,6 @@ final class PlaybackOutput implements AutoCloseable {
         updateInterval(pts, durationUs);
         if (lastVideo < 0 && pts + intervalUs <= targetUs) return null;
         if (landing == Landing.MISSED) return null;
-        if (landing == Landing.PENDING && landingTargetUs >= 0 &&
-                pts - landingTargetUs > (exactSeek ? intervalUs : 0) && surface != null && surface.isValid()) {
-            landing = Landing.MISSED;
-            observer.missedSeekTarget(this);
-            return null;
-        }
         boolean reset = lastVideo < 0 || (nextVideo >= 0 && Math.abs(pts - nextVideo) > 500000);
         if (reset && lastVideo >= 0) {
             videoShiftUs += pts - nextVideo;
@@ -900,7 +890,7 @@ final class PlaybackOutput implements AutoCloseable {
             wallAnchor = nowUs();
         }
         for (;;) {
-            if (stopped) return null;
+            if (stopped || landing == Landing.MISSED) return null;
             if (switching) { waitForChange(0); continue; }
             detachInvalidSurface();
             if (surface == null) {
@@ -915,6 +905,12 @@ final class PlaybackOutput implements AutoCloseable {
                 }
                 waitForChange(0);
                 continue;
+            }
+            if (landing == Landing.PENDING && landingTargetUs >= 0 &&
+                    pts - landingTargetUs > (exactSeek ? intervalUs : 0)) {
+                landing = Landing.MISSED;
+                observer.missedSeekTarget(this);
+                return null;
             }
             if (!paused || preview) {
                 long ahead = videoAheadUs(pts);

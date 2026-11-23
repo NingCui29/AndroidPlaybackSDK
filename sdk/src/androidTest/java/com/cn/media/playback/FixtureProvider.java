@@ -70,6 +70,7 @@ public final class FixtureProvider extends ContentProvider {
         if ("private".equals(operation))
             throw new SecurityException("Denied " + uri + " " + uri.getQueryParameter("credential"));
         if ("deny".equals(operation)) throw new SecurityException("Fixture denied");
+        if ("runtime".equals(operation)) throw new IllegalStateException("Fixture open failed");
         if ("late".equals(operation)) android.os.SystemClock.sleep(1200);
         if ("stall".equals(operation)) {
             CountDownLatch cancelled = new CountDownLatch(1);

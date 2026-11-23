@@ -35,6 +35,8 @@ final class PlaybackSession {
     private ProviderOpener.Request provider;
     /** 当前处于激活状态的渲染输出世代实例。 */
     private PlaybackOutput current;
+    /** 已由 I/O 线程准入、尚未完成清理的输出。 */
+    private PlaybackOutput rendering;
 
     /**
      * 创建播放会话实例。
@@ -83,18 +85,22 @@ final class PlaybackSession {
     /**
      * 替换当前激活的渲染输出纪元（Epoch）。
      * <p>
-     * 停止旧的 {@link PlaybackOutput}，通知底层 {@link NativeInput} 中断正在进行的阻塞 I/O，
-     * 并将传入的全新渲染输出实例置为当前活跃对象。
+     * 请求旧输出停止，并中断底层 I/O。读写线程退出并清理旧输出后，I/O 线程才能准入新输出。
      * </p>
      *
-     * @param output 即将生效的全新渲染输出纪元对象
+     * @param output 即将生效的渲染输出纪元，为 {@code null} 时只停止当前输出
      */
     synchronized void replace(PlaybackOutput output) {
         if (current != null) {
-            current.stop();
+            current.requestStop();
             if (input != null) input.cancel();
         }
         current = output;
+    }
+
+    /** 外部 Surface 将解绑或更换时，等待已被替换的输出归还在途画面。 */
+    synchronized void awaitReplacedOutput() {
+        if (rendering != null && rendering != current) rendering.stop();
     }
 
     /**
@@ -121,7 +127,12 @@ final class PlaybackSession {
     synchronized NativeInput enter(PlaybackOutput output) {
         if (retiring || current != output) return null;
         input.rearm();
+        rendering = output;
         return input;
+    }
+
+    synchronized void leave(PlaybackOutput output) {
+        if (rendering == output) rendering = null;
     }
 
     /**
@@ -135,8 +146,9 @@ final class PlaybackSession {
         synchronized (this) {
             retiring = true;
             if (provider != null) provider.abandon();
-            if (current != null) current.stop();
-            if (input != null) input.cancel();
+            if (current == null && input != null) input.cancel();
+            replace(null);
+            awaitReplacedOutput();
         }
         opening.cancel();
     }
@@ -150,5 +162,6 @@ final class PlaybackSession {
     synchronized void close() {
         if (input != null) { input.close(); input = null; }
         current = null;
+        rendering = null;
     }
 }

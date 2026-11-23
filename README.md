@@ -1,7 +1,7 @@
 # AndroidPlaybackSDK
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Release-v1.2.0-brightgreen.svg" alt="Release">
+  <img src="https://img.shields.io/badge/Release-v1.2.1-brightgreen.svg" alt="Release">
   <img src="https://img.shields.io/badge/Android%20API-21+-blue.svg" alt="API">
   <img src="https://img.shields.io/badge/ABI-arm64--v8a-orange.svg" alt="ABI">
   <img src="https://img.shields.io/badge/Page%20Size-16%20KB%20Aligned-success.svg" alt="16KB Page Aligned">
@@ -9,11 +9,11 @@
   <img src="https://img.shields.io/badge/License-LGPL--2.1-lightgrey.svg" alt="License">
 </p>
 
-高性能、低延迟、零外部依赖的 Android 专业级多媒体播放 SDK。深度融合 **FFmpeg 8.1.3** 解封装/软解内核与 Android **MediaCodec** 平台硬件加速引擎，支持画面零拷贝直出 Surface 与 AudioTrack 高精度音频时间轴同步。配备全新交互式真机 Demo 应用、全量 27 个类完备中文 Javadoc 规范化建设，并通过全套严苛的工业级质量与性能验证。
+Android 多媒体播放 SDK，集成 **FFmpeg 8.1.3** 解封装和软解，以及 Android **MediaCodec** 硬件解码。支持视频直出 Surface、AudioTrack 音频输出和音画同步。项目包含交互式 Demo、中文 API 文档和[验收记录](docs/05-todo.md)。
 
 ---
 
-## 🌟 核心特性 (v1.2.0)
+## 🌟 核心特性 (v1.2.1)
 
 - **轻量紧凑与零依赖**：AAR 制品体积仅 **3.08 MiB**，无任何外部第三方运行时依赖，原生共享库 100% 满足 Android 15+ **16 KB 页面对齐**规范。
 - **软硬自适应双解码内核**：
@@ -31,10 +31,10 @@
   - **系统 SAF 选择器**：基于 `ACTION_GET_CONTENT` 调起 DocumentsUI，SDK 原生通过 `ContentResolver` 与底层文件描述符流式直通，免复制零拷贝；
   - **内置极简存储浏览器**：专为大屏/遥控器与快速调试设计，一键直达 `/sdcard/`、Download、Movies 等目录，支持目录树无级下钻。
 - **全格式与全容器覆盖**：原生支持 MP4、MKV、MOV、WebM、TS、AVI、WMV、MP3、FLAC、OGG、WAV、M4A 等 19/19 媒体格式矩阵。
-- **极限稳定性与零泄漏**：
+- **长播与资源回收**：
   - **长播零丢帧**：10 分钟连续实时长播（18,000 帧画面），**SDK 迟到丢帧为 0（丢帧率 0.0%）**；
   - **超低资源开销**：单核稳态 CPU 占用仅 **12.2% ~ 15.0%**，R8 混淆模式下物理内存驻留集（PSS）低至 **44.71 MB ~ 54.48 MB**；
-  - **严苛资源回收**：连续循环高压 stop / release 压力测试，底层 C/C++ 句柄、文件描述符与解码器 100% 归零释放，**0 内存泄漏**。
+  - **资源回收验收**：历史 Q04 测试中，SDK 文件描述符、线程和解码器实例回到基线。两组空闲 PSS 增量超过 8 MiB 门槛，完整轮次仍待实测。[Q04 记录](docs/d04-e77ae1ed.md#逐项审核与证据矩阵)
 - **混淆安全与 AAR 自动下发**：
   - SDK AAR 内部打包 `consumer-rules.pro`，第三方应用开启 R8 混淆时自动合并规则，严密保护 JNI 静态绑定与底层 C/C++ 反射回调，宿主接入零额外混淆配置负担。
 
@@ -112,7 +112,7 @@ flowchart TD
 
 ### 1. Maven 依赖接入（推荐）
 
-SDK 最新发布坐标为 `com.cn.media:android-playback-sdk:1.2.0`。
+SDK Maven 坐标为 `com.cn.media:android-playback-sdk:1.2.1`。
 
 #### ① 通过 GitHub Packages 接入
 
@@ -138,7 +138,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.cn.media:android-playback-sdk:1.2.0")
+    implementation("com.cn.media:android-playback-sdk:1.2.1")
 }
 ```
 
@@ -161,11 +161,11 @@ dependencyResolutionManagement {
 
 ### 2. AAR 直接集成
 
-直接将 `android-playback-sdk-1.2.0.aar` 拷贝到应用模块的 `libs/` 目录下：
+直接将 `android-playback-sdk-1.2.1.aar` 拷贝到应用模块的 `libs/` 目录下：
 
 ```kotlin
 dependencies {
-    implementation(files("libs/android-playback-sdk-1.2.0.aar"))
+    implementation(files("libs/android-playback-sdk-1.2.1.aar"))
 }
 ```
 
@@ -176,53 +176,46 @@ dependencies {
 ### Java 使用示例
 
 ```java
+import android.content.Context;
+import android.util.Log;
+import android.view.SurfaceHolder;
 import com.cn.media.playback.*;
+import java.io.IOException;
 
-// 1. 构建配置选项（支持自动硬解、纯软解、开启 FastSeek 极速跟手模式）
-PlayerConfig config = new PlayerConfig.Builder()
-        .setVideoMode(PlayerConfig.VideoMode.AUTO) // 默认 AUTO：硬解优先，遇故障毫秒级自动回退软解
-        .setFastSeek(true)                         // 开启毫秒级极速跟手定位
-        .build();
+public final class PlaybackExample {
+    public static Player open(Context context, SurfaceHolder holder, MediaSource source) throws IOException {
+        PlayerConfig config = new PlayerConfig.Builder()
+                .setVideoMode(PlayerConfig.VideoMode.AUTO)
+                .setFastSeek(true)
+                .build();
+        Player player = new Player(context, config, new PlayerListener() {
+            @Override
+            public void onSnapshot(PlayerSnapshot snapshot) {
+                // 用 snapshot.state 和 snapshot.positionMs 更新播放界面。
+            }
 
-// 2. 创建播放器实例并注册事件监听
-Player player = new Player(context, config, new PlayerListener() {
-    @Override
-    public void onStateChanged(Player.State oldState, Player.State newState, PlayerSnapshot snapshot) {
-        // 监听状态变更：IDLE, PREPARING, READY, BUFFERING, PLAYING, PAUSED, ENDED
+            @Override
+            public void onError(PlayerError error, PlayerSnapshot snapshot) {
+                Log.w("PlaybackExample", error.scope + " " + error.code + "/" + error.stage);
+            }
+        });
+        try {
+            // 在 surfaceCreated 等 Surface 已就绪的时机调用此方法。
+            player.setVideoSurface(holder.getSurface());
+            player.open(source);
+            player.play();
+            return player;
+        } catch (IOException | RuntimeException failure) {
+            player.release();
+            throw failure;
+        }
     }
-
-    @Override
-    public void onPlayerError(PlayerError error, PlayerSnapshot snapshot) {
-        android.util.Log.e("Player", "播放异常: " + error.code + ", 阶段: " + error.stage);
-    }
-    
-    @Override
-    public void onVideoRecovery(VideoRecoveryInfo info, PlayerSnapshot snapshot) {
-        android.util.Log.i("Player", "硬解故障已自动回退软解，恢复耗时: " + info.recoveryUs / 1000 + "ms");
-    }
-});
-
-// 3. 绑定渲染目标 Surface
-player.setVideoSurface(surfaceHolder.getSurface());
-
-// 4. 打开媒体源并播放（支持文件、Content URI、AssetFD）
-try {
-    // 支持本地文件
-    player.open(MediaSource.fromFile(new File("/sdcard/Download/video.mp4")));
-    // 或支持 Android 12+ SAF content:// URI 直通
-    // player.open(MediaSource.fromUri(context, contentUri));
-    player.play();
-} catch (IOException e) {
-    e.printStackTrace();
 }
-
-// 5. 暂停态或拖动定位（毫秒级极速响应）
-player.seekTo(15000);
-
-// 6. 生命周期退出与销毁
-player.stop();    // 停止并可重用
-player.release(); // 彻底释放底座资源
 ```
+
+- 本地文件使用 `MediaSource.fromFile(file)`，已授权的 Content URI 使用 `MediaSource.fromUri(uri)`，FD 区间使用 `MediaSource.fromDescriptor(fd, offset, length)`。
+- 根据 `onCommandResult` 确认媒体打开完成。可定位媒体在拖动中用 `player.seekTo(positionMs, false)` 预览，松手后用 `player.seekTo(positionMs, true)` 精确定位。
+- 在 `surfaceDestroyed` 返回前调用 `player.detachVideoSurface(holder.getSurface())`。`stop()` 停止当前媒体并允许复用实例，销毁实例调用 `release()`。
 
 ---
 
@@ -252,7 +245,7 @@ player.release(); // 彻底释放底座资源
 - **实时性能 HUD 监控面板**：实时呈现解码后端类型（`MediaCodec Direct` / `FFmpeg`）、实时丢帧数/丢帧率、AudioTrack 消费计数、Seek 毫秒延迟及进程 PSS 物理内存；
 - **画幅多比例实时调节**：一键循环切换 10 种画面呈现模式（自适应、拉伸铺满、居中裁剪、16:9、9:16 竖屏短视频、1:1 等）；
 - **本机文件双通道浏览器**：内置系统 SAF 文件选择器与轻量免权限存储目录浏览器；
-- **APK 直接下载**：可在 GitHub Releases 页面直接下载预编译好的 [demo-release.apk](https://github.com/NingCui29/AndroidPlaybackSDK/releases/download/v1.2.0/demo-release.apk) 安装至手机、平板或机顶盒体验。
+- **APK 直接下载**：可在 GitHub Releases 页面直接下载预编译好的 [demo-release.apk](https://github.com/NingCui29/AndroidPlaybackSDK/releases/download/v1.2.1/demo-release.apk) 安装至手机、平板或机顶盒体验。
 
 ---
 
@@ -269,7 +262,7 @@ player.release(); // 彻底释放底座资源
 .\gradlew.bat :sdk:publishPlaybackPublicationToOfflineRepository
 
 # 4. 装配不可变发行候选与符号归档
-python tools/assemble-delivery.py --version 1.2.0
+python tools/assemble-delivery.py --version 1.2.1
 ```
 
 ---

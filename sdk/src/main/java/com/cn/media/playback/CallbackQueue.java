@@ -13,7 +13,8 @@ import java.util.concurrent.Executor;
  * 同时对高频连续的进度通知进行节流合并（若队尾已存在未消费的进度通知，则丢弃旧的以保留最新进度）。
  */
 final class CallbackQueue {
-    private static final int MAX_RETRIES = 3;
+    private static final long INITIAL_RETRY_DELAY_MS = 50;
+    private static final long MAX_RETRY_DELAY_MS = 5000;
     /** 队列项封装。 */
     private static final class Entry {
         /** 是否为周期性播放进度快照回调。 */
@@ -25,7 +26,7 @@ final class CallbackQueue {
     private final Executor executor;
     private final ArrayDeque<Entry> queue = new ArrayDeque<>();
     private boolean draining;
-    private int retries;
+    private long retryDelayMs;
 
     /**
      * 构造回调队列。
@@ -46,7 +47,7 @@ final class CallbackQueue {
             queue.addLast(new Entry(progress, callback));
             if (draining) return;
             draining = true;
-            retries = 0;
+            retryDelayMs = INITIAL_RETRY_DELAY_MS;
         }
         dispatch();
     }
@@ -55,10 +56,13 @@ final class CallbackQueue {
         try {
             executor.execute(this::drain);
         } catch (RuntimeException rejected) {
-            android.util.Log.w("PlaybackSDK", "Callback executor rejected execution: " + rejected.getMessage());
             synchronized (queue) {
-                if (retries < MAX_RETRIES &&
-                        new Handler(Looper.getMainLooper()).postDelayed(this::dispatch, 50L << retries++)) {
+                if (retryDelayMs == INITIAL_RETRY_DELAY_MS) {
+                    android.util.Log.w("PlaybackSDK", "Callback executor rejected execution: " +
+                            rejected.getClass().getSimpleName());
+                }
+                if (new Handler(Looper.getMainLooper()).postDelayed(this::dispatch, retryDelayMs)) {
+                    retryDelayMs = Math.min(MAX_RETRY_DELAY_MS, retryDelayMs * 2);
                     return;
                 }
                 draining = false;

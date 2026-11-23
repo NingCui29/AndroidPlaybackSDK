@@ -82,6 +82,8 @@ public final class Player {
     private boolean intent, muted;
     private float volume = 1;
     private long pendingOpen, pendingTimeline, timeline, revision, position;
+    private long positionBeforeSeek;
+    private boolean seekFromEnd, restoringSeek, seekOnResume;
     private ScheduledFuture<?> progress, seekDeadline;
     private PlayerError error;
     private List<PlayerError> trackFailures = Collections.emptyList();
@@ -170,6 +172,10 @@ public final class Player {
 
     /**
      * 请求定位到指定的媒体时间位置。
+     * <p>精确定位到已知片尾会直接进入 {@link State#ENDED}，命令返回请求级
+     * {@link PlayerError.Code#SEEK_UNAVAILABLE}（{@code seekEndOfStream}）。</p>
+     * <p>落帧失败或预滚超时以请求级错误报告。播放器尝试按最新播放意图恢复定位前的位置。
+     * 如果恢复仍无法取得落点，会保留会话并暂停，宿主可再次定位或播放。</p>
      *
      * @param positionMs 目标时间（毫秒），必须为非负数
      * @param exact true 按目标时间预滚，false 快速定位。本次选择优先于配置的默认模式。
@@ -320,7 +326,10 @@ public final class Player {
         return accept(id -> {
             if (replacement != null && !replacement.isValid()) { reject(id, Code.OUTPUT_LOST, "surface"); return; }
             boolean surfaceChanged = (surface != replacement);
-            if (surfaceChanged) surfaceVersion++;
+            if (surfaceChanged) {
+                if (session != null) session.awaitReplacedOutput();
+                surfaceVersion++;
+            }
             surface = replacement;
             surfaceRebuilt = false;
             if (output != null) output.bind(replacement);
@@ -328,9 +337,10 @@ public final class Player {
                 state = intent && surface != null ? State.PLAYING : State.PAUSED;
             }
             if (surfaceChanged && replacement != null && video != null && media != null && media.seekable &&
-                    (state == State.PAUSED || state == State.READY) && !intent) {
+                    (state == State.PAUSED || state == State.READY) && !intent &&
+                    pendingTimeline == 0 && !restoringSeek) {
                 long resumePos = currentPosition();
-                startRun(resumePos, true, 0, true, null);
+                startRun(resumePos, true, 0, true, null, seekOnResume);
             }
             publish(false);
             success(id);
@@ -373,6 +383,7 @@ public final class Player {
 
     private void detachOnControl(Surface destroyed) {
         if (surface != destroyed) return;
+        if (session != null) session.awaitReplacedOutput();
         surfaceVersion++;
         surface = null;
         if (output != null) output.bind(null);
@@ -526,10 +537,12 @@ public final class Player {
         complete(pendingTimeline, terminal, null);
         pendingOpen = pendingTimeline = 0;
         clearSeekDeadline();
+        seekOnResume = false;
     }
 
     private void clearSeekDeadline() {
         if (seekDeadline != null) { seekDeadline.cancel(false); seekDeadline = null; }
+        restoringSeek = false;
     }
 
     private void retire() {
@@ -568,19 +581,23 @@ public final class Player {
             if (session == next && pendingOpen == next.id)
                 fail(next.id, Code.INPUT_TIMEOUT, "open", 0);
         }, 5, TimeUnit.SECONDS);
+        String stage = "open";
         try {
             NativeInput acquired;
             try { acquired = next.acquire(context.getContentResolver(), providers); }
             finally { timeout.cancel(false); }
             if (acquired == null) return;
+            stage = "probe";
             int raw = acquired.probe();
             if (raw < 0) {
                 Code code = Code.fromNumber(NativeInput.category(raw, true));
                 control.execute(() -> openFailed(next, code, "probe", raw));
                 return;
             }
+            stage = "describe";
             MediaInfo info = acquired.describe(next.id);
-            control.execute(() -> prepared(next, info));
+            if (info == null) control.execute(() -> openFailed(next, Code.INPUT_IO, "describe", 0));
+            else control.execute(() -> prepared(next, info));
         } catch (SecurityException denied) {
             control.execute(() -> openFailed(next, Code.INPUT_PERMISSION, "open", 0));
         } catch (ProviderOpener.Busy exhausted) {
@@ -589,6 +606,9 @@ public final class Player {
             control.execute(() -> openFailed(next, Code.INPUT_IO, "open", 0));
         } catch (IllegalArgumentException invalid) {
             control.execute(() -> openFailed(next, Code.INVALID_ARGUMENT, "inputRange", 0));
+        } catch (RuntimeException unavailable) {
+            String failedStage = stage;
+            control.execute(() -> openFailed(next, Code.INPUT_IO, failedStage, 0));
         }
     }
 
@@ -642,8 +662,13 @@ public final class Player {
         if (state == State.PREPARING || (state == State.ENDED && !playing)) {
             publish(false); success(id); return;
         }
-        if (playing && output == null) startRun(0, state == State.ENDED, 0);
-        else {
+        if (playing && output == null) {
+            if (seekOnResume) {
+                startRun(Math.min(position, Long.MAX_VALUE / 1000), true, 0, true, null, true);
+            } else {
+                startRun(0, state == State.ENDED, 0);
+            }
+        } else {
             if (output != null) output.setPlaying(playing);
             state = runningState();
             publish(false);
@@ -658,7 +683,19 @@ public final class Player {
     private void seek(long id, long ms, boolean exact) {
         if (media == null || state == State.ERROR) { reject(id, Code.INVALID_STATE, "seek"); return; }
         if (!media.seekable) { reject(id, Code.SEEK_UNAVAILABLE, "seek"); return; }
-        startRun(Math.min(clamp(ms), Long.MAX_VALUE / 1000), true, id, exact, null);
+        long target = clamp(ms);
+        if (exact && media.durationMs != null && media.durationMs > 0 && target == media.durationMs) {
+            endPending(Status.SUPERSEDED);
+            stopOutput();
+            timeline++;
+            endPlayback(target, id);
+            return;
+        }
+        if (pendingTimeline == 0) {
+            positionBeforeSeek = currentPosition();
+            seekFromEnd = state == State.ENDED;
+        }
+        startRun(Math.min(target, Long.MAX_VALUE / 1000), true, id, exact, null);
     }
 
     private void startRun(long target, boolean seek, long request) {
@@ -666,10 +703,17 @@ public final class Player {
     }
 
     private void startRun(long target, boolean seek, long request, boolean exact, HardwareVideo.Fault recoverFrom) {
+        startRun(target, seek, request, exact, recoverFrom, false);
+    }
+
+    private void startRun(long target, boolean seek, long request, boolean exact, HardwareVideo.Fault recoverFrom,
+                          boolean seekRecovery) {
         cancelChange(Status.SUPERSEDED);
         complete(pendingTimeline, Status.SUPERSEDED, null);
         clearSeekDeadline();
         pendingTimeline = request;
+        restoringSeek = seekRecovery;
+        seekOnResume = false;
         timeline++;
         position = target;
         PlaybackSession owner = session;
@@ -678,7 +722,7 @@ public final class Player {
         PlaybackOutput old = output;
         HardwareVideo reusedHardware = null;
         if (seek && old != null && recoverFrom == null) {
-            reusedHardware = old.detachHardware();
+            reusedHardware = old.detachHardwareIfIdle();
         }
         boolean exactSeek = seek && exact;
         long renderTarget = seek && !exactSeek ? 0 : target;
@@ -714,10 +758,11 @@ public final class Player {
         output = run;
         state = runningState();
         publish(false);
-        if (request != 0) {
+        if (request != 0 || seekRecovery) {
             seekDeadline = control.schedule(() -> {
-                if (output == run && pendingTimeline == request)
-                    fail(request, Code.INPUT_TIMEOUT, "preroll", 0);
+                if (output != run) return;
+                if (restoringSeek) finishSeekRecovery(Code.INPUT_TIMEOUT, 0);
+                else if (pendingTimeline != 0) recoverSeek(Code.INPUT_TIMEOUT, "preroll", 0);
             }, 3, TimeUnit.SECONDS);
         }
         io.execute(() -> {
@@ -728,7 +773,8 @@ public final class Player {
                 raw = seek ? input.seek(v >= 0 ? v : a, target, exactSeek) : 0;
                 if (raw >= 0) raw = input.render(a, v, renderTarget, run);
             } finally {
-                run.close();
+                try { run.close(); }
+                finally { owner.leave(run); }
             }
             final int status = raw;
             control.execute(() -> finished(owner, run, status));
@@ -739,7 +785,7 @@ public final class Player {
         @Override public void missedSeekTarget(PlaybackOutput run) {
             control.execute(() -> {
                 if (output == run && pendingTimeline != 0)
-                    fail(pendingTimeline, Code.SEEK_UNAVAILABLE, "seekLanding", 0);
+                    recoverSeek(Code.SEEK_UNAVAILABLE, "seekLanding", 0);
             });
         }
         @Override public void audioSwitchResult(PlaybackOutput run, long id, int raw, long actualMs) {
@@ -752,7 +798,9 @@ public final class Player {
         }
         @Override public void ready(PlaybackOutput run, long actualMs) {
             control.execute(() -> {
-                if (output != run || pendingTimeline == 0) return;
+                if (output != run) return;
+                if (restoringSeek) clearSeekDeadline();
+                if (pendingTimeline == 0) return;
                 long id = pendingTimeline;
                 pendingTimeline = 0;
                 clearSeekDeadline();
@@ -839,23 +887,75 @@ public final class Player {
                 long request = pendingTimeline;
                 pendingTimeline = 0;
                 HardwareVideo.Fault fault = rebuild ? null : run.hardwareFailure();
-                long restore = request != 0 ? position : fault != null ? Math.max(0,fault.positionUs / 1000) : at;
-                startRun(restore, true, request, request == 0 || run.exactSeek, fault);
+                long restore = request != 0 || restoringSeek ? position :
+                        fault != null ? Math.max(0, fault.positionUs / 1000) : at;
+                startRun(restore, true, request, request == 0 || run.exactSeek, fault, restoringSeek);
                 return;
             }
+            if (category == Code.SEEK_UNAVAILABLE || category == Code.INPUT_TIMEOUT) {
+                if (restoringSeek) {
+                    finishSeekRecovery(category, raw);
+                    return;
+                }
+                if (pendingTimeline != 0) {
+                    recoverSeek(category, category == Code.SEEK_UNAVAILABLE ? "seekLanding" : "preroll", raw);
+                    return;
+                }
+            }
             position = at;
-            fail(pendingTimeline, category,
-                    pendingTimeline != 0 && category == Code.SEEK_UNAVAILABLE ? "seekLanding" : "render", raw);
+            fail(pendingTimeline, category, "render", raw);
             return;
         }
+        if (pendingTimeline != 0) recoverSeek(Code.SEEK_UNAVAILABLE, "seekEndOfStream", raw);
+        else if (restoringSeek) finishSeekRecovery(Code.SEEK_UNAVAILABLE, raw);
+        else endPlayback(at, 0);
+    }
+
+    private void stopOutput() {
+        session.replace(null);
+        if (output != null) {
+            stats = output.statistics();
+            lastBackend = output.backend();
+            output = null;
+        }
+    }
+
+    private void endPlayback(long at, long seekRequest) {
         state = State.ENDED;
         intent = false;
         position = media.durationMs != null ? media.durationMs : at;
-        long id = pendingTimeline;
         pendingTimeline = 0;
         clearSeekDeadline();
         publish(false);
-        if (id != 0) reject(id, Code.SEEK_UNAVAILABLE, "seekEndOfStream");
+        if (seekRequest != 0) reject(seekRequest, Code.SEEK_UNAVAILABLE, "seekEndOfStream");
+    }
+
+    private void recoverSeek(Code code, String stage, int raw) {
+        long request = pendingTimeline;
+        PlayerError failure = problem(request, code, Scope.REQUEST, stage, raw);
+        cancelChange(Status.SUPERSEDED);
+        pendingTimeline = 0;
+        clearSeekDeadline();
+        stopOutput();
+        position = seekFromEnd && intent ? 0 : positionBeforeSeek;
+        state = seekFromEnd && !intent ? State.ENDED : runningState();
+        // Publish the failed request before starting the recovery timeline so its diagnostics share the same ID.
+        publish(false);
+        report(failure);
+        complete(request, Status.FAILED, failure);
+        if (state != State.ENDED) startRun(Math.min(position, Long.MAX_VALUE / 1000), true, 0, true, null, true);
+    }
+
+    private void finishSeekRecovery(Code code, int raw) {
+        PlayerError failure = problem(0, code, Scope.REQUEST, "seekRollback", raw);
+        cancelChange(Status.CANCELLED);
+        clearSeekDeadline();
+        stopOutput();
+        seekOnResume = true;
+        intent = false;
+        state = State.PAUSED;
+        publish(false);
+        report(failure);
     }
 
     private void fail(long request, Code code, String stage, int raw) {

@@ -490,8 +490,8 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
         mainHandler.postDelayed(seekWatchdogTask, 3500);
         lastSeekStartTimeNs = SystemClock.elapsedRealtimeNanos();
         seekRequestExact = exact || !fastSeekEnabled;
-        lastSeekCommandId = player.seekTo(targetMs, exact);
-        android.util.Log.i("DemoActivity", "executeSeek target=" + targetMs + " exact=" + exact + " commandId=" + lastSeekCommandId);
+        lastSeekCommandId = player.seekTo(targetMs, seekRequestExact);
+        android.util.Log.i("DemoActivity", "executeSeek target=" + targetMs + " exact=" + seekRequestExact + " commandId=" + lastSeekCommandId);
     }
 
     private void updateFastSeekButtonState() {
@@ -670,6 +670,8 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
                 .build();
 
         player = new Player(this, config, new GenerationListener(playerGeneration));
+        player.setVolume(currentVolume);
+        player.setMuted(isMuted);
         lastSeekLatencyMs = -1;
         updateSeekBarEnabled();
         if (currentSurface != null && currentSurface.isValid()) {
@@ -904,7 +906,7 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
     private static boolean isMediaFile(String name) {
         String lower = name.toLowerCase(Locale.US);
         return lower.endsWith(".mp4") || lower.endsWith(".mkv") || lower.endsWith(".flv") ||
-                lower.endsWith(".ts") || lower.endsWith(".mov") || lower.endsWith(".avi") ||
+                lower.endsWith(".ts") || lower.endsWith(".m2ts") || lower.endsWith(".mov") || lower.endsWith(".avi") ||
                 lower.endsWith(".webm") || lower.endsWith(".m4v") || lower.endsWith(".wmv") ||
                 lower.endsWith(".asf") || lower.endsWith(".mp3") || lower.endsWith(".aac") ||
                 lower.endsWith(".flac") || lower.endsWith(".wav") || lower.endsWith(".ogg") ||
@@ -1148,6 +1150,17 @@ public class DemoActivity extends Activity implements SurfaceHolder.Callback, Pl
 
     @Override
     public void onError(PlayerError error, PlayerSnapshot snapshot) {
+        if (error.scope == PlayerError.Scope.REQUEST && ("seekLanding".equals(error.stage) ||
+                "preroll".equals(error.stage) || "seekEndOfStream".equals(error.stage) ||
+                "seekRollback".equals(error.stage))) {
+            if (snapshot.state == PlayerSnapshot.State.ENDED && "seekEndOfStream".equals(error.stage)) return;
+            android.util.Log.w("DemoActivity", "Seek " + error.code + "/" + error.stage);
+            if (error.requestId == lastSeekCommandId && seekRequestExact &&
+                    !isDraggingSeek && pendingDragSeekMs < 0) {
+                Toast.makeText(this, "定位失败，请重试", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
         if (error.scope == PlayerError.Scope.SESSION) {
             pendingSeekPositionMs = -1;
         }

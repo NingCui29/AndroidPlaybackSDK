@@ -147,6 +147,7 @@ public final class PlayerConfig {
 
         /**
          * 设置所有 {@link PlayerListener} 事件回调的执行器。
+         * 执行器拒绝提交时，SDK 会保留队列并延迟重试。释放结果交付前，执行器需要保持可用。
          *
          * @param executor 回调调度器，默认在 Android 主线程 Looper 交付
          * @return 当前构建器实例

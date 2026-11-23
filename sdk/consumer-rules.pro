@@ -24,7 +24,7 @@
     void softwareVideoInfo(int,long);
     void finishVideo(long,boolean);
     int endVideo();
-    void stop();
+    void requestStop();
     int initHardware(int,int,int,float,java.nio.ByteBuffer);
     int hardwarePacket(java.nio.ByteBuffer,long,long,boolean,java.nio.ByteBuffer);
     int flushHardwarePicture();

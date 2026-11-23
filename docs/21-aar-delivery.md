@@ -1,6 +1,6 @@
 # AndroidPlaybackSDK 本地制品接入
 
-开发演练坐标为 `com.cn.media:android-playback-sdk:1.0.0-rc.1`。宿主须运行 Android 6.0（API 23）及以上，进程 ABI 为 arm64-v8a。每份归档附 `SHA256SUMS`，`candidate.json` 记录实际 AAR、Maven 附件、每个 ELF 的摘要与 Build ID。质量签核和正式版本使用单独的审核记录。
+当前坐标为 `com.cn.media:android-playback-sdk:1.2.1`。AAR 声明最低 Android API 为 21，进程 ABI 为 arm64-v8a。每份归档附 `SHA256SUMS`，`candidate.json` 记录该版本的 AAR、Maven 附件、每个 ELF 的摘要与 Build ID。真机适配和质量签核以各版本的审核记录为准。
 
 ## 宿主接入
 
@@ -8,7 +8,7 @@
 
 ```kotlin
 dependencies {
-    implementation(files("libs/android-playback-sdk-1.0.0-rc.1.aar"))
+    implementation(files("libs/android-playback-sdk-1.2.1.aar"))
 }
 ```
 
@@ -29,7 +29,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.cn.media:android-playback-sdk:1.0.0-rc.1")
+    implementation("com.cn.media:android-playback-sdk:1.2.1")
 }
 ```
 
@@ -80,6 +80,6 @@ cp build/ffmpeg/stripped/arm64-v8a/*.so artifacts/n01/stripped/arm64-v8a/
 
 ## 发行工程取证
 
-在完整 SDK 开发工程中先运行 `./gradlew --offline :sdk:publishPlaybackPublicationToOfflineRepository` 写入本地文件仓库，再运行 `python tools/assemble-delivery.py`。Windows 使用 `gradlew.bat`。脚本使用 Python 3.9 以上、GnuPG 与 NDK LLVM 工具，另一个 Android SDK 位置可通过 `--ndk` 显式指定。
+在完整 SDK 开发工程中先运行 `./gradlew --offline :sdk:publishPlaybackPublicationToOfflineRepository` 写入本地文件仓库，再运行 `python tools/assemble-delivery.py --version 1.2.1`。Windows 使用 `gradlew.bat`。脚本使用 Python 3.9 以上、GnuPG 与 NDK LLVM 工具，另一个 Android SDK 位置可通过 `--ndk` 显式指定。
 
-输出路径为 `artifacts/distribution/<版本>/<AAR摘要前缀>-<材料摘要前缀>/`。`public` 可供接入，`private/native-symbols.zip` 单独保管；按版本停止支持后至少 24 个月的约定留存。候选变更会生成新目录。根清单用于分别校验公开材料和私有归档。ELF 静态检查涵盖真实 AAR 的库集合、SONAME、Build ID、16 KB LOAD 段对齐与 API 23 平台符号。最低系统、16 KB 页环境、独立宿主安装及质量审核需相应的实测记录。
+输出路径为 `artifacts/distribution/<版本>/<AAR摘要前缀>-<材料摘要前缀>/`。`public` 可供接入，`private/native-symbols.zip` 单独保管，按版本停止支持后至少 24 个月的约定留存。候选变更会生成新目录。根清单用于分别校验公开材料和私有归档。ELF 静态检查涵盖真实 AAR 的库集合、SONAME、Build ID、16 KB LOAD 段对齐与 AAR 声明的最低 API 平台符号。最低系统、16 KB 页环境、独立宿主安装及质量审核需相应的实测记录。

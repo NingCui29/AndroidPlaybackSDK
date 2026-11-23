@@ -16,6 +16,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /** Exercises only public SDK commands. Files V01 and V11 are staged by the device runner. */
@@ -823,8 +826,30 @@ final class PlayerChecks implements PlayerListener {
         player = new Player(context, new PlayerConfig.Builder().setVideoMode(PlayerConfig.VideoMode.SOFTWARE_ONLY)
                 .setFastSeek(!name.equals("V09a.wmv")).setProgressIntervalMs(100).build(), this);
         try {
-            if (wantsVideo) ok(player.setVideoSurface(display.awaitSurface()));
             MediaSource source = MediaSource.fromFile(new File(context.getCacheDir(), name));
+            if ("seekTimeout".equals(operation)) {
+                PlayerSnapshot opened = ok(player.open(source)).snapshot;
+                check(opened.videoTrack != null && opened.audioTrack == null && opened.media.durationMs != null,
+                        "Expected a video-only fixture of known duration, such as V11.mp4");
+                long target = Math.min(1000, opened.media.durationMs / 2);
+                // Without a Surface the video-only output cannot present the first frame.
+                CommandResult timeout = await(player.seekTo(target, true), CommandResult.Status.FAILED);
+                check(timeout.error.code == PlayerError.Code.INPUT_TIMEOUT && "preroll".equals(timeout.error.stage) &&
+                                timeout.error.scope == PlayerError.Scope.REQUEST &&
+                                timeout.snapshot.mediaId == opened.mediaId && !timeout.snapshot.seeking &&
+                                timeout.snapshot.state == PlayerSnapshot.State.PAUSED && timeout.snapshot.error == null &&
+                                timeout.snapshot.positionMs == opened.positionMs && !timeout.snapshot.playWhenReady,
+                        "Preroll timeout must preserve the paused session and its position");
+                long retry = player.seekTo(target, true);
+                ok(player.setVideoSurface(display.awaitSurface()));
+                CommandResult restored = ok(retry);
+                check(restored.actualPositionMs != null && restored.snapshot.mediaId == opened.mediaId &&
+                                restored.snapshot.state == PlayerSnapshot.State.PAUSED,
+                        "Binding the Surface must preserve the paused seek request");
+                evidence.putString("seekTimeout", "PASS retry remains active through Surface binding after preroll timeout");
+                return;
+            }
+            if (wantsVideo) ok(player.setVideoSurface(display.awaitSurface()));
             if ("seek".equals(operation)) {
                 long duration = ok(player.open(source)).snapshot.media.durationMs;
                 ok(player.play());
@@ -852,6 +877,14 @@ final class PlayerChecks implements PlayerListener {
                     check(fast.actualPositionMs != null && fast.actualPositionMs <= target,
                             "Fast WMV seek passed target: " + fast.actualPositionMs);
                     evidence.putString("fast", target + "," + fast.actualPositionMs);
+                    for (int i = 0; i < 2; i++) {
+                        verifySeekAtEnd(duration);
+                        int starts = videoStarts;
+                        ok(player.play());
+                        awaitOutput(0, starts + 1);
+                        ok(player.seekTo(target, true));
+                    }
+                    evidence.putString("wmvEndpoint", "PASS exact seek to end, replay and seek twice");
                 } else if (name.equals("V09a.wmv") || name.equals("V10.ts")) {
                     // First video PTS relative to the audio-led format origin: 43 ms / 21.333 ms.
                     long firstUs = name.equals("V09a.wmv") ? 43000 : 21333;
@@ -861,14 +894,18 @@ final class PlayerChecks implements PlayerListener {
                         CommandResult first = ok(player.seekTo(target, target == beforeKey));
                         check(Long.valueOf(firstUs / 1000).equals(first.actualPositionMs), "Wrong first frame");
                     }
+                    PlayerSnapshot beforeMiss = player.getSnapshot();
                     CommandResult early = await(player.seekTo(beforeKey, false), CommandResult.Status.FAILED);
-                    check(early.actualPositionMs == null && early.error.code == PlayerError.Code.SEEK_UNAVAILABLE,
-                            "Fast seek before the first key must report no landing");
+                    check(early.actualPositionMs == null && early.error.code == PlayerError.Code.SEEK_UNAVAILABLE &&
+                                    early.error.scope == PlayerError.Scope.REQUEST && "seekLanding".equals(early.error.stage) &&
+                                    early.snapshot.mediaId == beforeMiss.mediaId && !early.snapshot.seeking &&
+                                    early.snapshot.state == beforeMiss.state && early.snapshot.error == null &&
+                                    early.snapshot.playWhenReady == beforeMiss.playWhenReady,
+                            "Missed fast seek must preserve the current session and play intent");
+                    ok(player.seekTo(atOrAfterKey, true));
                     evidence.putString("firstKey", "firstUs=" + firstUs + " fastBefore=SEEK_UNAVAILABLE");
                 } else if (name.equals("V01.mp4")) {
-                    CommandResult eof = await(player.seekTo(duration, true), CommandResult.Status.FAILED);
-                    check(eof.actualPositionMs == null && eof.error.code == PlayerError.Code.SEEK_UNAVAILABLE &&
-                            "seekEndOfStream".equals(eof.error.stage), "EOF seek must fail without a landing");
+                    verifySeekAtEnd(duration);
                     evidence.putString("seekAtEnd", "PASS no frame or PCM at the requested end position");
                 }
             } else {
@@ -895,6 +932,18 @@ final class PlayerChecks implements PlayerListener {
                 }
             }
         } finally { ok(player.release()); }
+    }
+
+    private void verifySeekAtEnd(long duration) throws Exception {
+        long mediaId = player.getSnapshot().mediaId;
+        long start = SystemClock.elapsedRealtime();
+        CommandResult end = await(player.seekTo(duration, true), CommandResult.Status.FAILED);
+        check(end.actualPositionMs == null && end.error.code == PlayerError.Code.SEEK_UNAVAILABLE &&
+                        end.error.scope == PlayerError.Scope.REQUEST && "seekEndOfStream".equals(end.error.stage) &&
+                        end.snapshot.state == PlayerSnapshot.State.ENDED && end.snapshot.positionMs == duration &&
+                        end.snapshot.mediaId == mediaId && !end.snapshot.seeking && !end.snapshot.playWhenReady &&
+                        SystemClock.elapsedRealtime() - start < 2500,
+                "Exact seek to the endpoint must reach ENDED before the preroll deadline");
     }
 
     void surfaceLifecycle(DisplayActivity display, String name, PlayerConfig.VideoMode mode, int rounds, boolean pauseDetached) throws Exception {
@@ -1155,6 +1204,9 @@ final class PlayerChecks implements PlayerListener {
             expectOpenError(player.open(MediaSource.fromUri(FixtureProvider.uri("deny", good.getName()))),
                     PlayerError.Code.INPUT_PERMISSION);
             verifyRecovered(good);
+            expectOpenError(player.open(MediaSource.fromUri(FixtureProvider.uri("runtime", good.getName()))),
+                    PlayerError.Code.INPUT_IO);
+            verifyRecovered(good);
             expectOpenError(player.open(MediaSource.fromFile(truncated)), PlayerError.Code.FORMAT_UNSUPPORTED);
             verifyRecovered(good);
             expectOpenError(player.open(MediaSource.fromFile(unknown)), PlayerError.Code.NO_PLAYABLE_TRACK);
@@ -1181,7 +1233,7 @@ final class PlayerChecks implements PlayerListener {
             ok(player.seekTo(duration-300));
             awaitState(PlayerSnapshot.State.ENDED, 3500);
             checkBlockedPipe();
-            evidence.putString("content-"+round, "PASS deny, cut@8, unknown WAV tag, timeout=" +
+            evidence.putString("content-"+round, "PASS deny, provider runtime error, cut@8, unknown WAV tag, timeout=" +
                     timedOut + "ms, superseded provider switch=" + switchMs + "ms, sentinel range, blocked FD cancel");
         } finally { ok(player.release()); }
     }
@@ -1278,9 +1330,12 @@ final class PlayerChecks implements PlayerListener {
     }
 
     void seekTransferFault(DisplayActivity display) throws Exception {
-        final java.util.concurrent.atomic.AtomicBoolean injectReleaseFault = new java.util.concurrent.atomic.AtomicBoolean(false);
-        final java.util.concurrent.atomic.AtomicInteger releaseCodecCount = new java.util.concurrent.atomic.AtomicInteger(0);
-        final java.util.concurrent.atomic.AtomicInteger discardCount = new java.util.concurrent.atomic.AtomicInteger(0);
+        final AtomicBoolean injectReleaseFault = new AtomicBoolean(false);
+        final AtomicInteger releaseCodecCount = new AtomicInteger();
+        final AtomicInteger discardCount = new AtomicInteger();
+        final AtomicBoolean holdNextRender = new AtomicBoolean(false);
+        final CountDownLatch frameInFlight = new CountDownLatch(1);
+        final CountDownLatch returnFrame = new CountDownLatch(1);
 
         CodecCalls customCalls = new CodecCalls() {
             @Override
@@ -1289,6 +1344,14 @@ final class PlayerChecks implements PlayerListener {
                     discardCount.incrementAndGet();
                     if (injectReleaseFault.get()) {
                         throw new IllegalStateException("Injected releaseOutputBuffer fault during discard");
+                    }
+                } else if (holdNextRender.getAndSet(false)) {
+                    frameInFlight.countDown();
+                    try {
+                        check(returnFrame.await(7, TimeUnit.SECONDS), "Held frame was never released");
+                    } catch (InterruptedException interrupted) {
+                        Thread.currentThread().interrupt();
+                        throw new AssertionError(interrupted);
                     }
                 }
                 super.releaseOutputBuffer(codec, index, render);
@@ -1351,28 +1414,43 @@ final class PlayerChecks implements PlayerListener {
 
             // 5. Disable fault injection and verify player can open new media and play
             injectReleaseFault.set(false);
-            ok(player.open(MediaSource.fromFile(videoFile)));
-            check(player.getSnapshot().state == PlayerSnapshot.State.READY, "Player should be in READY state after open");
+            PlayerSnapshot reopened = ok(player.open(MediaSource.fromFile(videoFile))).snapshot;
+            check(reopened.state == PlayerSnapshot.State.READY, "Player should be in READY state after open");
+            holdNextRender.set(true);
+            long seekStart = SystemClock.elapsedRealtime();
+            long heldSeek = player.seekTo(1000, true);
+            try {
+                check(frameInFlight.await(3, TimeUnit.SECONDS), "Seek did not reach the held hardware frame");
+                CommandResult timeout = await(heldSeek, CommandResult.Status.FAILED);
+                check(timeout.error.code == PlayerError.Code.INPUT_TIMEOUT &&
+                                timeout.error.scope == PlayerError.Scope.REQUEST &&
+                                SystemClock.elapsedRealtime() - seekStart < 5000,
+                        "JNI cancellation waited for the held hardware frame");
+                verifySeekAtEnd(reopened.media.durationMs);
+            } finally {
+                returnFrame.countDown();
+            }
+            int starts = videoStarts;
             ok(player.play());
-            awaitOutput(0, 1);
+            awaitOutput(0, starts + 1);
             ok(player.stop());
         } finally {
             try { ok(player.release()); } catch (Exception ignored) {}
         }
 
-        // 6. Verify CallbackQueue rejection preserves queued events without clearing
-        final java.util.concurrent.atomic.AtomicBoolean rejectNext = new java.util.concurrent.atomic.AtomicBoolean(true);
-        final java.util.concurrent.CountDownLatch delivered = new java.util.concurrent.CountDownLatch(1);
+        // The final callback must survive four transient rejections without another event.
+        final AtomicInteger attempts = new AtomicInteger();
+        final CountDownLatch delivered = new CountDownLatch(1);
         CallbackQueue cbQueue = new CallbackQueue(runnable -> {
-            if (rejectNext.getAndSet(false)) {
+            if (attempts.incrementAndGet() <= 4) {
                 throw new java.util.concurrent.RejectedExecutionException("Simulated queue saturation");
             }
             runnable.run();
         });
         cbQueue.add(false, delivered::countDown);
-        check(delivered.await(2, java.util.concurrent.TimeUnit.SECONDS),
+        check(delivered.await(3, TimeUnit.SECONDS),
                 "Last event should be delivered after executor recovery without another enqueue");
 
-        evidence.putString("seekTransferFault", "PASS: 1 terminal result, old decoder recycled, stop/reopen and callback queue retention succeeded");
+        evidence.putString("seekTransferFault", "PASS transfer failure, in-flight JNI cancellation, replay and callback retry");
     }
 }

@@ -13,7 +13,7 @@ typedef struct RenderSession {
     JavaVM *vm;
     pthread_key_t attachment;
     jobject output;
-    jmethodID begin_audio, end_audio, acquire_video, finish_video, end_video, stop;
+    jmethodID begin_audio, end_audio, acquire_video, finish_video, end_video, request_stop;
     AudioSink audio;
     VideoSink video;
     jweak last_cpu_surface;
@@ -68,7 +68,8 @@ static void interrupt_output(void *opaque) {
     while (eventfd_write(s->input->cancel_fd, 1) < 0 && errno == EINTR) {}
     JNIEnv *env = worker_env(s);
     if (env) {
-        (*env)->CallVoidMethod(env, s->output, s->stop);
+        // Cancellation may run under group_lock. Frame ownership is returned by the render worker.
+        (*env)->CallVoidMethod(env, s->output, s->request_stop);
         checked(env, 0);
     }
 }
@@ -400,7 +401,7 @@ JNIEXPORT jint JNICALL Java_com_cn_media_playback_NativeInput_render(JNIEnv *env
     METHOD(software_info, "softwareVideoInfo", "(IJ)V");
     METHOD(finish_video, "finishVideo", "(JZ)V");
     METHOD(end_video, "endVideo", "()I");
-    METHOD(stop, "stop", "()V");
+    METHOD(request_stop, "requestStop", "()V");
     METHOD(hardware_packet, "hardwarePacket", "(Ljava/nio/ByteBuffer;JJZLjava/nio/ByteBuffer;)I");
     METHOD(flush_picture, "flushHardwarePicture", "()I");
     METHOD(configuration_wait, "configurationWaitMs", "()I");

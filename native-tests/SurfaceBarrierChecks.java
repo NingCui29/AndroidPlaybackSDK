@@ -55,9 +55,12 @@ public final class SurfaceBarrierChecks implements PlaybackOutput.Observer {
         HostSurface surface = new HostSurface();
         try (PlaybackOutput out = output(surface)) {
             check(out.acquireVideo(0, 33333) == surface, "Didn't hold the old Surface");
+            Thread cancel = call(out::requestStop);
             Thread first = call(out::stop);
             Thread second = null;
             try {
+                cancel.join(1000);
+                check(!cancel.isAlive() && out.stopped(), "Cancellation waited for the in-flight frame");
                 waitUntilBlocked(first);
                 second = call(out::stop);
                 waitUntilBlocked(second);
@@ -105,11 +108,30 @@ public final class SurfaceBarrierChecks implements PlaybackOutput.Observer {
         }
     }
 
+    private void seekLandingAfterRebind() throws Exception {
+        HostSurface surface = new HostSurface();
+        PlayerConfig config = new PlayerConfig.Builder().setCallbackExecutor(Runnable::run).build();
+        landingMs = -1;
+        int previousMisses = missedLandings;
+        try (PlaybackOutput out = new PlaybackOutput(this, -1, null, 0, true, 42,
+                false, false, null, 1, config, false, null, null)) {
+            Thread preroll = call(() -> {
+                if (out.acquireVideo(43000, 40000) != null) out.finishVideo(43000, true);
+            });
+            waitUntilBlocked(preroll);
+            out.bind(surface);
+            preroll.join(1000);
+            check(!preroll.isAlive() && missedLandings == previousMisses + 1 && landingMs == -1,
+                    "Rebinding the Surface accepted a frame after the fast seek target");
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         SurfaceBarrierChecks test = new SurfaceBarrierChecks();
         test.repeatedStop();
         test.invalidSurface();
         test.seekLanding();
+        test.seekLandingAfterRebind();
         System.out.println("PASS Surface ownership, invalid binding, fast and exact seek landing");
     }
 }

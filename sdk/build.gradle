@@ -78,7 +78,7 @@ afterEvaluate {
                 artifact apiDocsJar
                 groupId = 'com.cn.media'
                 artifactId = 'android-playback-sdk'
-                version = '1.2.0'
+                version = '1.2.1'
                 pom {
                     name = 'Android Playback SDK'
                     description = 'Android multi-format player with FFmpeg and MediaCodec; bundled FFmpeg libraries are LGPL-2.1-or-later.'
